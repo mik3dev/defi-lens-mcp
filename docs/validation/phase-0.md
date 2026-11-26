@@ -18,9 +18,9 @@
 | Live provider suite | `pnpm test:live` | Not applicable: phase 0 added no live tests |
 | Secret scan | Script comparing every value in the git-ignored `.env` (plus Alchemy URL patterns and the local home path) against `test/fixtures` and `docs/validation`; prints counts only | 0 secret hits. The only match is the non-secret bind address `127.0.0.1` in the HTTP transcripts |
 | Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet; README and tool reference are phase 8 Task 8.1 (`docs/plan/phase-8-release.md`). The design and plan documents under `docs/` exist. |
-| CI green on the phase pull request | — | Pending: no pull request exists yet; the controller handles push and PR after the owner agrees |
-| Code review of the phase diff | — | Pending: every task was reviewed individually; the whole-branch review runs after this record |
-| Owner sign-off | — | Pending (see the end of this document) |
+| CI green on the phase pull request | [PR #1](https://github.com/mik3dev/defi-lens-mcp/pull/1), Actions run 45878759121 | Pass: lint, typecheck, build, coverage and audit green |
+| Code review of the phase diff | Whole-branch review `da789a9..df93a24` | Pass: no critical findings; both important findings fixed in `29faf90` and `dead8db` and re-reviewed; remaining minors carried forward |
+| Owner sign-off | — | Approved (see the end of this document) |
 
 ## Validation
 
@@ -99,4 +99,4 @@ Other:
 
 ## Owner sign-off
 
-- [ ] Approved by ______ on ______
+- [x] Approved by mik3dev on 2026-11-26
