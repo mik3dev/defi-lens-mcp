@@ -1,0 +1,37 @@
+{
+  "name": "defi-lens-mcp",
+  "version": "0.1.0",
+  "description": "Read-only MCP server of DeFi data for AI agents",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "lint": "biome check .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage",
+    "test:fork": "CHAIN_MODE=fork vitest run --passWithNoTests test/chain test/e2e",
+    "test:live": "LIVE=1 vitest run --passWithNoTests test/live",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/express": "2.0.2",
+    "@modelcontextprotocol/node": "2.1.2",
+    "@modelcontextprotocol/server": "2.4.0",
+    "express": "5.3.0",
+    "viem": "2.58.6",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.6.9",
+    "@modelcontextprotocol/client": "2.4.0",
+    "@types/express": "5.0.6",
+    "@types/node": "22.20.7",
+    "@vitest/coverage-v8": "5.1.2",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.1.2"
+  }
+}
