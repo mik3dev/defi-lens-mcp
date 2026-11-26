@@ -10,6 +10,7 @@ import {
 import { CHAINS, type ChainId, getClient, NATIVE_ADDRESS } from '../../chains.js';
 import type { AppContext } from '../../context.js';
 import type { PinnedBlock } from '../../lib/blocks.js';
+import { isBigint, isNumber, isString, type Outcome, success } from '../../lib/multicall.js';
 import { sanitizeSymbol } from '../../lib/sanitize.js';
 import { erc20Abi, erc20Bytes32Abi, multicall3EthBalanceAbi } from './abi.js';
 
@@ -19,24 +20,11 @@ export interface TokenInfo {
   decimals: number;
 }
 
-/** One `allowFailure` multicall result; `result` is untrusted until its type is checked. */
-interface Outcome {
-  status: 'success' | 'failure';
-  result?: unknown;
-}
-
 const NATIVE_DECIMALS = 18;
 
 const isNative = (address: Address): boolean => isAddressEqual(address, NATIVE_ADDRESS);
 const lower = (address: Address): string => address.toLowerCase();
 const tokenKey = (chain: ChainId, address: Address): string => `token:${chain}:${lower(address)}`;
-
-function success<T>(outcome: Outcome | undefined, guard: (v: unknown) => v is T): T | undefined {
-  return outcome?.status === 'success' && guard(outcome.result) ? outcome.result : undefined;
-}
-const isString = (v: unknown): v is string => typeof v === 'string';
-const isNumber = (v: unknown): v is number => typeof v === 'number';
-const isBigint = (v: unknown): v is bigint => typeof v === 'bigint';
 
 function nativeToken(chain: ChainId): TokenInfo {
   return { address: NATIVE_ADDRESS, symbol: CHAINS[chain].nativeSymbol, decimals: NATIVE_DECIMALS };
