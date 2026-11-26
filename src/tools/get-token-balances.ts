@@ -1,11 +1,12 @@
 import type { McpServer } from '@modelcontextprotocol/server';
-import { type Address, isAddressEqual } from 'viem';
+import { type Address, getAddress, isAddressEqual } from 'viem';
 import { z } from 'zod/v4';
 import { type ChainId, NATIVE_ADDRESS } from '../chains.js';
 import type { AppContext } from '../context.js';
 import { type PinnedBlock, pinBlock } from '../lib/blocks.js';
 import { AppError } from '../lib/errors.js';
 import { type Amount, toAmount, usdValue } from '../lib/format.js';
+import { FEEDS } from '../protocols/chainlink/feeds.js';
 import { getUsdPrices, type Price, staleWarnings } from '../protocols/chainlink/prices.js';
 import { readBalances, readTokens, type TokenInfo } from '../protocols/erc20/tokens.js';
 import { discoverTokens, hasIndexer } from '../services/indexer.js';
@@ -134,6 +135,20 @@ function explicitTokens(tokens: Address[]): Address[] {
   return [...unique.values()].filter((t) => !isNative(t));
 }
 
+/**
+ * Discovered tokens followed by the chain's Chainlink-priced tokens not already listed. Only priced
+ * tokens add to totalUsd and the indexer lists tokens in its own order, so a capped scan of a
+ * spam-heavy wallet could otherwise miss them. Unheld ones are dropped later as zero balances.
+ */
+function withFeedTokens(chain: ChainId, discovered: Address[]): Address[] {
+  const listed = new Set(discovered.map((t) => t.toLowerCase()));
+  const extra = Object.keys(FEEDS[chain])
+    .filter((t) => !listed.has(t))
+    .map((t) => getAddress(t))
+    .filter((t) => !isNative(t));
+  return [...discovered, ...extra];
+}
+
 async function candidatesFor(ctx: AppContext, sel: ParsedInput): Promise<Candidates> {
   if (sel.tokens) {
     return { discovery: 'explicit', tokens: explicitTokens(sel.tokens), warnings: [] };
@@ -144,7 +159,7 @@ async function candidatesFor(ctx: AppContext, sel: ParsedInput): Promise<Candida
   const found = await discoverTokens(ctx, sel.chain, sel.address);
   return {
     discovery: 'indexer',
-    tokens: found.tokens,
+    tokens: withFeedTokens(sel.chain, found.tokens),
     warnings: found.truncated ? [TRUNCATED_WARNING] : [],
   };
 }

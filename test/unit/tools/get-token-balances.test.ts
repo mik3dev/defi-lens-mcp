@@ -77,6 +77,18 @@ const erc20 = (symbol: string, decimals: number, balance: bigint): FakeContract 
   balances: { [OWNER]: balance },
 });
 
+/**
+ * Every Ethereum Chainlink-priced token as a readable ERC-20 the owner does not hold. Discovery
+ * always reads these, and on a real chain they are always readable contracts.
+ */
+const UNHELD_FEED_TOKENS: Record<Address, FakeContract> = Object.fromEntries(
+  Object.keys(FEEDS.ethereum)
+    .map((t) => getAddress(t))
+    .filter((t) => t !== NATIVE_ADDRESS)
+    .map((t) => [t, erc20('FEED', 18, 0n)]),
+);
+const FEED_TOKEN_COUNT = Object.keys(UNHELD_FEED_TOKENS).length;
+
 /** ETH at 2000 USD (stale), USDC at 1 USD; AAA, ZZZ unpriced; EMPTY holds nothing. */
 const WALLET: Record<Address, FakeContract> = {
   [feedOf(NATIVE_ADDRESS)]: feed(2000n * 10n ** 8n, NOW - 5_000n),
@@ -306,7 +318,8 @@ describe('getTokenBalances', () => {
   });
 
   it('drops discovered tokens whose balance at the pinned block is zero', async () => {
-    const ctx = withIndexer(await fakeContext(), listingIndexer([EMPTY, AAA, DEAD]));
+    const contracts = { ...UNHELD_FEED_TOKENS, ...WALLET, [USDC]: erc20('USDC', 6, 0n) };
+    const ctx = withIndexer(await fakeContext(contracts), listingIndexer([EMPTY, AAA, DEAD]));
     const out = await getTokenBalances(ctx, { chain: 'ethereum', address: OWNER });
     expect(out.data.discovery).toBe('indexer');
     expect(symbols(out.data.balances)).toEqual(['ETH', 'AAA']);
@@ -316,16 +329,50 @@ describe('getTokenBalances', () => {
     ]);
   });
 
+  it('adds no rows for feed tokens a discovered wallet does not hold', async () => {
+    const contracts = {
+      ...UNHELD_FEED_TOKENS,
+      [feedOf(NATIVE_ADDRESS)]: WALLET[feedOf(NATIVE_ADDRESS)],
+    };
+    const ctx = withIndexer(
+      await fakeContext({ ...contracts, [AAA]: erc20('AAA', 18, 7n) }),
+      listingIndexer([AAA]),
+    );
+    const out = await getTokenBalances(ctx, { chain: 'ethereum', address: OWNER });
+    expect(symbols(out.data.balances)).toEqual(['ETH', 'AAA']);
+    expect(out.data.totalUsd).toBe(6000);
+    expect(out.warnings).toEqual(['price feed stale: ETH']);
+  });
+
+  it('prices and totals a held feed token that truncated discovery did not list', async () => {
+    const indexer = fakeIndexer(5_000);
+    const contracts = { ...UNHELD_FEED_TOKENS, ...WALLET };
+    const ctx = withIndexer(await fakeContext(contracts, erc20('SPAM', 18, 1n)), indexer.client);
+    const out = await getTokenBalances(ctx, { chain: 'ethereum', address: OWNER });
+    expect(out.data.balances[1]).toEqual({
+      token: { address: USDC, symbol: 'USDC', decimals: 6 },
+      balance: { raw: '5000000', formatted: '5', decimals: 6 },
+      usd: 5,
+      priceSource: 'chainlink',
+    });
+    expect(out.data.totalUsd).toBe(6005);
+    expect(out.warnings).toContain('More tokens exist than were scanned.');
+    expect(out.warnings).toContain('Showing 50 of 401 tokens.');
+  });
+
   it('caps a wallet with thousands of discovered tokens', async () => {
     const indexer = fakeIndexer(5_000);
-    const ctx = withIndexer(await fakeContext({}, erc20('SPAM', 18, 1n)), indexer.client);
+    const ctx = withIndexer(
+      await fakeContext(UNHELD_FEED_TOKENS, erc20('SPAM', 18, 1n)),
+      indexer.client,
+    );
     const out = await getTokenBalances(ctx, { chain: 'ethereum', address: OWNER });
     expect(out.data.balances).toHaveLength(51);
     expect(out.data.balances[0]?.token.address).toBe(NATIVE_ADDRESS);
     expect(out.warnings).toContain('Showing 50 of 400 tokens.');
     expect(out.warnings).toContain('More tokens exist than were scanned.');
     const tokenReads = new Set(chain?.callTargets.filter((t) => t.toLowerCase().startsWith('0xa')));
-    expect(tokenReads.size).toBeLessThanOrEqual(400);
+    expect(tokenReads.size).toBeLessThanOrEqual(400 + FEED_TOKEN_COUNT);
   });
 
   it('fails when the native balance cannot be read', async () => {
