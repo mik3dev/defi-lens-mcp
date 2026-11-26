@@ -1,4 +1,12 @@
-import { type Address, getAddress, isAddressEqual, zeroAddress } from 'viem';
+import {
+  type Address,
+  encodeAbiParameters,
+  getAddress,
+  getContractAddress,
+  isAddressEqual,
+  keccak256,
+  zeroAddress,
+} from 'viem';
 import { type ChainId, getClient } from '../../chains.js';
 import type { AppContext } from '../../context.js';
 import type { PinnedBlock } from '../../lib/blocks.js';
@@ -98,6 +106,28 @@ function parseDynamics(
   return s && l !== undefined ? { sqrtPriceX96: s[0], tick: s[1], liquidity: l } : undefined;
 }
 
+/** Address the chain's Uniswap v3 factory deploys the (token0, token1, fee) pool at (CREATE2). */
+export function computePoolAddress(
+  chain: ChainId,
+  token0: Address,
+  token1: Address,
+  fee: number,
+): Address {
+  const { factory, poolInitCodeHash } = UNISWAP_V3[chain];
+  const salt = keccak256(
+    encodeAbiParameters(
+      [{ type: 'address' }, { type: 'address' }, { type: 'uint24' }],
+      [token0, token1, fee],
+    ),
+  );
+  return getContractAddress({
+    opcode: 'CREATE2',
+    from: factory,
+    salt,
+    bytecodeHash: poolInitCodeHash,
+  });
+}
+
 function parseImmutables(chain: ChainId, results: readonly Outcome[]): PoolImmutables | undefined {
   const [token0, token1, fee, tickSpacing, factory] = [
     success(results[0], isString),
@@ -113,9 +143,17 @@ function parseImmutables(chain: ChainId, results: readonly Outcome[]): PoolImmut
   return { token0: getAddress(token0), token1: getAddress(token1), fee, tickSpacing };
 }
 
+/** A contract can report any immutables; only the factory's CREATE2 address proves it is a pool. */
+function isCanonicalPool(chain: ChainId, pool: Address, immutables: PoolImmutables): boolean {
+  const { token0, token1, fee } = immutables;
+  return isAddressEqual(pool, computePoolAddress(chain, token0, token1, fee));
+}
+
 /**
  * slot0 + liquidity, plus the immutables in the same multicall unless they are cached. Any failed
- * call or a factory other than the chain's Uniswap v3 factory means the address is not a pool.
+ * call, a factory() other than the chain's Uniswap v3 factory, or an address that is not the
+ * factory's CREATE2 address for the reported (token0, token1, fee) means the address is not a pool.
+ * Immutables are cached only after these checks pass.
  */
 async function readPoolCore(
   ctx: AppContext,
@@ -131,6 +169,7 @@ async function readPoolCore(
   const dynamics = parseDynamics(results[0], results[1]);
   const immutables = cached ?? parseImmutables(chain, results.slice(2));
   if (!dynamics || !immutables) throw notAPool(chain, pool);
+  if (!cached && !isCanonicalPool(chain, pool, immutables)) throw notAPool(chain, pool);
   if (!cached) ctx.cache.set(immutablesKey(chain, pool), immutables, 'forever');
   return { ...immutables, ...dynamics };
 }

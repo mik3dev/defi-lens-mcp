@@ -2,7 +2,12 @@ import type { Address } from 'viem';
 import { afterEach, describe, expect, it } from 'vitest';
 import { type AppContext, requestScope } from '../../../../src/context.js';
 import type { PinnedBlock } from '../../../../src/lib/blocks.js';
-import { readPoolState, resolvePool } from '../../../../src/protocols/uniswap/pool.js';
+import { UNISWAP_V3 } from '../../../../src/protocols/uniswap/addresses.js';
+import {
+  computePoolAddress,
+  readPoolState,
+  resolvePool,
+} from '../../../../src/protocols/uniswap/pool.js';
 import { testContext } from '../../../helpers/context.js';
 import { type FakeChain, type FakeContract, startFakeChain } from '../../../helpers/fake-chain.js';
 import {
@@ -80,6 +85,23 @@ describe('readPoolState', () => {
     });
   });
 
+  it('rejects a contract reporting the real factory at a non-CREATE2 address and does not cache it', async () => {
+    const ctx = await setup({ [OTHER]: fakePool(), ...fakeTokens(1n, 2n) });
+    for (const _attempt of [1, 2]) {
+      await expect(readPoolState(ctx, 'ethereum', OTHER, BLOCK)).rejects.toMatchObject({
+        code: 'INVALID_INPUT',
+        message: expect.stringContaining('not a Uniswap v3 pool'),
+      });
+    }
+  });
+
+  it('rejects a real pool address whose reported immutables do not derive it', async () => {
+    const ctx = await setup({ [POOL]: fakePool({ fee: 3000 }), ...fakeTokens(1n, 2n) });
+    await expect(readPoolState(ctx, 'ethereum', POOL, BLOCK)).rejects.toMatchObject({
+      code: 'INVALID_INPUT',
+    });
+  });
+
   it('rejects an ERC-20 token address as INVALID_INPUT', async () => {
     const ctx = await setup(fakeTokens(1n, 2n));
     await expect(readPoolState(ctx, 'ethereum', WETH, BLOCK)).rejects.toMatchObject({
@@ -95,8 +117,9 @@ describe('readPoolState', () => {
   });
 
   it('fails with NOT_FOUND when a pool token is not a readable ERC-20', async () => {
-    const ctx = await setup({ [POOL]: fakePool({ token1: NO_CODE }), ...fakeTokens(1n, 2n) });
-    await expect(readPoolState(ctx, 'ethereum', POOL, BLOCK)).rejects.toMatchObject({
+    const pool = computePoolAddress('ethereum', USDC, NO_CODE, 500); // passes the CREATE2 check
+    const ctx = await setup({ [pool]: fakePool({ token1: NO_CODE }), ...fakeTokens(1n, 2n) });
+    await expect(readPoolState(ctx, 'ethereum', pool, BLOCK)).rejects.toMatchObject({
       code: 'NOT_FOUND',
     });
   });
@@ -110,6 +133,19 @@ describe('readPoolState', () => {
     await expect(readPoolState(ctx, 'ethereum', POOL, BLOCK)).rejects.toMatchObject({
       code: 'UPSTREAM_ERROR',
     });
+  });
+});
+
+describe('computePoolAddress', () => {
+  it('derives the mainnet USDC/WETH 0.05% pool by CREATE2', () => {
+    expect(computePoolAddress('ethereum', USDC, WETH, 500)).toBe(POOL);
+  });
+
+  it('uses the same init code hash on every supported chain', () => {
+    const hashes = new Set(Object.values(UNISWAP_V3).map((d) => d.poolInitCodeHash));
+    expect(hashes).toEqual(
+      new Set(['0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54']),
+    );
   });
 });
 
