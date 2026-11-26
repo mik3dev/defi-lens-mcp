@@ -53,7 +53,8 @@ export function formatRatio(
   return negative ? `-${body}` : body;
 }
 
+/** USD value of `raw`; null without a price or with a price that is NaN, negative or non-finite. */
 export function usdValue(raw: bigint, decimals: number, price: number | null): number | null {
-  if (price === null) return null;
+  if (price === null || !Number.isFinite(price) || price < 0) return null;
   return Number(toAmount(raw, decimals).formatted) * price;
 }
