@@ -6,6 +6,7 @@ import type { PinnedBlock } from '../../../../src/lib/blocks.js';
 import { readBalances, readTokens } from '../../../../src/protocols/erc20/tokens.js';
 import { testContext } from '../../../helpers/context.js';
 import { type FakeChain, startFakeChain } from '../../../helpers/fake-chain.js';
+import { type Endpoint, startRpcServer } from '../../../helpers/rpc-server.js';
 
 const BLOCK: PinnedBlock = { number: 50_000_000n, timestamp: 1_700_000_000n };
 const WETH: Address = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
@@ -17,10 +18,23 @@ const EVIL: Address = '0x2222222222222222222222222222222222222222';
 const OWNER: Address = '0x3333333333333333333333333333333333333333';
 
 let chain: FakeChain | undefined;
+let failing: Endpoint | undefined;
 afterEach(async () => {
   await chain?.stop();
+  await failing?.stop();
   chain = undefined;
+  failing = undefined;
 });
+
+/** A chain whose every eth_call fails with a non-retryable JSON-RPC error; counts the requests. */
+async function failingChain(): Promise<{ url: string; calls: () => number }> {
+  let calls = 0;
+  failing = await startRpcServer(() => {
+    calls += 1;
+    return { error: { code: -32602, message: 'fake: invalid params' } };
+  });
+  return { url: failing.rpcUrl, calls: () => calls };
+}
 
 async function setup() {
   chain = await startFakeChain({
@@ -103,6 +117,48 @@ describe('readTokens', () => {
     expect(requests).toBeGreaterThan(0);
     const [, again] = await counted(() => readTokens(ctx, 'ethereum', [MKR, WETH], BLOCK));
     expect(again).toBe(0);
+  });
+});
+
+describe('readTokens concurrency', () => {
+  it('shares one in-flight read between concurrent calls for the same token', async () => {
+    const ctx = await setup();
+    const [a, b] = await Promise.all([
+      readTokens(ctx, 'ethereum', [WETH], BLOCK),
+      readTokens(ctx, 'ethereum', [WETH.toLowerCase() as Address], BLOCK),
+    ]);
+    expect(chain?.callBlocks).toHaveLength(1);
+    expect(a.get(WETH)).toEqual({ address: WETH, symbol: 'WETH', decimals: 18 });
+    expect(b.get(WETH.toLowerCase() as Address)).toEqual(a.get(WETH));
+  });
+
+  it('only fetches the tokens not already in flight', async () => {
+    const ctx = await setup();
+    const [a, b] = await Promise.all([
+      readTokens(ctx, 'ethereum', [WETH], BLOCK),
+      readTokens(ctx, 'ethereum', [WETH, NOSYM], BLOCK),
+    ]);
+    expect(a.get(WETH)?.symbol).toBe('WETH');
+    expect(b.get(WETH)?.symbol).toBe('WETH');
+    expect(b.get(NOSYM)).toBeNull();
+    const reads = (t: Address) => chain?.callTargets.filter((c) => c === t).length;
+    expect(reads(WETH)).toBe(2); // symbol + decimals, once
+    expect(reads(NOSYM)).toBe(3); // symbol + decimals + bytes32 symbol retry
+  });
+
+  it('shares a failed read with concurrent callers but does not keep it', async () => {
+    const { url, calls } = await failingChain();
+    const ctx = testContext({ ethereum: url });
+    const [a, b] = await Promise.all([
+      readTokens(ctx, 'ethereum', [WETH], BLOCK),
+      readTokens(ctx, 'ethereum', [WETH], BLOCK),
+    ]);
+    expect(a.get(WETH)).toBeNull();
+    expect(b.get(WETH)).toBeNull();
+    expect(calls()).toBe(1);
+    const again = await readTokens(ctx, 'ethereum', [WETH], BLOCK);
+    expect(again.get(WETH)).toBeNull();
+    expect(calls()).toBe(2);
   });
 });
 

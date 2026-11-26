@@ -10,6 +10,7 @@ import {
 import { CHAINS, type ChainId, getClient, NATIVE_ADDRESS } from '../../chains.js';
 import type { AppContext } from '../../context.js';
 import type { PinnedBlock } from '../../lib/blocks.js';
+import type { TtlCache } from '../../lib/cache.js';
 import { isBigint, isNumber, isString, type Outcome, success } from '../../lib/multicall.js';
 import { sanitizeSymbol } from '../../lib/sanitize.js';
 import { erc20Abi, erc20Bytes32Abi, multicall3EthBalanceAbi } from './abi.js';
@@ -100,10 +101,49 @@ function uniqueByAddress(addresses: Address[]): Address[] {
   return [...new Map(addresses.map((a) => [lower(a), a])).values()];
 }
 
+type Pending = Map<string, Promise<TokenInfo | null>>;
+
+/** In-flight metadata reads per cache (one cache per server context), keyed like the cache. */
+const inflight = new WeakMap<TtlCache, Pending>();
+
+function pendingOf(ctx: AppContext): Pending {
+  const existing = inflight.get(ctx.cache);
+  if (existing) return existing;
+  const created: Pending = new Map();
+  inflight.set(ctx.cache, created);
+  return created;
+}
+
+/** Starts one multicall for `addresses` and registers a per-token promise until it settles. */
+function startFetch(
+  ctx: AppContext,
+  chain: ChainId,
+  addresses: Address[],
+  block: PinnedBlock,
+  pending: Pending,
+): void {
+  const batch = fetchTokens(ctx, chain, addresses, block).then((fetched) => {
+    for (const info of fetched.values()) {
+      if (info) ctx.cache.set(tokenKey(chain, info.address), info, 'forever');
+    }
+    return fetched;
+  });
+  for (const address of addresses) {
+    const key = tokenKey(chain, address);
+    const promise: Promise<TokenInfo | null> = batch
+      .then((fetched) => fetched.get(lower(address)) ?? null)
+      .finally(() => {
+        if (pending.get(key) === promise) pending.delete(key);
+      });
+    pending.set(key, promise);
+  }
+}
+
 /**
  * Token metadata at `block`. null = not a readable ERC-20 (no code, reverts, or no symbol/decimals).
  * NATIVE_ADDRESS resolves to the native descriptor without an RPC call. Readable tokens are cached
- * forever under `token:<chain>:<address>`; nulls are not cached. Keys are the given addresses.
+ * forever under `token:<chain>:<address>`; nulls are not cached. Concurrent calls share the
+ * in-flight read of a token; it is dropped once settled. Keys are the given addresses.
  */
 export async function readTokens(
   ctx: AppContext,
@@ -114,11 +154,11 @@ export async function readTokens(
   const known = (a: Address): TokenInfo | undefined =>
     isNative(a) ? nativeToken(chain) : ctx.cache.get<TokenInfo>(tokenKey(chain, a));
   const misses = uniqueByAddress(addresses.filter((a) => known(a) === undefined));
-  const fetched =
-    misses.length > 0 ? await fetchTokens(ctx, chain, misses, block) : new Map<string, null>();
-  for (const info of fetched.values()) {
-    if (info) ctx.cache.set(tokenKey(chain, info.address), info, 'forever');
-  }
+  const pending = pendingOf(ctx);
+  const fresh = misses.filter((a) => !pending.has(tokenKey(chain, a)));
+  if (fresh.length > 0) startFetch(ctx, chain, fresh, block, pending);
+  const reads = misses.map(async (a) => [lower(a), await pending.get(tokenKey(chain, a))] as const);
+  const fetched = new Map(await Promise.all(reads));
   return new Map(addresses.map((a) => [a, known(a) ?? fetched.get(lower(a)) ?? null]));
 }
 

@@ -26,6 +26,8 @@ export interface FakeContract {
 export interface FakeChain extends Endpoint {
   /** Block number of every eth_call received, in order. */
   callBlocks: bigint[];
+  /** Target of every call inside the received multicalls, in order. */
+  callTargets: Address[];
 }
 
 const MULTICALL3: Address = '0xcA11bde05977b3631167028862bE2a173976CA11';
@@ -85,10 +87,14 @@ export async function startFakeChain(opts: {
   blockNumber: bigint;
   contracts: Record<Address, FakeContract>;
   ethBalances?: Record<Address, bigint>;
+  /** Behaviour of every address absent from `contracts` (default: no code). */
+  fallback?: FakeContract;
 }): Promise<FakeChain> {
   const callBlocks: bigint[] = [];
+  const callTargets: Address[] = [];
   const inner = (target: Address, callData: Hex): CallResult => {
-    const contract = lookup(opts.contracts, target);
+    callTargets.push(target);
+    const contract = lookup(opts.contracts, target) ?? opts.fallback;
     const raw = contract?.raw?.[callData.slice(0, 10).toLowerCase() as Hex];
     if (raw !== undefined) return { success: true, returnData: raw };
     const decoded = decodeInner(callData);
@@ -119,5 +125,5 @@ export async function startFakeChain(opts: {
       }),
     };
   });
-  return { ...server, callBlocks };
+  return { ...server, callBlocks, callTargets };
 }
