@@ -12,7 +12,7 @@ import type { AppContext } from '../../context.js';
 import type { PinnedBlock } from '../../lib/blocks.js';
 import type { TtlCache } from '../../lib/cache.js';
 import { isBigint, isNumber, isString, type Outcome, success } from '../../lib/multicall.js';
-import { sanitizeSymbol } from '../../lib/sanitize.js';
+import { FALLBACK_SYMBOL, sanitizeSymbol } from '../../lib/sanitize.js';
 import { erc20Abi, erc20Bytes32Abi, multicall3EthBalanceAbi } from './abi.js';
 
 export interface TokenInfo {
@@ -22,7 +22,6 @@ export interface TokenInfo {
 }
 
 const NATIVE_DECIMALS = 18;
-const PLACEHOLDER_SYMBOL = 'UNKNOWN';
 
 const isNative = (address: Address): boolean => isAddressEqual(address, NATIVE_ADDRESS);
 const lower = (address: Address): string => address.toLowerCase();
@@ -85,7 +84,7 @@ async function fetchTokens(
   return new Map(
     reads.map((r) => {
       // EIP-20 makes symbol() optional: a token with decimals() but no symbol stays readable.
-      const symbol = r.symbol ?? bytes32.get(lower(r.address)) ?? PLACEHOLDER_SYMBOL;
+      const symbol = r.symbol ?? bytes32.get(lower(r.address)) ?? FALLBACK_SYMBOL;
       const info =
         r.decimals === undefined
           ? null

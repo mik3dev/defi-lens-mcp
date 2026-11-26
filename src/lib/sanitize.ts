@@ -1,5 +1,6 @@
 const MAX_SYMBOL_LENGTH = 32;
-const FALLBACK_SYMBOL = 'UNKNOWN';
+/** Symbol used when a token has none, or none survives sanitizing. */
+export const FALLBACK_SYMBOL = 'UNKNOWN';
 // Control/format/unassigned/surrogate characters plus the line and paragraph separators.
 const UNSAFE = /[\p{C}\p{Zl}\p{Zp}]/gu;
 
