@@ -9,6 +9,7 @@ import {
   encodeAbiParameters,
   getAddress,
   type Hex,
+  isAddressEqual,
   type PublicClient,
 } from 'viem';
 import { mainnet } from 'viem/chains';
@@ -88,6 +89,13 @@ const UNHELD_FEED_TOKENS: Record<Address, FakeContract> = Object.fromEntries(
     .map((t) => [t, erc20('FEED', 18, 0n)]),
 );
 const FEED_TOKEN_COUNT = Object.keys(UNHELD_FEED_TOKENS).length;
+/** symbol(), decimals() and balanceOf() per readable token with a string symbol. */
+const READS_PER_TOKEN = 3;
+const FEED_PROXIES = new Set(Object.values(FEEDS.ethereum).map((c) => c.feed.toLowerCase()));
+
+/** A multicall target that is a token, not Multicall3 itself (native balance) or a price feed. */
+const isTokenTarget = (target: Address): boolean =>
+  !isAddressEqual(target, MULTICALL3) && !FEED_PROXIES.has(target.toLowerCase());
 
 /** ETH at 2000 USD (stale), USDC at 1 USD; AAA, ZZZ unpriced; EMPTY holds nothing. */
 const WALLET: Record<Address, FakeContract> = {
@@ -360,7 +368,9 @@ describe('getTokenBalances', () => {
     expect(out.warnings).toContain('Showing 50 of 401 tokens.');
   });
 
-  it('caps a wallet with thousands of discovered tokens', async () => {
+  // Counts every token read, not distinct targets: each of the 400 capped candidates plus each feed
+  // token costs symbol(), decimals() and balanceOf(), so at most (400 + feed tokens) x 3 reads.
+  it('caps a wallet with thousands of discovered tokens at 3 reads per scanned token', async () => {
     const indexer = fakeIndexer(5_000);
     const ctx = withIndexer(
       await fakeContext(UNHELD_FEED_TOKENS, erc20('SPAM', 18, 1n)),
@@ -371,8 +381,9 @@ describe('getTokenBalances', () => {
     expect(out.data.balances[0]?.token.address).toBe(NATIVE_ADDRESS);
     expect(out.warnings).toContain('Showing 50 of 400 tokens.');
     expect(out.warnings).toContain('More tokens exist than were scanned.');
-    const tokenReads = new Set(chain?.callTargets.filter((t) => t.toLowerCase().startsWith('0xa')));
-    expect(tokenReads.size).toBeLessThanOrEqual(400 + FEED_TOKEN_COUNT);
+    const tokenReads = (chain?.callTargets ?? []).filter(isTokenTarget).length;
+    expect(tokenReads).toBeGreaterThan(0);
+    expect(tokenReads).toBeLessThanOrEqual((400 + FEED_TOKEN_COUNT) * READS_PER_TOKEN);
   });
 
   it('fails when the native balance cannot be read', async () => {
