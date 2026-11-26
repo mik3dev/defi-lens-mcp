@@ -19,6 +19,8 @@ export interface FakeContract {
   decimals?: number;
   balances?: Record<Address, bigint>;
   revert?: boolean;
+  /** Return data by 4-byte selector, answered for any arguments; takes precedence over the fields above. */
+  raw?: Record<Hex, Hex>;
 }
 
 export interface FakeChain extends Endpoint {
@@ -64,6 +66,17 @@ function answer(c: FakeContract, name: string, args: readonly unknown[]): CallRe
   return REVERT;
 }
 
+function decodeInner(
+  callData: Hex,
+): { functionName: string; args: readonly unknown[] } | undefined {
+  try {
+    const { functionName, args = [] } = decodeFunctionData({ abi: innerAbi, data: callData });
+    return { functionName, args };
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * In-process JSON-RPC chain for unit tests: answers eth_getBlockByNumber and Multicall3 aggregate3
  * eth_calls from a table of fake contracts, so multicall decoding paths run without a network.
@@ -75,14 +88,17 @@ export async function startFakeChain(opts: {
 }): Promise<FakeChain> {
   const callBlocks: bigint[] = [];
   const inner = (target: Address, callData: Hex): CallResult => {
-    const { functionName, args = [] } = decodeFunctionData({ abi: innerAbi, data: callData });
-    if (functionName === 'getEthBalance' && isAddressEqual(target, MULTICALL3)) {
-      const balance = lookup(opts.ethBalances ?? {}, args[0] as Address) ?? 0n;
+    const contract = lookup(opts.contracts, target);
+    const raw = contract?.raw?.[callData.slice(0, 10).toLowerCase() as Hex];
+    if (raw !== undefined) return { success: true, returnData: raw };
+    const decoded = decodeInner(callData);
+    if (decoded?.functionName === 'getEthBalance' && isAddressEqual(target, MULTICALL3)) {
+      const balance = lookup(opts.ethBalances ?? {}, decoded.args[0] as Address) ?? 0n;
       return { success: true, returnData: encodeAbiParameters([{ type: 'uint256' }], [balance]) };
     }
-    const contract = lookup(opts.contracts, target);
     if (!contract) return { success: true, returnData: '0x' }; // no code: empty success
-    return contract.revert ? REVERT : answer(contract, functionName, args);
+    if (contract.revert || !decoded) return REVERT; // unknown selector reverts
+    return answer(contract, decoded.functionName, decoded.args);
   };
   const server = await startRpcServer(({ method, params }) => {
     const p = (params ?? []) as unknown[];
