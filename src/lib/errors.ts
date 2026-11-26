@@ -29,8 +29,9 @@ export class AppError extends Error {
 
 const INTERNAL_MESSAGE = 'Internal error';
 
+// No status means no HTTP response arrived (DNS failure, connection refused or reset, fetch failed): transient.
 function isRetryableHttp(status: number | undefined): boolean {
-  return status !== undefined && (status === 429 || status >= 500);
+  return status === undefined || status === 429 || status >= 500;
 }
 
 const MAX_UPSTREAM_MESSAGE = 200;

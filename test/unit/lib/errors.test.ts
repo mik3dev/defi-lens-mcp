@@ -49,6 +49,18 @@ describe('toAppError', () => {
       retryable: true,
     });
   });
+  it('maps an unreachable upstream (no HTTP status) as retryable', () => {
+    const cause = new TypeError('fetch failed');
+    expect(toAppError(new HttpRequestError({ url, cause }))).toMatchObject({
+      code: 'UPSTREAM_ERROR',
+      retryable: true,
+    });
+  });
+  it('maps a nested no-status HTTP error as retryable', () => {
+    const inner = new HttpRequestError({ url, cause: new Error('ECONNRESET') });
+    const wrapped = new BaseError('wrapper', { cause: inner });
+    expect(toAppError(wrapped)).toMatchObject({ code: 'UPSTREAM_ERROR', retryable: true });
+  });
   it('maps HTTP 4xx other than 429 as non-retryable', () => {
     expect(toAppError(new HttpRequestError({ url, status: 400 }))).toMatchObject({
       code: 'UPSTREAM_ERROR',
