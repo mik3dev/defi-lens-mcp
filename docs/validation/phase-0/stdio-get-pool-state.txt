@@ -1,0 +1,52 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_pool_state --tool-arg chain=ethereum --tool-arg pool=0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640
+# env: as above
+Warning: 3 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26501070\",\"blockTimestamp\":\"2026-11-26T18:09:47.000Z\",\"data\":{\"pool\":\"0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640\",\"token0\":{\"address\":\"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\"symbol\":\"USDC\",\"decimals\":6},\"token1\":{\"address\":\"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\"symbol\":\"WETH\",\"decimals\":18},\"feeTier\":500,\"tickSpacing\":10,\"sqrtPriceX96\":\"1925937642337958709456677663946404\",\"tick\":201981,\"liquidity\":\"1164719371462470649\",\"price0In1\":\"0.000590915355292\",\"price1In0\":\"1692.28975189\",\"reserves\":{\"amount0\":{\"raw\":\"12461458939391\",\"formatted\":\"12461458.939391\",\"decimals\":6},\"amount1\":{\"raw\":\"33391115737805674881013\",\"formatted\":\"33391.115737805674881013\",\"decimals\":18},\"usd0\":null,\"usd1\":null},\"tvlUsd\":null},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "ethereum",
+    "blockNumber": "26501070",
+    "blockTimestamp": "2026-11-26T18:09:47.000Z",
+    "data": {
+      "pool": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+      "token0": {
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "symbol": "USDC",
+        "decimals": 6
+      },
+      "token1": {
+        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "symbol": "WETH",
+        "decimals": 18
+      },
+      "feeTier": 500,
+      "tickSpacing": 10,
+      "sqrtPriceX96": "1925937642337958709456677663946404",
+      "tick": 201981,
+      "liquidity": "1164719371462470649",
+      "price0In1": "0.000590915355292",
+      "price1In0": "1692.28975189",
+      "reserves": {
+        "amount0": {
+          "raw": "12461458939391",
+          "formatted": "12461458.939391",
+          "decimals": 6
+        },
+        "amount1": {
+          "raw": "33391115737805674881013",
+          "formatted": "33391.115737805674881013",
+          "decimals": 18
+        },
+        "usd0": null,
+        "usd1": null
+      },
+      "tvlUsd": null
+    },
+    "warnings": []
+  }
+}

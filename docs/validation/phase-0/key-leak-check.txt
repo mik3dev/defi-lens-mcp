@@ -1,0 +1,14 @@
+# Check 5: key must not leak through a failing RPC
+# Server: TRANSPORT=stdio LOG_LEVEL=debug RPC_URL_ETHEREUM=https://nonexistent.invalid/v2/FAKEKEY123456789 node dist/index.js (no other RPC variables)
+# Client: raw JSON-RPC lines on stdin: initialize, notifications/initialized, tools/call get_pool_state {chain: ethereum, pool: 0x88e6...5640}
+
+## stdout (protocol frames)
+{"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"<REDACTED>","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
+{"result":{"content":[{"type":"text","text":"{\"code\":\"UPSTREAM_ERROR\",\"message\":\"HTTP request failed.\",\"retryable\":false}"}],"isError":true},"jsonrpc":"2.0","id":2}
+
+## stderr (logs)
+{"tool":"get_pool_state","chain":"ethereum","durationMs":"589","upstreamRequests":"3","outcome":"UPSTREAM_ERROR","error":"HTTP request failed.\n\nURL: [REDACTED]\nRequest body: {\"method\":\"eth_getBlockByNumber\",\"params\":[\"latest\",false]}\n\nDetails: fetch failed\nVersion: viem@2.58.6","level":"warn","msg":"tool call","time":"2026-11-26T18:10:50.803Z"}
+
+## Scan
+occurrences of FAKEKEY123456789 in stdout: 0
+occurrences of FAKEKEY123456789 in stderr: 0

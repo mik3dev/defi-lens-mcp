@@ -1,0 +1,72 @@
+$ npx -y @modelcontextprotocol/inspector --cli http://127.0.0.1:3917/mcp --transport http --method tools/list   (no Authorization header)
+Failed to connect to MCP server: Streamable HTTP error: Error POSTing to endpoint: {"error":"unauthorized"}
+Failed with exit code: 1
+
+$ ... --method tools/list --header "Authorization: Bearer <TOKEN>"
+{
+  "tools": [
+    {
+      "name": "get_pool_state",
+      "title": "Uniswap v3 pool state",
+      "description": "Current state of a Uniswap v3 pool (Uniswap v3 only) at the latest block: tokens, fee tier, tick spacing, sqrtPriceX96, tick, active liquidity, the token balances held by the pool and its spot price in both directions (price0In1 = token1 per token0). The price is the pool's own spot price, not a market-wide or USD price. Identify the pool either by `pool`, or by `tokenA` + `tokenB` + `feeTier` (in either token order).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "chain": {
+            "type": "string",
+            "enum": [
+              "ethereum",
+              "base",
+  [... remainder identical to stdio-tools-list.txt ...]
+
+$ ... --method tools/call --tool-name get_pool_state --tool-arg chain=ethereum --tool-arg pool=0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 --header "Authorization: Bearer <TOKEN>"
+Warning: 3 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26501074\",\"blockTimestamp\":\"2026-11-26T18:10:35.000Z\",\"data\":{\"pool\":\"0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640\",\"token0\":{\"address\":\"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\"symbol\":\"USDC\",\"decimals\":6},\"token1\":{\"address\":\"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\"symbol\":\"WETH\",\"decimals\":18},\"feeTier\":500,\"tickSpacing\":10,\"sqrtPriceX96\":\"1925554036220995763418837320538139\",\"tick\":201977,\"liquidity\":\"1165106238566046386\",\"price0In1\":\"0.000590679983009\",\"price1In0\":\"1692.96409014\",\"reserves\":{\"amount0\":{\"raw\":\"12471018735321\",\"formatted\":\"12471018.735321\",\"decimals\":6},\"amount1\":{\"raw\":\"33385480239240744786534\",\"formatted\":\"33385.480239240744786534\",\"decimals\":18},\"usd0\":null,\"usd1\":null},\"tvlUsd\":null},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "ethereum",
+    "blockNumber": "26501074",
+    "blockTimestamp": "2026-11-26T18:10:35.000Z",
+    "data": {
+      "pool": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+      "token0": {
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "symbol": "USDC",
+        "decimals": 6
+      },
+      "token1": {
+        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "symbol": "WETH",
+        "decimals": 18
+      },
+      "feeTier": 500,
+      "tickSpacing": 10,
+      "sqrtPriceX96": "1925554036220995763418837320538139",
+      "tick": 201977,
+      "liquidity": "1165106238566046386",
+      "price0In1": "0.000590679983009",
+      "price1In0": "1692.96409014",
+      "reserves": {
+        "amount0": {
+          "raw": "12471018735321",
+          "formatted": "12471018.735321",
+          "decimals": 6
+        },
+        "amount1": {
+          "raw": "33385480239240744786534",
+          "formatted": "33385.480239240744786534",
+          "decimals": 18
+        },
+        "usd0": null,
+        "usd1": null
+      },
+      "tvlUsd": null
+    },
+    "warnings": []
+  }
+}
