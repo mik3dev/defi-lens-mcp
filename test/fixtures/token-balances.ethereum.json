@@ -1,0 +1,88 @@
+{
+  "block": "26499763",
+  "blockTimestamp": "1795700795",
+  "owner": "0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489",
+  "rows": [
+    {
+      "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "symbol": "ETH",
+      "decimals": 18,
+      "raw": "1220494875405186557374578",
+      "formatted": "1220494.875405186557374578",
+      "feed": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+      "answer": "170208549492",
+      "feedDecimals": 8,
+      "price": "1702.08549492"
+    },
+    {
+      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "symbol": "WETH",
+      "decimals": 18,
+      "raw": "2831784950932847",
+      "formatted": "0.002831784950932847",
+      "feed": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+      "answer": "170208549492",
+      "feedDecimals": 8,
+      "price": "1702.08549492"
+    },
+    {
+      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "symbol": "USDC",
+      "decimals": 6,
+      "raw": "10005273",
+      "formatted": "10.005273",
+      "feed": "0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6",
+      "answer": "99987004",
+      "feedDecimals": 8,
+      "price": "0.99987004"
+    },
+    {
+      "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+      "symbol": "USDT",
+      "decimals": 6,
+      "raw": "10000000",
+      "formatted": "10",
+      "feed": "0x3E7d1eAB13ad0104d2750B8863b489D65364e32D",
+      "answer": "99855878",
+      "feedDecimals": 8,
+      "price": "0.99855878"
+    },
+    {
+      "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+      "symbol": "LINK",
+      "decimals": 18,
+      "raw": "8412221515202863353762730",
+      "formatted": "8412221.515202863353762730",
+      "feed": "0x2c1d072e956AFFC0D435Cb7AC38EF18d24d9127c",
+      "answer": "924515104",
+      "feedDecimals": 8,
+      "price": "9.24515104"
+    }
+  ],
+  "note": "Run against a local anvil fork at the pinned block started by the test harness (test/helpers/chain-endpoint.ts, CHAIN_MODE=fork); LOCAL_FORK_URL is that local http://127.0.0.1 endpoint, never the provider URL.",
+  "commands": [
+    "cast balance 0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489 --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \"balanceOf(address)(uint256)\" 0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489 --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \"symbol()(string)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 \"balanceOf(address)(uint256)\" 0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489 --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 \"symbol()(string)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xdAC17F958D2ee523a2206206994597C13D831ec7 \"balanceOf(address)(uint256)\" 0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489 --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xdAC17F958D2ee523a2206206994597C13D831ec7 \"symbol()(string)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0xdAC17F958D2ee523a2206206994597C13D831ec7 \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x514910771AF9Ca656af840dff83E8264EcF986CA \"balanceOf(address)(uint256)\" 0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489 --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x514910771AF9Ca656af840dff83E8264EcF986CA \"symbol()(string)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x514910771AF9Ca656af840dff83E8264EcF986CA \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419 \"latestRoundData()(uint80,int256,uint256,uint256,uint80)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419 \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6 \"latestRoundData()(uint80,int256,uint256,uint256,uint80)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x8fFfFfd4AfB6115b954Bd326cbe7B4BA576818f6 \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x3E7d1eAB13ad0104d2750B8863b489D65364e32D \"latestRoundData()(uint80,int256,uint256,uint256,uint80)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x3E7d1eAB13ad0104d2750B8863b489D65364e32D \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x2c1d072e956AFFC0D435Cb7AC38EF18d24d9127c \"latestRoundData()(uint80,int256,uint256,uint256,uint80)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x2c1d072e956AFFC0D435Cb7AC38EF18d24d9127c \"decimals()(uint8)\" --block 26499763 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast format-units <raw> <decimals>",
+    "cast block 26499763 --field timestamp --rpc-url \"$LOCAL_FORK_URL\""
+  ]
+}

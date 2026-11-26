@@ -1,0 +1,25 @@
+{
+  "block": "527782324",
+  "owner": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+  "rows": [
+    {
+      "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "symbol": "ETH",
+      "decimals": 18,
+      "raw": "122765356908017269374019"
+    },
+    {
+      "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      "symbol": "WETH",
+      "decimals": 18,
+      "raw": "30508499318077997970"
+    }
+  ],
+  "note": "Run against a local anvil fork at the pinned block started by the test harness (test/helpers/chain-endpoint.ts, CHAIN_MODE=fork); LOCAL_FORK_URL is that local http://127.0.0.1 endpoint, never the provider URL.",
+  "commands": [
+    "cast balance 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1 --block 527782324 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1 \"balanceOf(address)(uint256)\" 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1 --block 527782324 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1 \"symbol()(string)\" --block 527782324 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x82aF49447D8a07e3bd95BD0d56f35241523fBab1 \"decimals()(uint8)\" --block 527782324 --rpc-url \"$LOCAL_FORK_URL\""
+  ]
+}

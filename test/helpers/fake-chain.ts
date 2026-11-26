@@ -85,6 +85,8 @@ function decodeInner(
  */
 export async function startFakeChain(opts: {
   blockNumber: bigint;
+  /** Timestamp of the latest block (default 1). */
+  timestamp?: bigint;
   contracts: Record<Address, FakeContract>;
   ethBalances?: Record<Address, bigint>;
   /** Behaviour of every address absent from `contracts` (default: no code). */
@@ -109,7 +111,8 @@ export async function startFakeChain(opts: {
   const server = await startRpcServer(({ method, params }) => {
     const p = (params ?? []) as unknown[];
     if (method === 'eth_getBlockByNumber') {
-      return { result: { number: `0x${opts.blockNumber.toString(16)}`, timestamp: '0x1' } };
+      const timestamp = `0x${(opts.timestamp ?? 1n).toString(16)}`;
+      return { result: { number: `0x${opts.blockNumber.toString(16)}`, timestamp } };
     }
     if (method !== 'eth_call') return { error: { code: -32601, message: `fake: ${method}` } };
     const { data } = p[0] as { data: Hex };

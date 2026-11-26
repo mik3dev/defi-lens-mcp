@@ -66,7 +66,7 @@ describe('http protocol', () => {
     try {
       const { tools } = await client.listTools();
       const tool = tools.find((t) => t.name === 'get_pool_state');
-      expect(tools.map((t) => t.name)).toEqual(['get_pool_state']);
+      expect(tools.map((t) => t.name)).toEqual(['get_pool_state', 'get_token_balances']);
       expect(tool?.outputSchema).toBeDefined();
       expect(tool?.annotations?.readOnlyHint).toBe(true);
     } finally {

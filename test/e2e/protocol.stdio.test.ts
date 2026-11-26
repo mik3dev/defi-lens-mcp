@@ -30,7 +30,7 @@ describe('stdio protocol (offline)', { timeout: SPAWN_TEST_TIMEOUT_MS }, () => {
   it('lists get_pool_state with schemas and read-only annotation', async () => {
     const { tools } = await session.client.listTools();
     const tool = tools.find((t) => t.name === 'get_pool_state');
-    expect(tools.map((t) => t.name)).toEqual(['get_pool_state']);
+    expect(tools.map((t) => t.name)).toEqual(['get_pool_state', 'get_token_balances']);
     expect(tool?.description?.length).toBeGreaterThan(0);
     expect(tool?.inputSchema.type).toBe('object');
     expect(tool?.outputSchema).toBeDefined();
