@@ -1,3 +1,5 @@
+import { createServer, type Server } from 'node:http';
+import type { AddressInfo } from 'node:net';
 import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport, McpServer } from '@modelcontextprotocol/server';
 import {
@@ -327,6 +329,35 @@ describe('getTokenBalances', () => {
   });
 });
 
+/**
+ * A chain that serves the latest block but answers every eth_call with HTTP 503: an upstream
+ * outage in the middle of the multicall reads.
+ */
+async function outageChain(): Promise<{ url: string; stop: () => Promise<void> }> {
+  const server: Server = createServer((req, res) => {
+    let body = '';
+    req.on('data', (chunk: Buffer) => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      const { id, method } = JSON.parse(body) as { id: unknown; method: string };
+      if (method !== 'eth_getBlockByNumber') {
+        res.writeHead(503).end('unavailable');
+        return;
+      }
+      const result = { number: `0x${BLOCK_NUMBER.toString(16)}`, timestamp: '0x1' };
+      res.writeHead(200, { 'content-type': 'application/json' });
+      res.end(JSON.stringify({ jsonrpc: '2.0', id, result }));
+    });
+  });
+  await new Promise<void>((resolve) => server.listen(0, '127.0.0.1', resolve));
+  const { port } = server.address() as AddressInfo;
+  return {
+    url: `http://127.0.0.1:${port}`,
+    stop: () => new Promise((resolve) => server.close(() => resolve())),
+  };
+}
+
 describe('get_token_balances over MCP', () => {
   async function connect(ctx: AppContext): Promise<Client> {
     const server = new McpServer({ name: 'test', version: '0.0.0' });
@@ -363,6 +394,25 @@ describe('get_token_balances over MCP', () => {
       chain: 'ethereum',
       data: { discovery: 'explicit', totalUsd: 6005 },
     });
+  });
+
+  it('reports an upstream outage during the reads as an upstream error, not skipped tokens', async () => {
+    const outage = await outageChain();
+    try {
+      const c = await connect(testContext({ ethereum: outage.url }));
+      const result = await c.callTool({
+        name: 'get_token_balances',
+        arguments: { chain: 'ethereum', address: OWNER, tokens: [USDC, AAA] },
+      });
+      expect(result.isError).toBe(true);
+      const [first] = result.content as { type: string; text: string }[];
+      const payload = JSON.parse(first?.text ?? '{}') as { code: string; retryable: boolean };
+      expect(['UPSTREAM_ERROR', 'UPSTREAM_TIMEOUT']).toContain(payload.code);
+      expect(payload.retryable).toBe(true);
+      expect(first?.text).not.toContain('Skipped');
+    } finally {
+      await outage.stop();
+    }
   });
 
   it('returns a tool error for an unconfigured chain', async () => {

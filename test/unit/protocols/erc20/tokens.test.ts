@@ -149,15 +149,15 @@ describe('readTokens concurrency', () => {
   it('shares a failed read with concurrent callers but does not keep it', async () => {
     const { url, calls } = await failingChain();
     const ctx = testContext({ ethereum: url });
-    const [a, b] = await Promise.all([
+    const results = await Promise.allSettled([
       readTokens(ctx, 'ethereum', [WETH], BLOCK),
       readTokens(ctx, 'ethereum', [WETH], BLOCK),
     ]);
-    expect(a.get(WETH)).toBeNull();
-    expect(b.get(WETH)).toBeNull();
+    expect(results.map((r) => r.status)).toEqual(['rejected', 'rejected']);
     expect(calls()).toBe(1);
-    const again = await readTokens(ctx, 'ethereum', [WETH], BLOCK);
-    expect(again.get(WETH)).toBeNull();
+    await expect(readTokens(ctx, 'ethereum', [WETH], BLOCK)).rejects.toMatchObject({
+      code: 'UPSTREAM_ERROR',
+    });
     expect(calls()).toBe(2);
   });
 });
