@@ -1,11 +1,16 @@
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { CHAIN_IDS, type ChainId } from '../../src/chains.js';
+import { alchemyUrl, CHAIN_IDS, type ChainId } from '../../src/chains.js';
 import { loadConfig } from '../../src/config.js';
 import { PINNED } from '../fixtures/blocks.js';
 import { startAnvil } from './anvil.js';
 import { readRecording } from './rpc-recording.js';
-import { type Endpoint, startProxyServer, startReplayServer } from './rpc-server.js';
+import {
+  type Endpoint,
+  startProxyServer,
+  startReplayServer,
+  startRpcServer,
+} from './rpc-server.js';
 
 const ROOT = new URL('../../', import.meta.url);
 const ENV_FILE = fileURLToPath(new URL('.env', ROOT));
@@ -28,6 +33,70 @@ function upstreamFor(chain: ChainId): string | undefined {
     return loadConfig(process.env).rpcUrls[chain];
   } catch {
     return undefined;
+  }
+}
+
+/**
+ * Alchemy URL for `chain` from ALCHEMY_API_KEY (same derivation as src/context.ts), used for the
+ * indexer's `alchemy_*` methods, which anvil cannot serve. Never log or record the result.
+ */
+function indexerUpstreamFor(chain: ChainId): string | undefined {
+  try {
+    const key = loadConfig(process.env).alchemyApiKey;
+    return key ? alchemyUrl(chain, key) : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const INDEXER_METHOD_PREFIX = 'alchemy_';
+
+export const MISSING_INDEXER_KEY =
+  'Fork mode forwards alchemy_* methods to Alchemy: set ALCHEMY_API_KEY in .env';
+
+/**
+ * Stands in for the indexer upstream when no key is set: answers every request with
+ * MISSING_INDEXER_KEY over HTTP 503 (so the proxy records nothing) and makes stop() reject.
+ */
+async function startMissingIndexer(): Promise<Endpoint> {
+  let requested = false;
+  const server = await startRpcServer(
+    () => {
+      requested = true;
+      return { error: { code: -32000, message: MISSING_INDEXER_KEY } };
+    },
+    { status: 503 },
+  );
+  return {
+    rpcUrl: server.rpcUrl,
+    stop: async () => {
+      await server.stop();
+      if (requested) throw new Error(MISSING_INDEXER_KEY);
+    },
+  };
+}
+
+/**
+ * The recording proxy of a fork endpoint: `alchemy_*` methods go to `indexerUrl` (or fail with
+ * MISSING_INDEXER_KEY when it is undefined), everything else to `anvilUrl`. Both kinds of exchange
+ * are recorded to `recordTo` alike, keyed by method + canonical params.
+ */
+export async function startForkProxy(
+  anvilUrl: string,
+  indexerUrl: string | undefined,
+  recordTo?: string,
+): Promise<Endpoint> {
+  const missing = indexerUrl === undefined ? await startMissingIndexer() : undefined;
+  const indexer = missing?.rpcUrl ?? indexerUrl;
+  try {
+    const proxy = await startProxyServer(anvilUrl, {
+      recordTo,
+      routeMethod: (method) => (method.startsWith(INDEXER_METHOD_PREFIX) ? indexer : undefined),
+    });
+    return { rpcUrl: proxy.rpcUrl, stop: () => stopAll(missing ? [proxy, missing] : [proxy]) };
+  } catch (e) {
+    await missing?.stop();
+    throw e;
   }
 }
 
@@ -63,7 +132,7 @@ async function forkEndpoint(chain: ChainId, fixture: string): Promise<Endpoint> 
     const anvil = await startAnvil({ forkUrl: forwarder.rpcUrl, forkBlockNumber: block });
     stack.unshift(anvil);
     const recordTo = process.env.RECORD === '1' ? recordingPath(fixture) : undefined;
-    const proxy = await startProxyServer(anvil.rpcUrl, { recordTo });
+    const proxy = await startForkProxy(anvil.rpcUrl, indexerUpstreamFor(chain), recordTo);
     stack.unshift(proxy);
     return { rpcUrl: proxy.rpcUrl, stop: () => stopAll(stack) };
   } catch (e) {
@@ -81,7 +150,8 @@ async function stopAll(endpoints: Endpoint[]): Promise<void> {
 /**
  * Local JSON-RPC URL for chain tests. Replay mode (default): answers from
  * test/fixtures/rpc/<fixture>.json. Fork mode (CHAIN_MODE=fork): anvil forked at PINNED[chain]
- * behind a proxy that, with RECORD=1, rewrites that fixture on stop().
+ * behind a proxy that, with RECORD=1, rewrites that fixture on stop(). The same URL serves the
+ * indexer: in fork mode the proxy forwards `alchemy_*` methods to Alchemy (ALCHEMY_API_KEY).
  */
 export async function chainEndpoint(chain: ChainId, fixture: string): Promise<Endpoint> {
   if (isForkMode()) return forkEndpoint(chain, fixture);
