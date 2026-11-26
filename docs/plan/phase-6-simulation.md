@@ -4,7 +4,11 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 
 **Outcome:** `simulate_transaction` decodes an unsigned transaction, simulates it on the configured backend, and reports asset changes, transfers, approvals and risk flags. Validated by replaying real mined transactions.
 
-**Depends on:** phase 1 signed off. Spike answers Q1–Q5, Q7 and Q9. This file is revised with the spike's decisions before the phase starts (in particular: whether a `debug_traceCall` tier is added, and whether chain tests for `eth_simulateV1` run on anvil or are forwarded to the provider).
+**Depends on:** phase 1 signed off. Spike answers Q1–Q5, Q7 and Q9 are applied below; see [the spike report](../spikes/provider-capabilities.md), decisions 2–11. In short: the Alchemy free tier serves `eth_simulateV1` on all four chains, so `rpc` stays the default; **no `debug_traceCall` tier** (not on the free tier); chain tests for `eth_simulateV1` **run on the anvil harness** (anvil 1.5.0 serves it at and after the fork block).
+
+**Block semantics (all backends):** `SimTx.blockNumber = N` means "on top of block N", i.e. the state after N, as in `eth_simulateV1`. To replay a transaction mined in block B, simulate at `B − 1` (with the transaction first in its block). Providers number the simulated block differently (Alchemy N + 1, anvil N at its head), so `NormalizedSim.blockNumber` is always the N that was requested, never the provider's number.
+
+**Gas:** asset changes exclude the gas fee on both backends (viem runs with validation off; Tenderly gets `gas_price "0"`), so backends agree and diffs equal the transfers.
 
 **Branch:** `phase-6-simulation`
 
@@ -22,7 +26,7 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
   ```ts
   // types.ts
   export type AbiSource = 'builtin' | 'sourcify' | 'etherscan' | 'signature-db';
-  export interface SimTx { from: Address; to: Address; data: Hex; value: bigint; gas?: bigint; blockNumber?: bigint }
+  export interface SimTx { from: Address; to: Address; data: Hex; value: bigint; gas?: bigint; blockNumber?: bigint } // state after blockNumber
   export interface SimLog { address: Address; topics: Hex[]; data: Hex }
   export interface NormalizedSim {
     backend: 'rpc' | 'tenderly'; status: 'success' | 'reverted'; revertData: Hex | null;
@@ -106,11 +110,15 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 3. **Etherscan**, only when `ETHERSCAN_API_KEY` is set.
 4. **Signature database** lookup of the 4-byte selector → decoded from the text signature, argument names empty, `abiSource: 'signature-db'`.
 
-Endpoints and response shapes are those recorded in spike answer Q9.
+Endpoints and response shapes (spike answer Q9):
+- Sourcify v2: `GET https://sourcify.dev/server/v2/contract/{chainId}/{address}?fields=abi,proxyResolution` → 200 `{ abi, proxyResolution: { isProxy, proxyType, implementations: [{ address, name }] }, match: 'match' | 'exact_match', chainId, address, … }`; 404 `{ match: null, … }` when not verified.
+- Signature database: `GET https://api.4byte.sourcify.dev/signature-database/v1/lookup?function=<0xselector>&filter=true` → `{ ok: true, result: { function: { '<0xselector>': [{ name: 'transfer(address,uint256)', filtered, hasVerifiedContract }] }, event: {} } }`. Same shape as the legacy `api.openchain.xyz`. 4byte.directory is not used (it ranks junk collisions first).
+- Both hosts are Sourcify's, so the outbound host list of design §8 is unchanged.
 
 **Rules:**
 - Empty `data` or a `to` with no code → `null`, with no lookups.
-- Proxy handling, one level: when a resolved ABI does not contain the selector, read the EIP-1967 implementation slot (`0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc`) with `getStorageAt`; if it holds an address, resolve that address's ABI and decode with it.
+- Proxy handling, one level: when a resolved ABI does not contain the selector, take the implementation from Sourcify's `proxyResolution.implementations[0].address` when present (it covers EIP-1967, ZeppelinOS and other proxy kinds; USDC is a ZeppelinOS proxy whose implementation is **not** in the EIP-1967 slot). Otherwise read the EIP-1967 implementation slot (`0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc`) with `getStorageAt`. If either yields an address, resolve that address's ABI and decode with it.
+- A signature-database candidate is accepted only if decoding `data` with it and re-encoding gives the same bytes; with several candidates the first that round-trips wins; none → no decode from this source. Unknown selectors do return vanity collisions (`0xdeadbeef` → `CodeIsLawZ95677371()`).
 - A failing or slow ABI service is not an error: 5-second timeout each, fall through to the next source. All sources failing → `null`.
 - Cache: found ABIs `forever`, misses for 10 minutes.
 - `formatArg`: bigint → decimal string; address → checksummed; bytes → hex, cut to 66 characters followed by `…(<n> bytes)` when longer; string → sanitized, max 256 characters; arrays and tuples → JSON of formatted members. The serialized `args` of one call are capped at 4 KB; beyond that the remaining args are replaced by one entry `{ name: '…', type: 'truncated', value: '<n> more arguments' }`.
@@ -128,7 +136,9 @@ Endpoints and response shapes are those recorded in spike answer Q9.
   it('decodes with a Sourcify ABI', …);                                   // verified contract → abiSource 'sourcify', named args
   it('falls back to the signature database when no ABI is published', …); // abiSource 'signature-db'
   it('skips Etherscan without a key and uses it with one', …);
-  it('resolves through an EIP-1967 proxy', …);
+  it('resolves through an EIP-1967 proxy', …);                           // Sourcify 404 for the proxy → slot read
+  it('resolves a ZeppelinOS proxy through Sourcify proxyResolution', …);  // USDC on ethereum
+  it('rejects a signature candidate that does not round-trip', …);       // e.g. 0xdeadbeef → CodeIsLawZ95677371() with extra calldata
   it('returns null when every source fails or times out', …);             // fetch rejects / never resolves (fake timers)
   it('caches a found ABI', …);                                            // second call makes no HTTP request
   ```
@@ -147,10 +157,11 @@ Endpoints and response shapes are those recorded in spike answer Q9.
 
 **Interfaces:**
 - Consumes: `SimTx`, `NormalizedSim`, `SimulationBackend`, `getClient`, `toAppError`.
-- Produces: `createRpcBackend(ctx: AppContext): SimulationBackend`; `isSimulateUnsupported(e: unknown): boolean` (JSON-RPC code −32601, or the provider's error text recorded in spike Q1).
+- Produces: `createRpcBackend(ctx: AppContext): SimulationBackend`; `isSimulateUnsupported(e: unknown): boolean` — true for JSON-RPC code −32601, or code −32600 whose message (viem: `details` of the `InvalidRequestRpcError` / `RpcRequestError` chain, HTTP 400) matches `/Unsupported method|is not available on/i`. Alchemy's texts (spike Q1): `Unsupported method: <method> on ETH_MAINNET`, `<method> is not available on the Free tier - upgrade to Pay As You Go, or Enterprise for access.` It must be false for the `eth_getLogs` range error, which also uses −32600.
 
 **Behaviour:**
-- Primary path: viem `simulateCalls({ account: tx.from, calls: [{ to, data, value, gas }], blockNumber, traceAssetChanges: true, traceTransfers: true })`. Map `results[0]` status, gas and logs; native-transfer pseudo-logs (emitted from the `0xEeee…` address) become `nativeTransfers` and are removed from `logs`; `assetChanges` become `balanceDiffs`.
+- Primary path: viem `simulateCalls({ account: tx.from, calls: [{ to, data, value, gas }], blockNumber, traceAssetChanges: true, traceTransfers: true })`. `blockNumber` is always explicit: `tx.blockNumber`, or the pinned latest block when absent (saves viem's `eth_blockNumber` request and keeps replay deterministic; the call then costs 5 JSON-RPC requests). Map `results[0]` status (`'failure'` → `reverted`, revert bytes in `results[0].data`), gas and logs; native-transfer pseudo-logs (emitted from the `0xEeee…` address) become `nativeTransfers` and are removed from `logs`; `assetChanges` become `balanceDiffs`, with the `0xeeee…` entry mapped to `NATIVE_ADDRESS` (viem labels it `ETH` even on Polygon; the token descriptor comes from the chain). `NormalizedSim.blockNumber` is the requested block, not `result.block.number`.
+- Polygon native transfers also emit a `LogTransfer` log from `0x…1010` (4 topics, topic0 `0xe6497e3e…`); it is kept in `logs` and ignored by the analyzer because its topic is not `Transfer`.
 - Degraded path, when `isSimulateUnsupported`: `client.call` (a revert yields `status: 'reverted'` and its data) plus `client.estimateGas` on success; result has `degraded: true`, `logs`, `nativeTransfers`, `balanceDiffs` all `null`. The "unsupported" verdict is cached per chain for 10 minutes.
 - Any other failure → thrown as `UPSTREAM_ERROR` / `UPSTREAM_TIMEOUT`. A block the provider cannot serve → `UPSTREAM_ERROR` "The RPC provider cannot serve state at block <n>."
 
@@ -162,12 +173,16 @@ Endpoints and response shapes are those recorded in spike answer Q9.
   it('falls back to call + estimateGas when eth_simulateV1 is unsupported', …); // degraded true, traces null, gasUsed set
   it('degraded fallback reports a revert', …);
   it('remembers that a chain does not support simulation', …); // second simulate issues no eth_simulateV1 request
-  it('does not degrade on other upstream errors', …);          // HTTP 500 → rejects with UPSTREAM_ERROR
-  // chain (ethereum) — on the harness per spike Q2
-  it('plain ETH transfer', …);        // one nativeTransfer, balanceDiffs [{ NATIVE_ADDRESS, −value }]
+  it('does not degrade on other upstream errors', …);          // HTTP 500 → rejects with UPSTREAM_ERROR; the −32600 log-range text → not "unsupported"
+  it('passes the pinned block when no blockNumber is given', …); // no eth_blockNumber request; result.blockNumber = pinned block
+  it('maps the native asset change to NATIVE_ADDRESS on polygon', …);
+  // chain (ethereum) — on the anvil harness (spike Q2: anvil 1.5.0 serves eth_simulateV1 with tracing at and after the fork block)
+  it('plain ETH transfer', …);        // one nativeTransfer, balanceDiffs [{ NATIVE_ADDRESS, −value }] (no gas fee)
   it('ERC-20 transfer from a large holder', …); // one Transfer log, diff −amount for the token
   it('transfer above balance reverts', …);
-  it('simulates at an explicit historical block', …); // blockNumber = PINNED − 10n → result.blockNumber matches
+  it('simulates at an explicit historical block', …); // anvil_mine 5 blocks, then blockNumber = PINNED → result.blockNumber === PINNED
+  // Blocks before the fork block cannot be used on anvil: viem's asset tracing sends state overrides and anvil answers
+  // "Evm override error: not available on past forked blocks". Pre-fork history is covered by the live replay suite (task 6.6).
   ```
 - [ ] **Step 2: Run** `pnpm vitest run test/unit/services/simulation/rpc.test.ts test/chain/simulation-rpc.test.ts` — fails: module not found.
 - [ ] **Step 3: Implement.**
@@ -186,13 +201,19 @@ Endpoints and response shapes are those recorded in spike answer Q9.
 - Consumes: `Config.tenderly`, `AppContext.fetch`, `SimTx`, `NormalizedSim`.
 - Produces: `createTenderlyBackend(ctx: AppContext): SimulationBackend`; `getBackend(ctx: AppContext): SimulationBackend` (by `config.simulationBackend`; built once per context).
 
-**Behaviour:** one POST to Tenderly's simulate endpoint for the configured account and project, authenticated with the access-key header, full simulation, not saved; request and response field names as recorded in spike answer Q5. The response is mapped to `NormalizedSim` (raw logs, native transfers, balance diffs of `tx.from`). 20-second timeout. **No fallback to the RPC backend.** Failures: 401/403 → `SIMULATION_UNAVAILABLE` "Tenderly rejected the configured credentials."; 429 → `UPSTREAM_ERROR` retryable; other statuses → `UPSTREAM_ERROR`. The access key never appears in an error.
+**Behaviour:** one POST to Tenderly's simulate endpoint for the configured account and project, not saved (spike answer Q5):
+- `POST https://api.tenderly.co/api/v1/account/{account}/project/{project}/simulate`, header `X-Access-Key: <key>`.
+- Body: `{ network_id: '<chainId as decimal string>', from, to, input: data, value: '<wei decimal string>', gas?: number, gas_price: '0', block_number: Number(N + 1), save: false, save_if_fails: false, simulation_type: 'quick' }`, where N is `tx.blockNumber` or the pinned latest block. Tenderly runs the transaction at the start of `block_number` (default `transaction_index` 0), so `N + 1` equals "on top of N"; it is accepted when N is the head. `quick` returns every needed field in ~65 KB (`full` is ~5 MB, mostly contract sources).
+- Mapping to `NormalizedSim`: `status` ← `transaction.status` (boolean); `gasUsed` ← `transaction.gas_used`; `logs` ← `transaction.transaction_info.logs[].raw` (`{ address, topics, data }`; in quick mode `name`/`inputs` are empty); `nativeTransfers` ← `transaction_info.asset_changes` entries with `token_info.standard === 'NativeCurrency'` (`from`, `to`, `raw_amount`); `balanceDiffs` of `tx.from`: native from `transaction_info.balance_diff` (`dirty − original`, decimal strings), ERC-20 netted from `asset_changes` `raw_amount` by `from`/`to` against `token_info.contract_address`; on revert `revertData` ← `transaction_info.call_trace.output`. `blockNumber` is N.
+
+20-second timeout. **No fallback to the RPC backend.** Failures: 401/403 → `SIMULATION_UNAVAILABLE` "Tenderly rejected the configured credentials." (a wrong key returned 403 `{"error":{"slug":"insufficient_permissions",…}}`, after 50 s in the spike — a slow rejection surfaces as `UPSTREAM_TIMEOUT`); 429 → `UPSTREAM_ERROR` retryable; other statuses → `UPSTREAM_ERROR`. The access key never appears in an error. Quotas: 400 requests/minute per key (documented); the monthly simulation quota of the account is unknown, so live runs stay small (about 20 simulations or fewer).
 
 - [ ] **Step 1: Write the failing tests.**
   ```ts
-  // contract — replayFetch fixtures seeded from the spike's redacted response
-  it('sends the transaction, network id and block number', …); // request body fields; access-key header present; URL contains account and project
-  it('maps a successful swap simulation', …);  // status success; logs include the Transfer events; balanceDiffs for from match the fixture
+  // contract — replayFetch fixtures seeded from the spike's redacted response, docs/spikes/tenderly-simulate-swap.json
+  it('sends the transaction, network id and block number', …); // body fields; block_number = N + 1; simulation_type 'quick'; gas_price '0'; access-key header present; URL contains account and project
+  it('maps a successful swap simulation', …);  // fixture swap 0.1 ETH → USDC, Tenderly block_number 26499762 (N = 26499761): status success, gasUsed 119771; logs include the Transfer events;
+                                               // balanceDiffs for from: ETH −100000000000000000, USDC +170156845
   it('maps a reverted simulation', …);
   it('maps 401 to SIMULATION_UNAVAILABLE without leaking the key', …);
   it('maps 429 to a retryable UPSTREAM_ERROR', …);
@@ -236,7 +257,7 @@ Endpoints and response shapes are those recorded in spike answer Q9.
 - Tokens that `readTokens` cannot read are reported as `{ address, symbol: 'UNKNOWN', decimals: 0 }`. ERC-721 entries carry `tokenId` instead of `amount`.
 - `transfers` and `approvals` are capped at 100 entries each.
 - Warnings, exact text: `Simulation backend could not trace asset changes: only status and gas are reported.` · `Simulated against historical block <n>; USD values use current prices.` · `Showing the first 100 of <n> transfers.` (same for approvals) · stale-price warnings.
-- Description states: simulates an unsigned transaction, never signs or sends; runs against one block and the real outcome can differ; ERC-1155 balances and tokens that move without `Transfer` events are not reflected; transaction contents are sent to the configured RPC and, depending on configuration, to Tenderly and ABI services; what each risk flag means.
+- Description states: simulates an unsigned transaction, never signs or sends; runs against one block and the real outcome can differ; asset changes exclude the gas fee; ERC-1155 balances and tokens that move without `Transfer` events are not reflected; transaction contents are sent to the configured RPC and, depending on configuration, to Tenderly and ABI services; what each risk flag means.
 
 - [ ] **Step 1: Write the failing tests.**
   ```ts
@@ -272,7 +293,7 @@ The strongest check in the project: simulate transactions that were really mined
 **Interfaces:**
 - Consumes: `simulateTransaction`, both backends.
 
-**Selection of transactions** (recorded in the fixture with hash, chain, and why it was chosen): on Ethereum — a Uniswap swap, an Aave supply, an ERC-20 `approve`, a transaction that reverted on-chain; on one L2 — a Uniswap swap. Each must be the first transaction in its block that touches the sender's balances and the pools or reserves involved, so that state at the parent block equals the state the transaction actually saw. If the provider cannot serve state that old (spike Q7), pick transactions from the most recent blocks it can serve and note the constraint.
+**Selection of transactions** (recorded in the fixture with hash, chain, and why it was chosen): on Ethereum — a Uniswap swap, an Aave supply, an ERC-20 `approve`, a transaction that reverted on-chain; on one L2 — a Uniswap swap. Each must be the first transaction in its block that touches the sender's balances and the pools or reserves involved, so that state at the parent block equals the state the transaction actually saw. Age is not a constraint: the Alchemy free tier serves archive state at least 1 000 000 blocks back on all four chains (spike Q7). The rpc backend simulates at `receipt.blockNumber − 1`, which the Tenderly backend sends as `block_number = receipt.blockNumber` (spike Q5).
 
 - [ ] **Step 1: Write the suite** (`describe.skipIf(!process.env.LIVE)`). For each fixture transaction, fetch it and its receipt, simulate `{ from, to, data, value, blockNumber: receipt.blockNumber − 1 }`, and assert:
   ```ts
@@ -303,7 +324,7 @@ The strongest check in the project: simulate transactions that were really mined
   | 2 | The same swap simulated on `rpc` and on `tenderly` | Each other, and the Tenderly dashboard simulation of the same transaction |
   | 3 | Decoding of a call to a verified contract, a proxy, and an unverified contract | Block explorer "decoded input" view; `abiSource` and `UNVERIFIED_CONTRACT` as expected |
   | 4 | Degraded mode: server pointed at an RPC without `eth_simulateV1` (or with the method blocked) | Output shows status and gas, `assetChanges: null`, the flag and the warning |
-  | 5 | Tenderly with a wrong key | `SIMULATION_UNAVAILABLE`, no key in output or logs, no silent switch to `rpc` |
+  | 5 | Tenderly with a wrong key | `SIMULATION_UNAVAILABLE` (or `UPSTREAM_TIMEOUT` if Tenderly takes over 20 s to reject, as it did in the spike), no key in output or logs, no silent switch to `rpc` |
   | 6 | A token with a hostile symbol appearing in a simulated transfer is sanitized | Captured output |
   | 7 | Agent-readability: give a desktop client an unlimited-approval transaction and ask "is this safe to sign?"; it should surface the approval and the spender | Transcript |
 

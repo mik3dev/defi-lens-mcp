@@ -1,0 +1,676 @@
+{
+  "_note": "Tenderly POST /api/v1/account/<TENDERLY_ACCOUNT>/project/<TENDERLY_PROJECT>/simulate response, simulation_type quick, 2026-11-26. Nested call_trace.calls omitted; ids redacted. Request: see docs/spikes/provider-capabilities.md Q5.",
+  "transaction": {
+    "hash": "0x8cb9a4b7d8d0f259d3da5d3526511e77e7e8bfbeca533e8c3bc99601b79a8b96",
+    "block_hash": "",
+    "block_number": 26499762,
+    "from": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+    "gas": 500000,
+    "gas_price": 0,
+    "gas_fee_cap": 0,
+    "gas_tip_cap": 0,
+    "cumulative_gas_used": 0,
+    "gas_used": 119771,
+    "effective_gas_price": 0,
+    "input": "0x04e45aaf000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "nonce": 5973,
+    "to": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+    "index": 0,
+    "value": "0x016345785d8a0000",
+    "access_list": null,
+    "status": true,
+    "addresses": null,
+    "contract_ids": null,
+    "network_id": "1",
+    "timestamp": "2026-11-26T13:46:23Z",
+    "function_selector": "",
+    "l1_block_number": 0,
+    "l1_timestamp": 0,
+    "deposit_tx": false,
+    "system_tx": false,
+    "sig": {
+      "v": "0x0",
+      "r": "0x0",
+      "s": "0x0"
+    },
+    "transaction_info": {
+      "contract_id": "eth:1:0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+      "block_number": 26499762,
+      "transaction_id": "0x8cb9a4b7d8d0f259d3da5d3526511e77e7e8bfbeca533e8c3bc99601b79a8b96",
+      "contract_address": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+      "method": null,
+      "parameters": null,
+      "intrinsic_gas": 22776,
+      "refund_gas": 19900,
+      "call_trace": {
+        "hash": "0x8cb9a4b7d8d0f259d3da5d3526511e77e7e8bfbeca533e8c3bc99601b79a8b96",
+        "contract_name": "Unverified",
+        "function_pc": 0,
+        "function_op": "CALL",
+        "absolute_position": 0,
+        "caller_pc": 0,
+        "caller_op": "CALL",
+        "call_type": "CALL",
+        "address": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+        "from": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+        "from_balance": "5899554154377317710",
+        "to": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+        "to_balance": "-100000000000000000",
+        "value": "100000000000000000",
+        "block_number": 26499762,
+        "block_timestamp": "2026-11-26T13:46:23Z",
+        "gas": 477224,
+        "gas_used": 116895,
+        "intrinsic_gas": 22776,
+        "refund_gas": 19900,
+        "storage_address": "0x0000000000000000000000000000000000000000",
+        "input": "0x04e45aaf000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "balance_diff": [
+          {
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "original": "2230856893308607168989854",
+            "dirty": "2230856993308607168989854",
+            "is_miner": false
+          },
+          {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "original": "5799554154377317710",
+            "dirty": "5699554154377317710",
+            "is_miner": false
+          }
+        ],
+        "nonce_diff": [
+          {
+            "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+            "original": "5973",
+            "dirty": "5974"
+          }
+        ],
+        "state_diff": [
+          {
+            "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+            "soltype": null,
+            "original": null,
+            "dirty": null,
+            "raw": [
+              {
+                "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+                "original": "0x00014402d302d300c30314c20000000000005eac4ed4cbe53a93a1d73a9b2f92",
+                "dirty": "0x00014402d302d300c30314c20000000000005eac55440e9a012267d102fedb4a"
+              }
+            ]
+          },
+          {
+            "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+            "soltype": null,
+            "original": null,
+            "dirty": null,
+            "raw": [
+              {
+                "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000002",
+                "original": "0x0000000000000000000000000000184bcfec7a004507be0f4fe21bb1459c13ce",
+                "dirty": "0x0000000000000000000000000000184bcfed183798dbce558d8673a40df1179d"
+              }
+            ]
+          },
+          {
+            "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+            "soltype": null,
+            "original": null,
+            "dirty": null,
+            "raw": [
+              {
+                "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+                "key": "0x0000000000000000000000000000000000000000000000000000000000000003",
+                "original": "0x0000000000000000048e35b29e78ae5a000000000000000000000000220a2626",
+                "dirty": "0x0000000000000000048e41110087f65a000000000000000000000000220a2626"
+              }
+            ]
+          },
+          {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "soltype": null,
+            "original": null,
+            "dirty": null,
+            "raw": [
+              {
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "key": "0x1f21a62c4538bacf2aabeca410f0fe63151869f172e03c0e00357ba26a341eff",
+                "original": "0x00000000000000000000000000000000000000000000000000000b888337c728",
+                "dirty": "0x00000000000000000000000000000000000000000000000000000b88791363fb"
+              }
+            ]
+          },
+          {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "soltype": null,
+            "original": null,
+            "dirty": null,
+            "raw": [
+              {
+                "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                "key": "0xbf4954ae1137d99a74d9587692d0c99fcc87859496c91311c267c25a44a35f95",
+                "original": "0x0000000000000000000000000000000000000000000000000000000002748abc",
+                "dirty": "0x000000000000000000000000000000000000000000000000000000000c98ede9"
+              }
+            ]
+          },
+          {
+            "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "soltype": null,
+            "original": null,
+            "dirty": null,
+            "raw": [
+              {
+                "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+                "key": "0x390f6178407c9b8e95802b8659e6df8e34c1e3d4f8d6a49e6132bbcdd937b63a",
+                "original": "0x000000000000000000000000000000000000000000000709ad47f5db9bda7d82",
+                "dirty": "0x000000000000000000000000000000000000000000000709aeab3b53f9647d82"
+              }
+            ]
+          }
+        ],
+        "logs": [
+          {
+            "name": "",
+            "EmitterAddress": "",
+            "anonymous": false,
+            "inputs": null,
+            "raw": {
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x00000000000000000000000088e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+                "0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045"
+              ],
+              "data": "0x000000000000000000000000000000000000000000000000000000000a24632d"
+            },
+            "trace_index": null
+          },
+          {
+            "name": "",
+            "EmitterAddress": "",
+            "anonymous": false,
+            "inputs": null,
+            "raw": {
+              "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "topics": [
+                "0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c",
+                "0x00000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45"
+              ],
+              "data": "0x000000000000000000000000000000000000000000000000016345785d8a0000"
+            },
+            "trace_index": null
+          },
+          {
+            "name": "",
+            "EmitterAddress": "",
+            "anonymous": false,
+            "inputs": null,
+            "raw": {
+              "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "topics": [
+                "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+                "0x00000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+                "0x00000000000000000000000088e6a0c2ddd26feeb64f039a2c41296fcb3f5640"
+              ],
+              "data": "0x000000000000000000000000000000000000000000000000016345785d8a0000"
+            },
+            "trace_index": null
+          },
+          {
+            "name": "",
+            "EmitterAddress": "",
+            "anonymous": false,
+            "inputs": null,
+            "raw": {
+              "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+              "topics": [
+                "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67",
+                "0x00000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+                "0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045"
+              ],
+              "data": "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffff5db9cd3000000000000000000000000000000000000000000000000016345785d8a00000000000000000000000000000000000000005eac55440e9a012267d102fedb4a000000000000000000000000000000000000000000000000372f5902aebd34f200000000000000000000000000000000000000000000000000000000000314c2"
+            },
+            "trace_index": null
+          }
+        ],
+        "output": "0x000000000000000000000000000000000000000000000000000000000a24632d",
+        "decoded_output": null,
+        "network_id": "1",
+        "asset_changes": [
+          {
+            "token_info": {
+              "standard": "ERC20",
+              "type": "Fungible",
+              "contract_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "symbol": "usdc",
+              "name": "USDC",
+              "logo": "https://coin-images.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+              "decimals": 6,
+              "dollar_value": "0.9995120167732239"
+            },
+            "type": "Transfer",
+            "from": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+            "to": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+            "amount": "170.156845",
+            "raw_amount": "170156845",
+            "trace_absolute_position": 5249,
+            "dollar_value": "170.07381131371885538",
+            "from_before_balance": "0x0",
+            "to_before_balance": "0x0"
+          },
+          {
+            "token_info": {
+              "standard": "ERC20",
+              "type": "Fungible",
+              "contract_address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "symbol": "weth",
+              "name": "WETH",
+              "logo": "https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332",
+              "decimals": 18,
+              "dollar_value": "1690.280029296875"
+            },
+            "type": "Mint",
+            "to": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+            "amount": "0.1",
+            "raw_amount": "100000000000000000",
+            "trace_absolute_position": 6822,
+            "dollar_value": "169.0280029296875",
+            "from_before_balance": "0x0",
+            "to_before_balance": "0x0"
+          },
+          {
+            "token_info": {
+              "standard": "ERC20",
+              "type": "Fungible",
+              "contract_address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+              "symbol": "weth",
+              "name": "WETH",
+              "logo": "https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332",
+              "decimals": 18,
+              "dollar_value": "1690.280029296875"
+            },
+            "type": "Transfer",
+            "from": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+            "to": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+            "amount": "0.1",
+            "raw_amount": "100000000000000000",
+            "trace_absolute_position": 7123,
+            "dollar_value": "169.0280029296875",
+            "from_before_balance": "0x0",
+            "to_before_balance": "0x0"
+          },
+          {
+            "token_info": {
+              "standard": "NativeCurrency",
+              "type": "Native",
+              "symbol": "ETH",
+              "name": "Ether",
+              "logo": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
+              "decimals": 18,
+              "dollar_value": "1691.010009765625"
+            },
+            "type": "Transfer",
+            "from": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+            "to": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+            "amount": "0.1",
+            "raw_amount": "100000000000000000",
+            "trace_absolute_position": 0,
+            "dollar_value": "169.1010009765625",
+            "from_before_balance": "0x507c27c6ab4d0d4e",
+            "to_before_balance": "0x0"
+          },
+          {
+            "token_info": {
+              "standard": "NativeCurrency",
+              "type": "Native",
+              "symbol": "ETH",
+              "name": "Ether",
+              "logo": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
+              "decimals": 18,
+              "dollar_value": "1691.010009765625"
+            },
+            "type": "Transfer",
+            "from": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+            "to": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "amount": "0.1",
+            "raw_amount": "100000000000000000",
+            "trace_absolute_position": 6826,
+            "dollar_value": "169.1010009765625",
+            "from_before_balance": "0x16345785d8a0000",
+            "to_before_balance": "0x1d866fe984dcaf93b4a9e"
+          }
+        ],
+        "balance_changes": [
+          {
+            "address": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+            "dollar_value": "0",
+            "transfers": [
+              1,
+              2,
+              3,
+              4
+            ]
+          },
+          {
+            "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+            "dollar_value": "-1.0458083840313553842",
+            "transfers": [
+              0,
+              2
+            ]
+          },
+          {
+            "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "dollar_value": "169.1010009765625",
+            "transfers": [
+              4
+            ]
+          },
+          {
+            "address": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+            "dollar_value": "0.97281033715635538417",
+            "transfers": [
+              0,
+              3
+            ]
+          }
+        ],
+        "calls": "<1 nested calls omitted>"
+      },
+      "stack_trace": null,
+      "logs": [
+        {
+          "name": "",
+          "EmitterAddress": "",
+          "anonymous": false,
+          "inputs": null,
+          "raw": {
+            "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "topics": [
+              "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+              "0x00000000000000000000000088e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+              "0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045"
+            ],
+            "data": "0x000000000000000000000000000000000000000000000000000000000a24632d"
+          },
+          "trace_index": null
+        },
+        {
+          "name": "",
+          "EmitterAddress": "",
+          "anonymous": false,
+          "inputs": null,
+          "raw": {
+            "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "topics": [
+              "0xe1fffcc4923d04b559f4d29a8bfc6cda04eb5b0d3c460751c2402c5c5cc9109c",
+              "0x00000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45"
+            ],
+            "data": "0x000000000000000000000000000000000000000000000000016345785d8a0000"
+          },
+          "trace_index": null
+        },
+        {
+          "name": "",
+          "EmitterAddress": "",
+          "anonymous": false,
+          "inputs": null,
+          "raw": {
+            "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "topics": [
+              "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+              "0x00000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+              "0x00000000000000000000000088e6a0c2ddd26feeb64f039a2c41296fcb3f5640"
+            ],
+            "data": "0x000000000000000000000000000000000000000000000000016345785d8a0000"
+          },
+          "trace_index": null
+        },
+        {
+          "name": "",
+          "EmitterAddress": "",
+          "anonymous": false,
+          "inputs": null,
+          "raw": {
+            "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+            "topics": [
+              "0xc42079f94a6350d7e6235f29174924f928cc2ac818eb64fed8004e115fbcca67",
+              "0x00000000000000000000000068b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+              "0x000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045"
+            ],
+            "data": "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffff5db9cd3000000000000000000000000000000000000000000000000016345785d8a00000000000000000000000000000000000000005eac55440e9a012267d102fedb4a000000000000000000000000000000000000000000000000372f5902aebd34f200000000000000000000000000000000000000000000000000000000000314c2"
+          },
+          "trace_index": null
+        }
+      ],
+      "balance_diff": [
+        {
+          "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "original": "2230856893308607168989854",
+          "dirty": "2230856993308607168989854",
+          "is_miner": false
+        },
+        {
+          "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "original": "5799554154377317710",
+          "dirty": "5699554154377317710",
+          "is_miner": false
+        }
+      ],
+      "nonce_diff": [
+        {
+          "address": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+          "original": "5973",
+          "dirty": "5974"
+        }
+      ],
+      "state_diff": "<omitted>",
+      "raw_state_diff": null,
+      "console_logs": null,
+      "asset_changes": [
+        {
+          "token_info": {
+            "standard": "ERC20",
+            "type": "Fungible",
+            "contract_address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "symbol": "usdc",
+            "name": "USDC",
+            "logo": "https://coin-images.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+            "decimals": 6,
+            "dollar_value": "0.9995120167732239"
+          },
+          "type": "Transfer",
+          "from": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+          "to": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+          "amount": "170.156845",
+          "raw_amount": "170156845",
+          "trace_absolute_position": 5249,
+          "dollar_value": "170.07381131371885538",
+          "from_before_balance": "0x0",
+          "to_before_balance": "0x0"
+        },
+        {
+          "token_info": {
+            "standard": "ERC20",
+            "type": "Fungible",
+            "contract_address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "symbol": "weth",
+            "name": "WETH",
+            "logo": "https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332",
+            "decimals": 18,
+            "dollar_value": "1690.280029296875"
+          },
+          "type": "Mint",
+          "to": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+          "amount": "0.1",
+          "raw_amount": "100000000000000000",
+          "trace_absolute_position": 6822,
+          "dollar_value": "169.0280029296875",
+          "from_before_balance": "0x0",
+          "to_before_balance": "0x0"
+        },
+        {
+          "token_info": {
+            "standard": "ERC20",
+            "type": "Fungible",
+            "contract_address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "symbol": "weth",
+            "name": "WETH",
+            "logo": "https://coin-images.coingecko.com/coins/images/2518/large/weth.png?1696503332",
+            "decimals": 18,
+            "dollar_value": "1690.280029296875"
+          },
+          "type": "Transfer",
+          "from": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+          "to": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+          "amount": "0.1",
+          "raw_amount": "100000000000000000",
+          "trace_absolute_position": 7123,
+          "dollar_value": "169.0280029296875",
+          "from_before_balance": "0x0",
+          "to_before_balance": "0x0"
+        },
+        {
+          "token_info": {
+            "standard": "NativeCurrency",
+            "type": "Native",
+            "symbol": "ETH",
+            "name": "Ether",
+            "logo": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
+            "decimals": 18,
+            "dollar_value": "1691.010009765625"
+          },
+          "type": "Transfer",
+          "from": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+          "to": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+          "amount": "0.1",
+          "raw_amount": "100000000000000000",
+          "trace_absolute_position": 0,
+          "dollar_value": "169.1010009765625",
+          "from_before_balance": "0x507c27c6ab4d0d4e",
+          "to_before_balance": "0x0"
+        },
+        {
+          "token_info": {
+            "standard": "NativeCurrency",
+            "type": "Native",
+            "symbol": "ETH",
+            "name": "Ether",
+            "logo": "https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628",
+            "decimals": 18,
+            "dollar_value": "1691.010009765625"
+          },
+          "type": "Transfer",
+          "from": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+          "to": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "amount": "0.1",
+          "raw_amount": "100000000000000000",
+          "trace_absolute_position": 6826,
+          "dollar_value": "169.1010009765625",
+          "from_before_balance": "0x16345785d8a0000",
+          "to_before_balance": "0x1d866fe984dcaf93b4a9e"
+        }
+      ],
+      "exposure_changes": null,
+      "balance_changes": [
+        {
+          "address": "0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45",
+          "dollar_value": "0",
+          "transfers": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "address": "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640",
+          "dollar_value": "-1.0458083840313553842",
+          "transfers": [
+            0,
+            2
+          ]
+        },
+        {
+          "address": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+          "dollar_value": "169.1010009765625",
+          "transfers": [
+            4
+          ]
+        },
+        {
+          "address": "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
+          "dollar_value": "0.97281033715635538417",
+          "transfers": [
+            0,
+            3
+          ]
+        }
+      ],
+      "created_at": "2026-11-26T13:46:23Z"
+    },
+    "method": "",
+    "decoded_input": null,
+    "value_fee_currency": null,
+    "value_gateway_fee": null,
+    "value_gateway_fee_recipient": null
+  },
+  "simulation": {
+    "id": "<SIMULATION_ID>",
+    "project_id": "<PROJECT_ID>",
+    "owner_id": "<OWNER_ID>",
+    "network_id": "1",
+    "block_number": 26499762,
+    "transaction_index": 0,
+    "from": "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045",
+    "to": "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+    "input": "0x04e45aaf000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000001f4000000000000000000000000d8da6bf26964af9d7eed9e03e53415d37aa96045000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "gas": 500000,
+    "gas_price": "0",
+    "gas_used": 119771,
+    "value": "100000000000000000",
+    "status": true,
+    "access_list": null,
+    "queue_origin": "",
+    "block_header": {
+      "number": "0x1945ab2",
+      "hash": "0x548db2034dc9ac01f9a8964e8d910a1c2ad6619748d6635460c8a0a3f4176df2",
+      "stateRoot": "0x35632c3f1f603a472a30ffe654fadd68df47dbf596b5af3fa935db1dc42126e5",
+      "parentHash": "0x7191968a038ce1ecc08f3fdbbfe83f125ec29e3543cc49ce5492ba9ca23dfd36",
+      "sha3Uncles": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+      "transactionsRoot": "0x883d750ead1dd66b32f120536cac608fa7fff43202566c1a30e015c5f578c86c",
+      "receiptsRoot": "0x3eced34810791fef19305bb370344d8544142153882dec618ce500e88b016d10",
+      "logsBloom": "0xbfff7f7f7bdff7fff77fe9edd7bff5fff7ffe7a77eebd66ee9b3bd7efdfbec4f3f7b7ffdfedf3d7bffb7ffdfff7fb77fcffb75fefefafffdfd5efe3ffae776dfff56ffbf7fdeeffeffaffdbbdfffffed2b7afffffff67bab77fefffddf2ff18b7e5a6fefbeff5fdd7ce7beff9f75ffe7fefff1bf35fd7fdf7fdfffff77fffe8f13f7f77fff9feffffb7a7777ffffd7df9ff7df3fffdafefee53bf7ff97de5dedffffbeefcfb3ffaf7bfffbfbbdb6f9bbfffefffff3abf73fff6fbffc7eeeefffe7fffffb77cfbff1df55d7ff5e7f777bfbdd3e7fbefdf7ff7fdf17e67fb9ffd5fd3befdecffabf37fdfffbffffab7bdffdbffe99ebfdfffedfd7f8ffffefdfc4",
+      "timestamp": "0x6b08382f",
+      "difficulty": "0x0",
+      "gasLimit": "0x3938700",
+      "gasUsed": "0x23dd7b9",
+      "miner": "0x396343362be2a4da1ce0c1c210945346fb82aa49",
+      "extraData": "0xe29ca82051756173617220287175617361722e77696e2920e29ca8",
+      "mixHash": "0x2be00b98466314805ddb4c43f06cd9c371307f48d8e5817ebf4caff6e5b6950d",
+      "nonce": "0x0000000000000000",
+      "baseFeePerGas": "0x71b4d5c",
+      "size": "0x0",
+      "totalDifficulty": "0x0",
+      "uncles": null,
+      "transactions": null,
+      "blobGasUsed": "0xc0000",
+      "excessBlobGas": "0xade6273",
+      "parentBeaconBlockRoot": "0x8284058f1a82d6a29dc47da9e0a7d02fde2f1b66faaefa6108be6fc7564c0d83",
+      "requestsHash": "0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "deposit_tx": false,
+    "system_tx": false,
+    "nonce": 5973,
+    "addresses": null,
+    "contract_ids": null,
+    "shared": false,
+    "created_at": "2026-11-26T17:42:23.536773208Z"
+  },
+  "contracts": [],
+  "generated_access_list": []
+}
