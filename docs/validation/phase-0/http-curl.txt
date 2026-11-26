@@ -1,3 +1,6 @@
+# Server start (token value omitted; RPC URLs come from the environment)
+$ TRANSPORT=http HOST=127.0.0.1 PORT=3917 MCP_AUTH_TOKENS=<TOKEN> node dist/index.js
+
 # 1. healthz (no auth)
 $ curl -i http://127.0.0.1:3917/healthz
 HTTP/1.1 200 OK
@@ -51,7 +54,7 @@ content-length: 191
 Date: Thu, 26 Nov 2026 18:10:11 GMT
 
 event: message
-data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"<REDACTED>","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
+data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"defi-lens-mcp","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
 
 
 

@@ -83,9 +83,9 @@ Swap used: SwapRouter02 `0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45`, `exactInpu
 | Alchemy ethereum | `latest` | success, gas 119 755. Changes: ETH −0.1, USDC +169.004672 | 6 | 1 382 ms |
 | Alchemy ethereum | `PINNED − 10` | success, gas 119 771. ETH −0.1, USDC +170.113349 | 5 | 350 ms |
 | Alchemy ethereum | `PINNED − 100 000` | success, gas 119 793. ETH −0.1, USDC +200.176539 | 5 | 351 ms |
-| Alchemy ethereum | `PINNED − 100 000` (`26399763`) | ETH transfer (1 wei): success, gas 21 000, one change ETH −1, native pseudo-log. *Fix round 1* | 4 | 1 484 ms |
+| Alchemy ethereum | `PINNED − 100 000` (`26399763`) | ETH transfer (1 wei): success, gas 21 000, one change ETH −1, native pseudo-log. | 4 | 1 484 ms |
 | Alchemy base | `latest` | ETH transfer: success, gas 21 000, one change ETH −1 | 5 | 1 306 ms |
-| Alchemy base | `PINNED − 100 000` (`62511111`) | ETH transfer: success, gas 21 000, one change ETH −1, native pseudo-log; simulated block reported as `62511112`. *Fix round 1* | 4 | 952 ms |
+| Alchemy base | `PINNED − 100 000` (`62511111`) | ETH transfer: success, gas 21 000, one change ETH −1, native pseudo-log; simulated block reported as `62511112`. | 4 | 952 ms |
 | Alchemy arbitrum | `latest` and `PINNED − 100 000` (`527682324`) | ETH transfer: success, one change ETH −1 at both blocks | not counted | — |
 | Alchemy polygon | `latest` and `PINNED − 100 000` (`97904500`) | ETH transfer: success, one change ETH −1 at both blocks (viem labels it `ETH`) | not counted | — |
 | anvil ethereum | `latest` = `PINNED` | success, gas 119 771. ETH −0.1, USDC +170.156848 | 6 | 2 909 ms (cold) |
@@ -314,7 +314,7 @@ USDC (Ethereum and Base) is a **ZeppelinOS** proxy: its implementation is not in
     - `exceed(s|ed)? (the )?max(imum)? block range`
     - `block range (is )?too (large|wide)`
 
-    With the default range the Alchemy free tier never triggers it. The halving logic stays for other providers and lower limits. HTTP 429 maps to `RATE_LIMITED`, not to a range error. (Q6)
+    With the default range the Alchemy free tier never triggers it. The halving logic stays for other providers and lower limits. HTTP 429 is not a range error: it propagates and maps to a retryable `UPSTREAM_ERROR` (`RATE_LIMITED` is reserved for this server's own HTTP rate limit, phase 7). (Q6)
 15. **`alchemy_getAssetTransfers`** (Q8):
     - `category: ["external","erc20"]` works on all four chains; `internal` must not be requested because Arbitrum rejects it.
     - Use the default page size (1 000), following `pageKey`.

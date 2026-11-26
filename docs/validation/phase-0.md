@@ -11,12 +11,13 @@
 |-------|----------------|--------|
 | Lint | `pnpm lint` | Pass: `Checked 62 files … No fixes applied.` |
 | Types | `pnpm typecheck` | Pass, no output |
-| Coverage | `pnpm coverage` | Pass: 22 test files, 201 tests passed, 0 skipped. Statements 96.91 %, branches 94.40 %, functions 97.98 %, lines 97.40 % (thresholds 80/80) |
+| Coverage | `pnpm coverage` | Pass: 22 test files, 203 tests passed, 0 skipped. Statements 96.91 %, branches 94.40 %, functions 97.98 %, lines 97.40 % (thresholds 80/80) |
 | Build | `pnpm build` | Pass (`dist/index.js` produced) |
 | Fork run and re-record | `RECORD=1 pnpm test:fork` | Pass: `Test Files 4 passed (4)`, `Tests 41 passed (41)`, 18.6 s, no HTTP 429. `git status` was clean afterwards: the recordings were rewritten byte for byte identical to the committed ones, so there is nothing to commit |
 | Replay from the recordings, no RPC variables | `env -u ALCHEMY_API_KEY -u RPC_URL_ETHEREUM -u RPC_URL_BASE -u RPC_URL_ARBITRUM -u RPC_URL_POLYGON pnpm test` | Pass: `Test Files 22 passed (22)`, `Tests 201 passed (201)`, 0 skipped, 4.1 s |
 | Live provider suite | `pnpm test:live` | Not applicable: phase 0 added no live tests |
 | Secret scan | Script comparing every value in the git-ignored `.env` (plus Alchemy URL patterns and the local home path) against `test/fixtures` and `docs/validation`; prints counts only | 0 secret hits. The only match is the non-secret bind address `127.0.0.1` in the HTTP transcripts |
+| Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet; README and tool reference are phase 8 Task 8.1 (`docs/plan/phase-8-release.md`). The design and plan documents under `docs/` exist. |
 | CI green on the phase pull request | — | Pending: no pull request exists yet; the controller handles push and PR after the owner agrees |
 | Code review of the phase diff | — | Pending: every task was reviewed individually; the whole-branch review runs after this record |
 | Owner sign-off | — | Pending (see the end of this document) |
@@ -60,7 +61,7 @@ Client: MCP Inspector CLI mode, `@modelcontextprotocol/inspector` 1.0.6 (`npx -y
 
 The HTTP server ran on `127.0.0.1:3917` with a throwaway random token passed through the environment; the token appears nowhere in the repository. The graphical Inspector was not run; the owner can add a screenshot from it later. In the check 5 capture, stdout carried only protocol frames.
 
-Check 5 outcome: the tool returned `{"code":"UPSTREAM_ERROR","message":"HTTP request failed.","retryable":false}`, and the one stderr log line shows `URL: [REDACTED]`. `FAKEKEY123456789` and the host name appear in neither stream.
+Check 5 outcome: the tool returned `{"code":"UPSTREAM_ERROR","message":"HTTP request failed.","retryable":false}`, and the one stderr log line shows `URL: [REDACTED]`. The capture predates the fix that makes a network-level failure (no HTTP status) retryable; the recorded `retryable:false` is historical. `FAKEKEY123456789` and the host name appear in neither stream.
 
 ## Deviations from the design
 
@@ -74,7 +75,8 @@ Check 5 outcome: the tool returned `{"code":"UPSTREAM_ERROR","message":"HTTP req
 8. **HTTP 429 maps to `UPSTREAM_ERROR` (retryable)**, not `RATE_LIMITED`, per the task brief. 
 9. **`TENDERLY_TIMEOUT_MS` default is 60 s.** The planned 20 s was too short: Tenderly rejects a wrong key with HTTP 403 only after about 50 s (3 of 3 probes).
 10. **Uniswap addresses** were checked against the official deployment pages on 2026-11-26 (the docs now redirect to `developers.uniswap.org`); all 12 match, so there is no address deviation.
-11. **Inspector version.** Check 3 and 4 used Inspector v1 CLI (the version `npx` resolved; it prints a deprecation notice). Results do not depend on it.
+11. **Reference sources swapped in checks 1 and 2.** Check 1 uses the GeckoTerminal API (cross-checked with DexScreener) instead of the Uniswap app, and check 2 uses `cast call balanceOf` at the same block instead of a block explorer. Reason: the Uniswap app is JavaScript-rendered and cannot be read from a script, and no Etherscan key is configured. The check 2 reference is independent of the server's code path but not of the RPC provider.
+12. **Inspector version.** Check 3 and 4 used Inspector v1 CLI (the version `npx` resolved; it prints a deprecation notice). Results do not depend on it.
 
 ## Open issues carried forward
 
@@ -91,9 +93,8 @@ Other:
 
 - Tenderly plan quota is unknown (no rate-limit headers; the pricing page says the Free plan has no API access, yet the key works). Owner to confirm the monthly simulation allowance before the phase 6 live suite runs often.
 - `get_pool_state` description is accurate for this phase (latest block, Uniswap v3 only, token balances, spot price in both directions, `price0In1` definition, spot price is not a USD price). It does not say that `usd0`, `usd1` and `tvlUsd` are always `null` until prices arrive in phase 1; consider adding that sentence then.
-- A DNS or connection failure to the RPC is reported as `UPSTREAM_ERROR` with `retryable: false`; consider whether a transient network failure should be retryable.
 - `src/index.ts`, `src/transports/stdio.ts` and the HTTP wiring in `index.ts` have no automated test (coverage excludes them); they were exercised through the checks above and the spawned-process e2e tests.
-- Minor, deferred from review: `docs/spikes/provider-capabilities.md` contains "Fix round 1" process tags in two table rows; other docs that quote `pnpm test:fork` may lack the new flag; the `RERECORD_HINT` text is verbose; duplicated `isString`, `isNumber`, `isBigint` and `success` helpers in `erc20/tokens.ts` and `uniswap/pool.ts` could move to a shared module.
+- Minor, deferred from review: other docs that quote `pnpm test:fork` may lack the new flag; the `RERECORD_HINT` text is verbose; duplicated `isString`, `isNumber`, `isBigint` and `success` helpers in `erc20/tokens.ts` and `uniswap/pool.ts` could move to a shared module.
 - Graphical MCP Inspector demonstration is owner-run and optional.
 
 ## Owner sign-off

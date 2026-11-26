@@ -3,7 +3,7 @@
 # Client: raw JSON-RPC lines on stdin: initialize, notifications/initialized, tools/call get_pool_state {chain: ethereum, pool: 0x88e6...5640}
 
 ## stdout (protocol frames)
-{"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"<REDACTED>","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
+{"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"defi-lens-mcp","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
 {"result":{"content":[{"type":"text","text":"{\"code\":\"UPSTREAM_ERROR\",\"message\":\"HTTP request failed.\",\"retryable\":false}"}],"isError":true},"jsonrpc":"2.0","id":2}
 
 ## stderr (logs)
