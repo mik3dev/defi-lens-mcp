@@ -1,0 +1,16 @@
+{
+  "block": "26499763",
+  "blockTimestamp": "1795700795",
+  "feed": "0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419",
+  "decimals": 8,
+  "roundId": "129127208515966897729",
+  "answer": "170208549492",
+  "startedAt": "1795700522",
+  "updatedAt": "1795700543",
+  "answeredInRound": "129127208515966897729",
+  "usd": "1702.08549492",
+  "commands": [
+    "cast call 0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419 \"latestRoundData()(uint80,int256,uint256,uint256,uint80)\" --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast block 26499763 --field timestamp --rpc-url \"$RPC_URL_ETHEREUM\""
+  ]
+}
