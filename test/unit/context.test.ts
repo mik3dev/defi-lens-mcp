@@ -38,6 +38,13 @@ describe('createContext', () => {
     expect(ctx.indexerClients.base?.transport.url).toBe('https://base-mainnet.g.alchemy.com/v2/k');
   });
 
+  it('points indexer clients at the given test URLs instead of Alchemy', () => {
+    const ctx = testContext({}, { alchemyApiKey: 'k' }, { indexerUrls: { base: 'http://local' } });
+    expect(Object.keys(ctx.indexerClients)).toEqual(['base']);
+    expect(ctx.indexerClients.base?.transport.url).toBe('http://local');
+    expect(ctx.indexerClients.base?.chain?.id).toBe(8453);
+  });
+
   it('counts upstream HTTP requests inside a request scope', async () => {
     ep = await startReplayServer(recording);
     const ctx = testContext({ ethereum: ep.rpcUrl });

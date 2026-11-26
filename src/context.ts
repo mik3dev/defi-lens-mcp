@@ -26,7 +26,8 @@ function countUpstreamRequest(): void {
   if (store) store.upstreamRequests += 1;
 }
 
-function createClient(chain: ChainId, url: string): PublicClient {
+/** A chain client with the server's transport settings (no batching, retries, request counting). */
+export function createClient(chain: ChainId, url: string): PublicClient {
   return createPublicClient({
     chain: CHAINS[chain].viemChain,
     // batch off: one JSON-RPC request per HTTP request, so requests are deterministic and replayable.
