@@ -50,4 +50,20 @@ describe('TtlCache', () => {
     await expect(c.wrap('k', 1000, fn)).resolves.toBe('ok');
     expect(fn).toHaveBeenCalledTimes(2);
   });
+  it('distinguishes a stored undefined from a miss with has()', () => {
+    const c = new TtlCache(10);
+    c.set('u', undefined, 1000);
+    expect(c.has('u')).toBe(true);
+    expect(c.get('u')).toBeUndefined();
+    expect(c.has('missing')).toBe(false);
+    vi.advanceTimersByTime(1001);
+    expect(c.has('u')).toBe(false);
+  });
+  it('wrap treats a cached undefined as a hit', async () => {
+    const c = new TtlCache(10);
+    const fn = vi.fn(async () => undefined);
+    await c.wrap('k', 1000, fn);
+    await expect(c.wrap('k', 1000, fn)).resolves.toBeUndefined();
+    expect(fn).toHaveBeenCalledTimes(1);
+  });
 });
