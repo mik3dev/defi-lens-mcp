@@ -67,6 +67,14 @@ describe('toAppError', () => {
       message: e.shortMessage,
     });
   });
+  it('sanitizes and bounds upstream messages', () => {
+    const e = new BaseError(`bad\u0000\n${'x'.repeat(500)}`);
+    const msg = toAppError(e).message;
+    expect(msg).not.toMatch(/\p{C}/u);
+    expect(msg.startsWith('badx')).toBe(true);
+    expect(msg.length).toBeLessThanOrEqual(200);
+    expect(toAppError(e).cause).toBe(e);
+  });
   it('hides unknown errors', () => {
     expect(toAppError(new Error('boom https://h/v2/KEY'))).toMatchObject({
       code: 'INTERNAL',

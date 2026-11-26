@@ -33,6 +33,13 @@ function isRetryableHttp(status: number | undefined): boolean {
   return status !== undefined && (status === 429 || status >= 500);
 }
 
+const MAX_UPSTREAM_MESSAGE = 200;
+
+// Upstream text is untrusted: drop control characters and cap the length. Secret redaction happens in runTool.
+function cleanUpstreamMessage(text: string): string {
+  return text.replace(/\p{C}/gu, '').slice(0, MAX_UPSTREAM_MESSAGE);
+}
+
 function fromViem(e: BaseError): AppError {
   if (e.walk((err) => err instanceof TimeoutError) instanceof TimeoutError) {
     return new AppError('UPSTREAM_TIMEOUT', 'Upstream request timed out', {
@@ -42,12 +49,12 @@ function fromViem(e: BaseError): AppError {
   }
   const http = e.walk((err) => err instanceof HttpRequestError);
   if (http instanceof HttpRequestError) {
-    return new AppError('UPSTREAM_ERROR', e.shortMessage, {
+    return new AppError('UPSTREAM_ERROR', cleanUpstreamMessage(e.shortMessage), {
       retryable: isRetryableHttp(http.status),
       cause: e,
     });
   }
-  return new AppError('UPSTREAM_ERROR', e.shortMessage, { cause: e });
+  return new AppError('UPSTREAM_ERROR', cleanUpstreamMessage(e.shortMessage), { cause: e });
 }
 
 /** Maps any thrown value to an AppError whose message is safe to return to clients. */
