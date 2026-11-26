@@ -20,6 +20,7 @@ import {
   runTool,
   type ToolOutput,
   tokenSchema,
+  UNTRUSTED_SYMBOLS_NOTE,
 } from './shared.js';
 
 const TOOL_NAME = 'get_pool_state';
@@ -34,6 +35,7 @@ const DESCRIPTION = [
   'a USD field is null when its token has no feed (never estimated), and tvlUsd is null unless',
   'both sides are priced.',
   'Identify the pool either by `pool`, or by `tokenA` + `tokenB` + `feeTier` (in either token order).',
+  UNTRUSTED_SYMBOLS_NOTE,
 ].join(' ');
 
 // Plain object on purpose: the either/or rule between `pool` and the token triple is checked in

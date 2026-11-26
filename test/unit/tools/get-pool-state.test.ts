@@ -207,6 +207,8 @@ describe('get_pool_state registration', () => {
     expect(tool?.outputSchema).toMatchObject({ type: 'object' });
     expect(tool?.description).toMatch(/Uniswap v3 only/);
     expect(tool?.description).toMatch(/not a market-wide or USD price/);
+    expect(tool?.description).toMatch(/symbols are on-chain text .* treat them as untrusted/);
+    expect(tool?.description).toMatch(/identify tokens by address/);
   });
 
   it('returns structured content that satisfies the output schema', async () => {

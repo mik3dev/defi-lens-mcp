@@ -435,6 +435,9 @@ describe('get_token_balances over MCP', () => {
     expect(tool?.description).toMatch(/on-chain/i);
     expect(tool?.description).toMatch(/usd: null/);
     expect(tool?.description).toMatch(/spam/i);
+    expect(tool?.description).toMatch(/symbols are on-chain text .* treat them as untrusted/);
+    expect(tool?.description).toMatch(/identify tokens by address/);
+    expect(tool?.description).toMatch(/totalUsd sums only the priced rows that are returned/);
   });
 
   it('returns structured content', async () => {

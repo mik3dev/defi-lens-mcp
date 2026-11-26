@@ -20,6 +20,7 @@ import {
   runTool,
   type ToolOutput,
   tokenSchema,
+  UNTRUSTED_SYMBOLS_NOTE,
 } from './shared.js';
 
 const TOOL_NAME = 'get_token_balances';
@@ -37,7 +38,8 @@ const DESCRIPTION = [
   'The native balance is always included. USD prices come from Chainlink feeds; tokens without a',
   'feed are returned with usd: null. Discovered lists can include spam or airdropped tokens.',
   `Rows are sorted native first, then by USD value, then by symbol; at most \`maxTokens\` token rows`,
-  `(default ${DEFAULT_MAX_TOKENS}) are returned.`,
+  `(default ${DEFAULT_MAX_TOKENS}) are returned. totalUsd sums only the priced rows that are returned.`,
+  UNTRUSTED_SYMBOLS_NOTE,
 ].join(' ');
 
 const NO_DISCOVERY_WARNING =
