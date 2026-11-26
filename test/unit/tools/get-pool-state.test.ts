@@ -1,11 +1,12 @@
 import { Client } from '@modelcontextprotocol/client';
 import { InMemoryTransport, McpServer } from '@modelcontextprotocol/server';
-import type { Address } from 'viem';
+import { type Address, encodeAbiParameters, type Hex } from 'viem';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { AppContext } from '../../../src/context.js';
+import { FEEDS } from '../../../src/protocols/chainlink/feeds.js';
 import { getPoolState, register } from '../../../src/tools/get-pool-state.js';
 import { testContext } from '../../helpers/context.js';
-import { type FakeChain, startFakeChain } from '../../helpers/fake-chain.js';
+import { type FakeChain, type FakeContract, startFakeChain } from '../../helpers/fake-chain.js';
 import {
   FACTORY,
   fakeFactory,
@@ -54,6 +55,58 @@ function textOf(result: { content?: unknown }): string {
   const content = result.content as { type: string; text: string }[];
   return content[0]?.text ?? '';
 }
+
+const NOW = 100_000n;
+const LATEST_ROUND_DATA: Hex = '0xfeaf968c';
+
+function feedOf(token: Address): Address {
+  const config = FEEDS.ethereum[token.toLowerCase()];
+  if (!config) throw new Error(`no feed for ${token}`);
+  return config.feed;
+}
+
+function feed(answer: bigint, updatedAt: bigint): FakeContract {
+  const types = ['uint80', 'int256', 'uint256', 'uint256', 'uint80'].map((type) => ({ type }));
+  const round = encodeAbiParameters(types, [1n, answer, updatedAt, updatedAt, 1n]);
+  return { decimals: 8, raw: { [LATEST_ROUND_DATA]: round } };
+}
+
+/** USDC/WETH pool (2500 USDC, 1 WETH) with the given Chainlink feeds. */
+async function pricedContext(feeds: Record<Address, FakeContract>): Promise<AppContext> {
+  chain = await startFakeChain({
+    blockNumber: BLOCK_NUMBER,
+    timestamp: NOW,
+    contracts: { [POOL]: fakePool(), ...fakeTokens(2_500_000_000n, 10n ** 18n), ...feeds },
+  });
+  return testContext({ ethereum: chain.rpcUrl });
+}
+
+describe('getPoolState USD values', () => {
+  const usdcFeed = { [feedOf(USDC)]: feed(10n ** 8n, NOW) };
+  const wethFeed = (updatedAt: bigint) => ({ [feedOf(WETH)]: feed(2000n * 10n ** 8n, updatedAt) });
+
+  it('values both sides and sums the TVL', async () => {
+    const ctx = await pricedContext({ ...usdcFeed, ...wethFeed(NOW) });
+    const out = await getPoolState(ctx, { chain: 'ethereum', pool: POOL });
+    expect(out.data.reserves).toMatchObject({ usd0: 2500, usd1: 2000 });
+    expect(out.data.tvlUsd).toBe(4500);
+    expect(out.warnings).toEqual([]);
+  });
+
+  it('leaves the TVL null when one side has no price', async () => {
+    const ctx = await pricedContext(wethFeed(NOW));
+    const out = await getPoolState(ctx, { chain: 'ethereum', pool: POOL });
+    expect(out.data.reserves).toMatchObject({ usd0: null, usd1: 2000 });
+    expect(out.data.tvlUsd).toBeNull();
+  });
+
+  it('warns about a stale feed but still values the side', async () => {
+    const ctx = await pricedContext({ ...usdcFeed, ...wethFeed(NOW - 5_000n) });
+    const out = await getPoolState(ctx, { chain: 'ethereum', pool: POOL });
+    expect(out.data.tvlUsd).toBe(4500);
+    expect(out.warnings).toEqual(['price feed stale: WETH']);
+  });
+});
 
 describe('getPoolState input rules', () => {
   // No clients configured: any rule that reached the chain would fail with CHAIN_NOT_CONFIGURED.
