@@ -2,15 +2,13 @@ import type { Address } from 'viem';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import type { Config } from '../../src/config.js';
 import { startHttp } from '../../src/transports/http.js';
-import { chainEndpoint, hasRecording, hasRpc } from '../helpers/chain-endpoint.js';
+import { chainEndpoint } from '../helpers/chain-endpoint.js';
 import { testContext } from '../helpers/context.js';
 import { connectHttp } from '../helpers/mcp-client.js';
 
 const USDC_WETH_005: Address = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640';
 const POOL_FIXTURE = 'e2e-pool-state';
 const TOKEN = 'e2e-token-0123456789';
-// Never contacted by the offline tests.
-const UNUSED_RPC_URL = 'http://127.0.0.1:9';
 const HTTP_OVERRIDES: Partial<Config> = {
   transport: 'http',
   host: '127.0.0.1',
@@ -19,17 +17,14 @@ const HTTP_OVERRIDES: Partial<Config> = {
   secrets: [TOKEN],
 };
 
-// Recorded-chain call: skips cleanly until e2e-pool-state is recorded; remove the guard then.
-const canCallPool = hasRpc() || hasRecording(POOL_FIXTURE);
-
 describe('http protocol', () => {
   let http: Awaited<ReturnType<typeof startHttp>>;
-  let endpoint: Awaited<ReturnType<typeof chainEndpoint>> | undefined;
+  let endpoint: Awaited<ReturnType<typeof chainEndpoint>>;
   let base: string;
 
   beforeAll(async () => {
-    endpoint = canCallPool ? await chainEndpoint('ethereum', POOL_FIXTURE) : undefined;
-    const ctx = testContext({ ethereum: endpoint?.rpcUrl ?? UNUSED_RPC_URL }, HTTP_OVERRIDES);
+    endpoint = await chainEndpoint('ethereum', POOL_FIXTURE);
+    const ctx = testContext({ ethereum: endpoint.rpcUrl }, HTTP_OVERRIDES);
     http = await startHttp(ctx);
     base = `http://127.0.0.1:${http.port}`;
   }, 120_000);
@@ -79,7 +74,7 @@ describe('http protocol', () => {
     }
   });
 
-  it.skipIf(!canCallPool)('calls a tool with a valid token', async () => {
+  it('calls a tool with a valid token', async () => {
     const client = await connectHttp(`${base}/mcp`, TOKEN);
     try {
       const result = await client.callTool({

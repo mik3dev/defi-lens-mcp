@@ -1,7 +1,7 @@
 import { AjvJsonSchemaValidator } from '@modelcontextprotocol/client/validators/ajv';
 import type { Address } from 'viem';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { chainEndpoint, hasRecording, hasRpc } from '../helpers/chain-endpoint.js';
+import { chainEndpoint } from '../helpers/chain-endpoint.js';
 import { connectStdio, runToExit, type StdioSession } from '../helpers/mcp-client.js';
 
 const USDC_WETH_005: Address = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640';
@@ -82,8 +82,7 @@ describe('stdio startup', () => {
   });
 });
 
-// Skips cleanly until the recording exists; remove the guard once e2e-pool-state is recorded.
-describe.skipIf(!hasRpc() && !hasRecording(POOL_FIXTURE))('stdio protocol (recorded chain)', () => {
+describe('stdio protocol (recorded chain)', () => {
   let endpoint: Awaited<ReturnType<typeof chainEndpoint>> | undefined;
   let session: StdioSession;
 

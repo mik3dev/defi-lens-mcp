@@ -10,6 +10,7 @@ import {
   type Transport,
 } from '@modelcontextprotocol/client';
 
+const RUN_TO_EXIT_TIMEOUT_MS = 10_000;
 const ENTRY = fileURLToPath(new URL('../../dist/index.js', import.meta.url));
 
 export interface StdioSession {
@@ -116,8 +117,18 @@ export function runToExit(
     child.stderr?.on('data', (c: string) => {
       stderr += c;
     });
-    child.on('error', reject);
-    child.on('close', (code) => resolve({ code, stderr }));
+    const timer = setTimeout(() => {
+      child.kill('SIGKILL');
+      reject(new Error(`server did not exit within ${RUN_TO_EXIT_TIMEOUT_MS} ms`));
+    }, RUN_TO_EXIT_TIMEOUT_MS);
+    child.on('error', (e) => {
+      clearTimeout(timer);
+      reject(e);
+    });
+    child.on('close', (code) => {
+      clearTimeout(timer);
+      resolve({ code, stderr });
+    });
   });
 }
 
