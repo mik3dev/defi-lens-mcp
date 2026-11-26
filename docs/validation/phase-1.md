@@ -17,9 +17,9 @@
 | Replay from the recordings, no RPC variables | `env -u ALCHEMY_API_KEY -u RPC_URL_ETHEREUM -u RPC_URL_BASE -u RPC_URL_ARBITRUM -u RPC_URL_POLYGON pnpm test` | Pass at `24bbbc1`, after the re-record: `Test Files 30 passed (30)`, `Tests 326 passed (326)`, 0 skipped, 4.2 s |
 | Live provider suite | `pnpm test:live` | Not applicable: phase 1 added no live tests (`test/live/` does not exist) |
 | Secret scan | Script comparing every `.env` value whose name matches `KEY\|TOKEN\|RPC_URL\|TENDERLY` (longer than 8 characters) against every tracked and untracked, non-ignored file; prints variable names only. Plus a grep of the new docs for the Alchemy endpoint host and path patterns and for the local home path | 0 secret hits. The only match is `TENDERLY_PROJECT`, whose value is the public package name `defi-lens-mcp`. 0 hits for the URL and home-path patterns |
-| Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet. The tool descriptions for `get_token_balances` and the updated `get_pool_state` are written and appear in `tools/list` (`phase-1/stdio-tools-list.txt`) |
+| Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet. The tool descriptions for `get_token_balances` and the updated `get_pool_state` are written and appear in `tools/list` (`phase-1/stdio-tools-list.txt`, captured before the untrusted-symbol sentence was added in `77e8408`) |
 | CI green on the phase pull request | — | Pending: no pull request yet |
-| Code review of the phase diff | — | Pending: the whole-branch review runs after this record |
+| Code review of the phase diff | Whole-branch review `2333911..c50aa6d` | Pass: no critical findings; both important findings (discovery missing priced tokens on spam-heavy wallets, tool descriptions not marking symbols as untrusted) fixed in `82161a4` and `77e8408` and re-reviewed; the third important finding (hostile token exhausting multicall gas) and the remaining minors are listed under Open findings |
 | Owner sign-off | — | Pending |
 
 ## Validation
