@@ -193,6 +193,16 @@ describe('runTool', () => {
     expect(Number(lines[0]?.durationMs)).toBeGreaterThanOrEqual(0);
   });
 
+  it('logs only the failure when the success result cannot be built', async () => {
+    const { ctx, lines } = capturingContext();
+    const result = await runTool(ctx, 'test_tool', 'ethereum', async () =>
+      ok('ethereum', BLOCK, { n: 1n }),
+    ); // a bigint cannot be serialized to JSON
+    expect(errorPayload(result)).toMatchObject({ code: 'INTERNAL' });
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toMatchObject({ outcome: 'INTERNAL' });
+  });
+
   it('counts upstream requests per call even when calls overlap', async () => {
     server = await startRpcServer(async () => {
       await new Promise((resolve) => setTimeout(resolve, 5));

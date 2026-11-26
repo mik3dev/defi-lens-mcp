@@ -111,9 +111,9 @@ export async function runTool<T>(
   });
   return requestScope.run(scope, async () => {
     try {
-      const output = await fn(controller.signal);
+      const result = successResult(await fn(controller.signal));
       ctx.logger.info('tool call', { ...fields(), outcome: 'ok' });
-      return successResult(output);
+      return result;
     } catch (e) {
       const error = toAppError(e);
       const log = error.code === 'INTERNAL' ? ctx.logger.error : ctx.logger.warn;
