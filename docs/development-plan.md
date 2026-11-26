@@ -1,7 +1,5 @@
 # defi-lens-mcp Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** Build a read-only MCP server that exposes seven DeFi data tools (balances, Aave v3 positions, Uniswap v3 positions, pool state, swap quotes, large movements, transaction simulation) on Ethereum, Base, Arbitrum and Polygon, over stdio and authenticated Streamable HTTP.
 
 **Architecture:** A walking skeleton first (one tool, both transports, CI), then one tool per phase in dependency order. Tool handlers orchestrate; protocol readers under `src/protocols/` know contracts and math; external services (indexer, simulation, ABI lookup) live under `src/services/`; nothing below `src/tools/` knows about MCP. Every tool reads at one pinned block and returns a common envelope.

@@ -13,7 +13,7 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 ### Task 0.1: Scaffold and configuration
 
 **Files:**
-- Create: `package.json`, `tsconfig.json`, `tsconfig.build.json`, `biome.json`, `vitest.config.ts`, `.gitignore`, `.env.example`, `LICENSE` (MIT), `src/config.ts`
+- Create: `package.json`, `tsconfig.json`, `tsconfig.build.json`, `biome.json`, `vitest.config.ts`, `.gitignore`, `.env.example`, `src/config.ts` (`LICENSE` already exists)
 - Test: `test/unit/config.test.ts`
 
 **Interfaces:**
