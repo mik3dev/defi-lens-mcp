@@ -1,0 +1,17 @@
+# Public reference values for checks 2 and 6
+# Fetched 2026-11-26T21:18:55Z-21:18:56Z UTC, right after the live tool calls (no API key used)
+
+$ curl -s 'https://api.coingecko.com/api/v3/simple/price?ids=ethereum,wrapped-bitcoin,usd-coin,polygon-ecosystem-token&vs_currencies=usd&include_last_updated_at=true&precision=6'
+{"ethereum":{"usd":1702.807342,"last_updated_at":1795727924},"wrapped-bitcoin":{"usd":60810.217617,"last_updated_at":1795727924},"usd-coin":{"usd":0.999591,"last_updated_at":1795727913},"polygon-ecosystem-token":{"usd":0.077453,"last_updated_at":1795727924}}
+
+$ curl -s 'https://coins.llama.fi/prices/current/coingecko:ethereum,coingecko:wrapped-bitcoin,coingecko:usd-coin,coingecko:polygon-ecosystem-token,arbitrum:0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f'
+{"coins":{"coingecko:ethereum":{"price":1703.0414606,"symbol":"ETH","timestamp":1795727890,"confidence":0.999},"coingecko:wrapped-bitcoin":{"price":60796.729478199995,"symbol":"WBTC","timestamp":1795727890,"confidence":0.999},"coingecko:usd-coin":{"price":0.9998486013999999,"symbol":"USDC","timestamp":1795727890,"confidence":0.999},"coingecko:polygon-ecosystem-token":{"price":0.07745614349999999,"symbol":"POL","timestamp":1795727890,"confidence":0.999},"arbitrum:0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f":{"decimals":8,"symbol":"WBTC","price":60814.38951915831,"timestamp":1795727523,"confidence":0.99}}}
+
+$ curl -s 'https://api.geckoterminal.com/api/v2/networks/eth/pools/0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640'  # selected attributes
+{"address":"0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640","name":"WETH / USDC 0.05%","reserve_in_usd":"69156299.9659","base_token_price_usd":"1702.48","quote_token_price_usd":"0.997810492811321"}
+
+# Fetched 2026-11-26T21:24:30Z UTC
+$ curl -s https://yields.llama.fi/pools  # filtered: chain Ethereum, project uniswap-v3, symbol USDC-WETH, poolMeta 0.05%
+{"symbol":"USDC-WETH","poolMeta":"0.05%","tvlUsd":69192781,"underlyingTokens":["0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"]}
+
+# data.chain.link feed pages (e.g. /feeds/ethereum/mainnet/eth-usd) answered HTTP 429 with a "Vercel Security Checkpoint" page to scripted requests, so they were not used.

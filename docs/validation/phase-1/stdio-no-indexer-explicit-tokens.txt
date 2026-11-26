@@ -1,0 +1,82 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_token_balances --tool-arg chain=ethereum --tool-arg address=0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489 --tool-arg 'tokens=["0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48","0xdAC17F958D2ee523a2206206994597C13D831ec7","0x514910771AF9Ca656af840dff83E8264EcF986CA"]'
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON set (values not shown), ALCHEMY_API_KEY unset
+
+Warning: 2 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26502041\",\"blockTimestamp\":\"2026-11-26T21:24:11.000Z\",\"data\":{\"address\":\"0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489\",\"discovery\":\"explicit\",\"balances\":[{\"token\":{\"address\":\"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE\",\"symbol\":\"ETH\",\"decimals\":18},\"balance\":{\"raw\":\"1220494875405186557374578\",\"formatted\":\"1220494.875405186557374578\",\"decimals\":18},\"usd\":2076549981.0143845,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0x514910771AF9Ca656af840dff83E8264EcF986CA\",\"symbol\":\"LINK\",\"decimals\":18},\"balance\":{\"raw\":\"8412221515202863353762730\",\"formatted\":\"8412221.51520286335376273\",\"decimals\":18},\"usd\":78400418.25039338,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\"symbol\":\"USDC\",\"decimals\":6},\"balance\":{\"raw\":\"10005273\",\"formatted\":\"10.005273\",\"decimals\":6},\"usd\":10.003972714720922,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xdAC17F958D2ee523a2206206994597C13D831ec7\",\"symbol\":\"USDT\",\"decimals\":6},\"balance\":{\"raw\":\"10000000\",\"formatted\":\"10\",\"decimals\":6},\"usd\":9.9876,\"priceSource\":\"chainlink\"}],\"totalUsd\":2154950419.25635},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "ethereum",
+    "blockNumber": "26502041",
+    "blockTimestamp": "2026-11-26T21:24:11.000Z",
+    "data": {
+      "address": "0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489",
+      "discovery": "explicit",
+      "balances": [
+        {
+          "token": {
+            "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "symbol": "ETH",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1220494875405186557374578",
+            "formatted": "1220494.875405186557374578",
+            "decimals": 18
+          },
+          "usd": 2076549981.0143845,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+            "symbol": "LINK",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "8412221515202863353762730",
+            "formatted": "8412221.51520286335376273",
+            "decimals": 18
+          },
+          "usd": 78400418.25039338,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "symbol": "USDC",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "10005273",
+            "formatted": "10.005273",
+            "decimals": 6
+          },
+          "usd": 10.003972714720922,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "10000000",
+            "formatted": "10",
+            "decimals": 6
+          },
+          "usd": 9.9876,
+          "priceSource": "chainlink"
+        }
+      ],
+      "totalUsd": 2154950419.25635
+    },
+    "warnings": []
+  }
+}
+# exit code 0, wall time 3.1 s (includes npx and server startup)

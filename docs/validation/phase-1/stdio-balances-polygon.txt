@@ -1,0 +1,743 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_token_balances --tool-arg chain=polygon --tool-arg address=0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 2 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"polygon\",\"blockNumber\":\"98014970\",\"blockTimestamp\":\"2026-11-26T21:18:49.000Z\",\"data\":{\"address\":\"0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489\",\"discovery\":\"indexer\",\"balances\":[{\"token\":{\"address\":\"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE\",\"symbol\":\"POL\",\"decimals\":18},\"balance\":{\"raw\":\"89474420883951140\",\"formatted\":\"0.08947442088395114\",\"decimals\":18},\"usd\":0.006934536041768865,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359\",\"symbol\":\"USDC\",\"decimals\":6},\"balance\":{\"raw\":\"3480000\",\"formatted\":\"3.48\",\"decimals\":6},\"usd\":3.4795828176000003,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xc2132D05D31c914a87C6611C10748AEb04B58e8F\",\"symbol\":\"USDT0\",\"decimals\":6},\"balance\":{\"raw\":\"30000\",\"formatted\":\"0.03\",\"decimals\":6},\"usd\":0.0299623296,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xAE2A285A89D73313d29725aA3984BbE1eD9c9b0D\",\"symbol\":\"&#x2705; Exchange at https://tru\",\"decimals\":18},\"balance\":{\"raw\":\"50000000000000000000\",\"formatted\":\"50\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x445936754C57ee260B2F20ba2D8235C5aabb4938\",\"symbol\":\"$ ACCESS [ETHENA-ETH.ORG] TO CLA\",\"decimals\":0},\"balance\":{\"raw\":\"3000\",\"formatted\":\"3000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xa107CCbcCFfE29F969897Cff455D6C10C386be1f\",\"symbol\":\"$ ACCESS ON: ethena-ethen.com\",\"decimals\":0},\"balance\":{\"raw\":\"6600\",\"formatted\":\"6600\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xA343D4B8DFa666e2061AbB7fa906eb308FCFB8a7\",\"symbol\":\"$ CLAIM ON: [ RETIK.FARM ]\",\"decimals\":0},\"balance\":{\"raw\":\"8750\",\"formatted\":\"8750\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x89C39692E916f10356F28656E31D8404A9279d4f\",\"symbol\":\"$ CLAIM ON: eth-ethens.com\",\"decimals\":0},\"balance\":{\"raw\":\"8000\",\"formatted\":\"8000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3fD4bE8a53FFc39B36920c3a3De77DB361cc8B5F\",\"symbol\":\"$ CLAIM ON: ethena-ethen.com\",\"decimals\":0},\"balance\":{\"raw\":\"8400\",\"formatted\":\"8400\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x6bF52D9e88c033D30272d590eDF22CEf6ae448fF\",\"symbol\":\"$ CLAIM ON: ethena-ethen.com\",\"decimals\":0},\"balance\":{\"raw\":\"5000\",\"formatted\":\"5000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x70bE1d89B943214AaD9CBF9dD0c6e4F2D66b6A4E\",\"symbol\":\"$ CLAIM ON: ethena-ethen.com\",\"decimals\":0},\"balance\":{\"raw\":\"5000\",\"formatted\":\"5000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xA91E1347d661465554Fe694D8fA2197A4BC3Dc6f\",\"symbol\":\"$ CLAIM ON: ether-ethena.com\",\"decimals\":0},\"balance\":{\"raw\":\"8800\",\"formatted\":\"8800\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x02dDf08D99C77358436F8121859fE565034b4908\",\"symbol\":\"$ Visit blasdot.com to claim rew\",\"decimals\":0},\"balance\":{\"raw\":\"3000\",\"formatted\":\"3000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xB05DD674CA012e157fcABe4C6620f0ee222A8d60\",\"symbol\":\"$ YOUR LIDO ON:lid-ethen.com .\",\"decimals\":18},\"balance\":{\"raw\":\"14000000000000000000000\",\"formatted\":\"14000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x489e93e7e2d90A8e3552D6862d757b1088803094\",\"symbol\":\"$BASE Visit WWW.BASETERMINAL.SHO\",\"decimals\":18},\"balance\":{\"raw\":\"18506770000000000000000\",\"formatted\":\"18506.77\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x803Bdb1d11c5cA39054a9591d849bcbeC055378C\",\"symbol\":\"$BASE Visit WWW.BASETERMINAL.SHO\",\"decimals\":18},\"balance\":{\"raw\":\"120000000000000000000000\",\"formatted\":\"120000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xFa2AC74870Fcf696c58194E897c1A073B891e6ef\",\"symbol\":\"$RPL Visit WWW.ROCKET-POOL.XYZ t\",\"decimals\":18},\"balance\":{\"raw\":\"55520310000000000000000\",\"formatted\":\"55520.31\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x44dDc8eEe163e8354F9d0dF86c212090eD81e941\",\"symbol\":\"$SHIB СLАlМ▷shibe-reum.com\",\"decimals\":0},\"balance\":{\"raw\":\"5000\",\"formatted\":\"5000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xa72062CC6608b6E3eeE329BaAaACF3a063FaA257\",\"symbol\":\"$Visit Reward at [ airdrop.li ]\",\"decimals\":18},\"balance\":{\"raw\":\"600000000000000000000\",\"formatted\":\"600\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xb7420c58D162e2eC3fea5cbC8d45e93a4f33F7e0\",\"symbol\":\"10000 ZKsync airdrop claim [ zks\",\"decimals\":18},\"balance\":{\"raw\":\"10000000000000000000000\",\"formatted\":\"10000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xD87C6F92570A3885aC410Ff9A48C8EC037d12758\",\"symbol\":\"5 ETH AT ETHERI.ORG\",\"decimals\":18},\"balance\":{\"raw\":\"5000000000000000000\",\"formatted\":\"5\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x70ef963a9A9B6Ff539ec91afA887427265235f90\",\"symbol\":\"5400$ Airdrop https://t.ly/aerod\",\"decimals\":18},\"balance\":{\"raw\":\"5000000000000000000000\",\"formatted\":\"5000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xC45c40db5e8c1b80E607EAD90675Ff9A3Bb1CF25\",\"symbol\":\"5400$ claim mantra-ethen.top\",\"decimals\":18},\"balance\":{\"raw\":\"5400000000000000000000\",\"formatted\":\"5400\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x18AdfA6b92c435E018425275b5CDa400755FB29D\",\"symbol\":\"AAVE [ACCESS AAVE.ASIA]\",\"decimals\":0},\"balance\":{\"raw\":\"43767\",\"formatted\":\"43767\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x795f58a21563C9Cd918b3723dCf8aAF04d41724f\",\"symbol\":\"ACCESS [ RETIK.UNO ] TO CLAIM AI\",\"decimals\":0},\"balance\":{\"raw\":\"36845\",\"formatted\":\"36845\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xb1b696a7d415b4951dFaAE9Fd1c16083cAb65247\",\"symbol\":\"ACCESS [BONKCOIN.VIP] TO CLAIM Y\",\"decimals\":0},\"balance\":{\"raw\":\"714707\",\"formatted\":\"714707\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x000a2c95daF00F01a9cce79599cbD7Daa31463F4\",\"symbol\":\"ACCESS [ETHENAUSD.APP] TO CLAIM\",\"decimals\":0},\"balance\":{\"raw\":\"8400\",\"formatted\":\"8400\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x28a7750966F9ac9caa24E303520D73c25AAae89e\",\"symbol\":\"ACCESS [ETHNA.CC] TO CLAIM\",\"decimals\":0},\"balance\":{\"raw\":\"9543\",\"formatted\":\"9543\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x8cf751d8C61d95E23de77696eaE4fc7d305910b7\",\"symbol\":\"ACCESS [LIDO.DOG] TO CLAIM\",\"decimals\":0},\"balance\":{\"raw\":\"4376\",\"formatted\":\"4376\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xc69dBb601ff1228539873698C7D913CD89071d28\",\"symbol\":\"Active Voucher on bigbossgarment\",\"decimals\":18},\"balance\":{\"raw\":\"1000000000000000000\",\"formatted\":\"1\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x018d0170F4Dc2918A71CeC49FC8e6Af8222b42E5\",\"symbol\":\"AETH [ WWW.20ETH.EU ] Visit To c\",\"decimals\":0},\"balance\":{\"raw\":\"20\",\"formatted\":\"20\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3840aC180b83e3ebe66daAdeCC82D6Dd25c3Bbe7\",\"symbol\":\"Aethir\",\"decimals\":18},\"balance\":{\"raw\":\"82000000000000000000000\",\"formatted\":\"82000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xe5318FcAC780a239B46dF07d7a59D19c6ffA3034\",\"symbol\":\"Aethir\",\"decimals\":18},\"balance\":{\"raw\":\"1421001000000000000000000\",\"formatted\":\"1421001\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x4A8DF960a6734f052eB2843EedFd88137171c2fc\",\"symbol\":\"ALM\",\"decimals\":18},\"balance\":{\"raw\":\"50000000000000000000000\",\"formatted\":\"50000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x9a1C69D8277489B74C8C93671Dd1c1d17Dda802A\",\"symbol\":\"ARZ\",\"decimals\":6},\"balance\":{\"raw\":\"1000\",\"formatted\":\"0.001\",\"decimals\":6},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x137933eF42be4EF1Bcfdd513E4bEddEf7ABf27D6\",\"symbol\":\"asdasdasdas\",\"decimals\":18},\"balance\":{\"raw\":\"248440000000000000000\",\"formatted\":\"248.44\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x42Db38e4B1dC309E52a4B9BB32E276fEb9ce4968\",\"symbol\":\"BABY FLOKI CEO (Oficial)\",\"decimals\":18},\"balance\":{\"raw\":\"100139725000000000000\",\"formatted\":\"100.139725\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x7E20a12C3EA281d8b7e1D983aCBc5b6A648F733C\",\"symbol\":\"BETH [ https://8eth.pages.dev/ ]\",\"decimals\":18},\"balance\":{\"raw\":\"1000000000000000000000000\",\"formatted\":\"1000000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x60a4EfeA2DdcB6796408deB34Ba799BB40EFfaC7\",\"symbol\":\"bigbossgarments.com\",\"decimals\":18},\"balance\":{\"raw\":\"1000000000000000000000000000\",\"formatted\":\"1000000000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x7a05aC37122c13690cCBC2A21C679850f5a0eFEB\",\"symbol\":\"bigbossgarments.com\",\"decimals\":18},\"balance\":{\"raw\":\"100000000000000000000000\",\"formatted\":\"100000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xa429d00f5b3D304D9Eb2a6c0CCC7d7232364d59b\",\"symbol\":\"bigbossgarments.com\",\"decimals\":18},\"balance\":{\"raw\":\"10000000000000000000000\",\"formatted\":\"10000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x165DCF223f7847229e1a85897AB3d68A6A7e6226\",\"symbol\":\"bigbossgarments.com | &#x2705; V\",\"decimals\":18},\"balance\":{\"raw\":\"100000000000000000000000\",\"formatted\":\"100000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x76508EF58B3B7B04e283adBFc968BcE110FD76fD\",\"symbol\":\"BIO\",\"decimals\":18},\"balance\":{\"raw\":\"9998000000000000000\",\"formatted\":\"9.998\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xe6818f9516f413B5F56fd298fb1a6FbbE55DDc58\",\"symbol\":\"BLADE\",\"decimals\":18},\"balance\":{\"raw\":\"9980000000000000000\",\"formatted\":\"9.98\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x624859c7f6F9aB89725b25dB36d42379eaE3Fa7B\",\"symbol\":\"BLOCKADE\",\"decimals\":18},\"balance\":{\"raw\":\"100000000000000000000\",\"formatted\":\"100\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x19290bDc316d3a9019B86E81C88bf27e3Afe01d8\",\"symbol\":\"BONUS $56,000 SHIB - SHIBE-REUM.\",\"decimals\":0},\"balance\":{\"raw\":\"5000\",\"formatted\":\"5000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xdC8282FcDe3B35C50Cf2D273d829C7Ee114b2f25\",\"symbol\":\"BOS\",\"decimals\":18},\"balance\":{\"raw\":\"1938000000000000000000\",\"formatted\":\"1938\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xf6c485FF64ff249b37946F49b497E3B210b3Fb19\",\"symbol\":\"Bridge at https://driftsprotocol\",\"decimals\":18},\"balance\":{\"raw\":\"500000000000000000000000\",\"formatted\":\"500000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x1826aE6A78e98Ef5b97F4feea5546F23FB7edD2A\",\"symbol\":\"bridge for 12000 $POL (polclaim.\",\"decimals\":18},\"balance\":{\"raw\":\"14500000000000000000000\",\"formatted\":\"14500\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xB0108F344a5574a4b630Dce58b6f2B79c2D0Ab92\",\"symbol\":\"bridge for 12000 $POL (polclaim.\",\"decimals\":18},\"balance\":{\"raw\":\"14500000000000000000000\",\"formatted\":\"14500\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x8A6209fb14b092159106B65fBd341eF2DE8ACe5B\",\"symbol\":\"CBDC\",\"decimals\":18},\"balance\":{\"raw\":\"9998000000000000000\",\"formatted\":\"9.998\",\"decimals\":18},\"usd\":null,\"priceSource\":null}],\"totalUsd\":3.5164796832417693},\"warnings\":[\"Skipped 1 tokens that are not readable ERC-20 contracts.\",\"Showing 50 of 153 tokens.\"]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "polygon",
+    "blockNumber": "98014970",
+    "blockTimestamp": "2026-11-26T21:18:49.000Z",
+    "data": {
+      "address": "0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489",
+      "discovery": "indexer",
+      "balances": [
+        {
+          "token": {
+            "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "symbol": "POL",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "89474420883951140",
+            "formatted": "0.08947442088395114",
+            "decimals": 18
+          },
+          "usd": 0.006934536041768865,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+            "symbol": "USDC",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "3480000",
+            "formatted": "3.48",
+            "decimals": 6
+          },
+          "usd": 3.4795828176000003,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+            "symbol": "USDT0",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "30000",
+            "formatted": "0.03",
+            "decimals": 6
+          },
+          "usd": 0.0299623296,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xAE2A285A89D73313d29725aA3984BbE1eD9c9b0D",
+            "symbol": "&#x2705; Exchange at https://tru",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "50000000000000000000",
+            "formatted": "50",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x445936754C57ee260B2F20ba2D8235C5aabb4938",
+            "symbol": "$ ACCESS [ETHENA-ETH.ORG] TO CLA",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "3000",
+            "formatted": "3000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xa107CCbcCFfE29F969897Cff455D6C10C386be1f",
+            "symbol": "$ ACCESS ON: ethena-ethen.com",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "6600",
+            "formatted": "6600",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xA343D4B8DFa666e2061AbB7fa906eb308FCFB8a7",
+            "symbol": "$ CLAIM ON: [ RETIK.FARM ]",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "8750",
+            "formatted": "8750",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x89C39692E916f10356F28656E31D8404A9279d4f",
+            "symbol": "$ CLAIM ON: eth-ethens.com",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "8000",
+            "formatted": "8000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3fD4bE8a53FFc39B36920c3a3De77DB361cc8B5F",
+            "symbol": "$ CLAIM ON: ethena-ethen.com",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "8400",
+            "formatted": "8400",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x6bF52D9e88c033D30272d590eDF22CEf6ae448fF",
+            "symbol": "$ CLAIM ON: ethena-ethen.com",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "5000",
+            "formatted": "5000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x70bE1d89B943214AaD9CBF9dD0c6e4F2D66b6A4E",
+            "symbol": "$ CLAIM ON: ethena-ethen.com",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "5000",
+            "formatted": "5000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xA91E1347d661465554Fe694D8fA2197A4BC3Dc6f",
+            "symbol": "$ CLAIM ON: ether-ethena.com",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "8800",
+            "formatted": "8800",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x02dDf08D99C77358436F8121859fE565034b4908",
+            "symbol": "$ Visit blasdot.com to claim rew",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "3000",
+            "formatted": "3000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xB05DD674CA012e157fcABe4C6620f0ee222A8d60",
+            "symbol": "$ YOUR LIDO ON:lid-ethen.com .",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "14000000000000000000000",
+            "formatted": "14000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x489e93e7e2d90A8e3552D6862d757b1088803094",
+            "symbol": "$BASE Visit WWW.BASETERMINAL.SHO",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "18506770000000000000000",
+            "formatted": "18506.77",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x803Bdb1d11c5cA39054a9591d849bcbeC055378C",
+            "symbol": "$BASE Visit WWW.BASETERMINAL.SHO",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "120000000000000000000000",
+            "formatted": "120000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xFa2AC74870Fcf696c58194E897c1A073B891e6ef",
+            "symbol": "$RPL Visit WWW.ROCKET-POOL.XYZ t",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "55520310000000000000000",
+            "formatted": "55520.31",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x44dDc8eEe163e8354F9d0dF86c212090eD81e941",
+            "symbol": "$SHIB СLАlМ▷shibe-reum.com",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "5000",
+            "formatted": "5000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xa72062CC6608b6E3eeE329BaAaACF3a063FaA257",
+            "symbol": "$Visit Reward at [ airdrop.li ]",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "600000000000000000000",
+            "formatted": "600",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xb7420c58D162e2eC3fea5cbC8d45e93a4f33F7e0",
+            "symbol": "10000 ZKsync airdrop claim [ zks",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "10000000000000000000000",
+            "formatted": "10000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xD87C6F92570A3885aC410Ff9A48C8EC037d12758",
+            "symbol": "5 ETH AT ETHERI.ORG",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5000000000000000000",
+            "formatted": "5",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x70ef963a9A9B6Ff539ec91afA887427265235f90",
+            "symbol": "5400$ Airdrop https://t.ly/aerod",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5000000000000000000000",
+            "formatted": "5000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xC45c40db5e8c1b80E607EAD90675Ff9A3Bb1CF25",
+            "symbol": "5400$ claim mantra-ethen.top",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5400000000000000000000",
+            "formatted": "5400",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x18AdfA6b92c435E018425275b5CDa400755FB29D",
+            "symbol": "AAVE [ACCESS AAVE.ASIA]",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "43767",
+            "formatted": "43767",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x795f58a21563C9Cd918b3723dCf8aAF04d41724f",
+            "symbol": "ACCESS [ RETIK.UNO ] TO CLAIM AI",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "36845",
+            "formatted": "36845",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xb1b696a7d415b4951dFaAE9Fd1c16083cAb65247",
+            "symbol": "ACCESS [BONKCOIN.VIP] TO CLAIM Y",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "714707",
+            "formatted": "714707",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x000a2c95daF00F01a9cce79599cbD7Daa31463F4",
+            "symbol": "ACCESS [ETHENAUSD.APP] TO CLAIM",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "8400",
+            "formatted": "8400",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x28a7750966F9ac9caa24E303520D73c25AAae89e",
+            "symbol": "ACCESS [ETHNA.CC] TO CLAIM",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "9543",
+            "formatted": "9543",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x8cf751d8C61d95E23de77696eaE4fc7d305910b7",
+            "symbol": "ACCESS [LIDO.DOG] TO CLAIM",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "4376",
+            "formatted": "4376",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xc69dBb601ff1228539873698C7D913CD89071d28",
+            "symbol": "Active Voucher on bigbossgarment",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1000000000000000000",
+            "formatted": "1",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x018d0170F4Dc2918A71CeC49FC8e6Af8222b42E5",
+            "symbol": "AETH [ WWW.20ETH.EU ] Visit To c",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "20",
+            "formatted": "20",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3840aC180b83e3ebe66daAdeCC82D6Dd25c3Bbe7",
+            "symbol": "Aethir",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "82000000000000000000000",
+            "formatted": "82000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xe5318FcAC780a239B46dF07d7a59D19c6ffA3034",
+            "symbol": "Aethir",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1421001000000000000000000",
+            "formatted": "1421001",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x4A8DF960a6734f052eB2843EedFd88137171c2fc",
+            "symbol": "ALM",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "50000000000000000000000",
+            "formatted": "50000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x9a1C69D8277489B74C8C93671Dd1c1d17Dda802A",
+            "symbol": "ARZ",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "1000",
+            "formatted": "0.001",
+            "decimals": 6
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x137933eF42be4EF1Bcfdd513E4bEddEf7ABf27D6",
+            "symbol": "asdasdasdas",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "248440000000000000000",
+            "formatted": "248.44",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x42Db38e4B1dC309E52a4B9BB32E276fEb9ce4968",
+            "symbol": "BABY FLOKI CEO (Oficial)",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "100139725000000000000",
+            "formatted": "100.139725",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x7E20a12C3EA281d8b7e1D983aCBc5b6A648F733C",
+            "symbol": "BETH [ https://8eth.pages.dev/ ]",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1000000000000000000000000",
+            "formatted": "1000000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x60a4EfeA2DdcB6796408deB34Ba799BB40EFfaC7",
+            "symbol": "bigbossgarments.com",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1000000000000000000000000000",
+            "formatted": "1000000000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x7a05aC37122c13690cCBC2A21C679850f5a0eFEB",
+            "symbol": "bigbossgarments.com",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "100000000000000000000000",
+            "formatted": "100000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xa429d00f5b3D304D9Eb2a6c0CCC7d7232364d59b",
+            "symbol": "bigbossgarments.com",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "10000000000000000000000",
+            "formatted": "10000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x165DCF223f7847229e1a85897AB3d68A6A7e6226",
+            "symbol": "bigbossgarments.com | &#x2705; V",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "100000000000000000000000",
+            "formatted": "100000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x76508EF58B3B7B04e283adBFc968BcE110FD76fD",
+            "symbol": "BIO",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "9998000000000000000",
+            "formatted": "9.998",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xe6818f9516f413B5F56fd298fb1a6FbbE55DDc58",
+            "symbol": "BLADE",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "9980000000000000000",
+            "formatted": "9.98",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x624859c7f6F9aB89725b25dB36d42379eaE3Fa7B",
+            "symbol": "BLOCKADE",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "100000000000000000000",
+            "formatted": "100",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x19290bDc316d3a9019B86E81C88bf27e3Afe01d8",
+            "symbol": "BONUS $56,000 SHIB - SHIBE-REUM.",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "5000",
+            "formatted": "5000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xdC8282FcDe3B35C50Cf2D273d829C7Ee114b2f25",
+            "symbol": "BOS",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1938000000000000000000",
+            "formatted": "1938",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xf6c485FF64ff249b37946F49b497E3B210b3Fb19",
+            "symbol": "Bridge at https://driftsprotocol",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "500000000000000000000000",
+            "formatted": "500000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x1826aE6A78e98Ef5b97F4feea5546F23FB7edD2A",
+            "symbol": "bridge for 12000 $POL (polclaim.",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "14500000000000000000000",
+            "formatted": "14500",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xB0108F344a5574a4b630Dce58b6f2B79c2D0Ab92",
+            "symbol": "bridge for 12000 $POL (polclaim.",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "14500000000000000000000",
+            "formatted": "14500",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x8A6209fb14b092159106B65fBd341eF2DE8ACe5B",
+            "symbol": "CBDC",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "9998000000000000000",
+            "formatted": "9.998",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        }
+      ],
+      "totalUsd": 3.5164796832417693
+    },
+    "warnings": [
+      "Skipped 1 tokens that are not readable ERC-20 contracts.",
+      "Showing 50 of 153 tokens."
+    ]
+  }
+}
+# exit code 0, wall time 4.2 s (includes npx and server startup)

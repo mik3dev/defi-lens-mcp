@@ -1,0 +1,82 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_token_balances --tool-arg chain=arbitrum --tool-arg address=0xB38e8c17e38363aF6EbdCb3dAE12e0243582891D --tool-arg 'tokens=["0x2790afa96a254142a13c24a7be2c35afc784b82a","0x3741c63243a768ad7901ba6976cd70837ef773e2","0x0d26daf11bd0f9e5bf996077586ec0088dacb2cf"]'
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 2 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"arbitrum\",\"blockNumber\":\"527831493\",\"blockTimestamp\":\"2026-11-26T21:23:29.000Z\",\"data\":{\"address\":\"0xB38e8c17e38363aF6EbdCb3dAE12e0243582891D\",\"discovery\":\"explicit\",\"balances\":[{\"token\":{\"address\":\"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE\",\"symbol\":\"ETH\",\"decimals\":18},\"balance\":{\"raw\":\"3000335004946680345\",\"formatted\":\"3.000335004946680345\",\"decimals\":18},\"usd\":5107.51678411331,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0x0d26daF11bd0f9e5bf996077586Ec0088dAcB2CF\",\"symbol\":\"Airdrop(s) to be claimed at http\",\"decimals\":18},\"balance\":{\"raw\":\"3000000000000000000\",\"formatted\":\"3\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x2790AfA96A254142a13C24A7BE2C35afC784b82a\",\"symbol\":\"USDT\",\"decimals\":6},\"balance\":{\"raw\":\"406960396081\",\"formatted\":\"406960.396081\",\"decimals\":6},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3741C63243A768aD7901bA6976Cd70837EF773E2\",\"symbol\":\"UЅDТ\",\"decimals\":6},\"balance\":{\"raw\":\"117582572666\",\"formatted\":\"117582.572666\",\"decimals\":6},\"usd\":null,\"priceSource\":null}],\"totalUsd\":5107.51678411331},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "arbitrum",
+    "blockNumber": "527831493",
+    "blockTimestamp": "2026-11-26T21:23:29.000Z",
+    "data": {
+      "address": "0xB38e8c17e38363aF6EbdCb3dAE12e0243582891D",
+      "discovery": "explicit",
+      "balances": [
+        {
+          "token": {
+            "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "symbol": "ETH",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "3000335004946680345",
+            "formatted": "3.000335004946680345",
+            "decimals": 18
+          },
+          "usd": 5107.51678411331,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0x0d26daF11bd0f9e5bf996077586Ec0088dAcB2CF",
+            "symbol": "Airdrop(s) to be claimed at http",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "3000000000000000000",
+            "formatted": "3",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x2790AfA96A254142a13C24A7BE2C35afC784b82a",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "406960396081",
+            "formatted": "406960.396081",
+            "decimals": 6
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3741C63243A768aD7901bA6976Cd70837EF773E2",
+            "symbol": "UЅDТ",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "117582572666",
+            "formatted": "117582.572666",
+            "decimals": 6
+          },
+          "usd": null,
+          "priceSource": null
+        }
+      ],
+      "totalUsd": 5107.51678411331
+    },
+    "warnings": []
+  }
+}
+# exit code 0, wall time 3.8 s (includes npx and server startup)
