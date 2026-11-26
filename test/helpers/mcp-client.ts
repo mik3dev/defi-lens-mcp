@@ -5,6 +5,7 @@ import {
   Client,
   deserializeMessage,
   type JSONRPCMessage,
+  StreamableHTTPClientTransport,
   serializeMessage,
   type Transport,
 } from '@modelcontextprotocol/client';
@@ -118,4 +119,18 @@ export function runToExit(
     child.on('error', reject);
     child.on('close', (code) => resolve({ code, stderr }));
   });
+}
+
+/** Connects a Streamable HTTP client; the token, when given, is sent as `Authorization: Bearer`. */
+export async function connectHttp(url: string, token?: string): Promise<Client> {
+  const headers: Record<string, string> = token ? { authorization: `Bearer ${token}` } : {};
+  const transport = new StreamableHTTPClientTransport(new URL(url), { requestInit: { headers } });
+  const client = new Client({ name: 'e2e-test-client', version: '0.0.0' });
+  try {
+    await client.connect(transport);
+  } catch (e) {
+    await transport.close().catch(() => undefined);
+    throw e;
+  }
+  return client;
 }
