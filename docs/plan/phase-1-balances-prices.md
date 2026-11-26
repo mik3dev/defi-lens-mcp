@@ -76,13 +76,14 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
   ```ts
   it('merges pages until pageKey is absent', …);             // 2 pages of 3 → 6 tokens, truncated false
   it('drops zero balances', …);                              // tokenBalance '0x0…0' excluded
+  it('excludes the native POL token contract on polygon', …); // 0x0000…1010 in the page → not in tokens (native POL is read separately)
   it('stops at the candidate cap and reports truncation', …); // pages totalling 5 000 → tokens.length === 400, truncated true, no further page requested
   it('throws INDEXER_NOT_CONFIGURED without a client', …);
   it('maps a provider error to UPSTREAM_ERROR', …);
   // chain (ethereum): a reference wallet holding at least 3 ERC-20s with a price feed is discovered with all of them.
   ```
 - [ ] **Step 2: Run** `pnpm vitest run test/unit/services/indexer.test.ts test/chain/indexer.test.ts` — fails: module not found.
-- [ ] **Step 3: Implement** `discoverTokens` with `alchemy_getTokenBalances(owner, 'erc20', { pageKey })`, using the request and pagination shape recorded in spike answer Q8.
+- [ ] **Step 3: Implement** `discoverTokens` with `alchemy_getTokenBalances(owner, 'erc20', { pageKey })`, using the request and pagination shape recorded in spike answer Q8: the result is `{ address, tokenBalances: [{ contractAddress, tokenBalance }], pageKey? }`. Pages hold up to 100 entries and can be shorter while a `pageKey` still follows. Zero balances are returned and must be filtered out. On Polygon the list includes `0x0000000000000000000000000000000000001010`, the ERC-20 interface of native POL, which must be excluded so native POL is not counted twice.
 - [ ] **Step 4: Record and run.** Pick the reference wallet (an EOA with native balance and ≥ 3 priced tokens at `PINNED.ethereum`), note it in `test/fixtures/wallets.ts` with why it was chosen. Record, then `pnpm test`. Both pass.
 - [ ] **Step 5: Commit** `feat: add indexer token discovery`
 

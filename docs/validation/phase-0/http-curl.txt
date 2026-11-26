@@ -1,0 +1,90 @@
+# Server start (token value omitted; RPC URLs come from the environment)
+$ TRANSPORT=http HOST=127.0.0.1 PORT=3917 MCP_AUTH_TOKENS=<TOKEN> node dist/index.js
+
+# 1. healthz (no auth)
+$ curl -i http://127.0.0.1:3917/healthz
+HTTP/1.1 200 OK
+X-Powered-By: Express
+Content-Type: application/json; charset=utf-8
+Content-Length: 15
+ETag: W/"f-VaSQ4oDUiZblZNAEkkN+sX+q3Sg"
+Date: Thu, 26 Nov 2026 18:10:11 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"status":"ok"}
+
+# 2. POST /mcp without token
+$ curl -i -X POST http://127.0.0.1:3917/mcp -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -d <initialize>
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+WWW-Authenticate: Bearer
+Content-Type: application/json; charset=utf-8
+Content-Length: 24
+ETag: W/"18-gH7/fIZxPCVRh6TuPVNAgHt/40I"
+Date: Thu, 26 Nov 2026 18:10:11 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":"unauthorized"}
+
+# 3. POST /mcp with wrong token
+$ curl -i ... -H "Authorization: Bearer wrong-token"
+HTTP/1.1 401 Unauthorized
+X-Powered-By: Express
+WWW-Authenticate: Bearer
+Content-Type: application/json; charset=utf-8
+Content-Length: 24
+ETag: W/"18-gH7/fIZxPCVRh6TuPVNAgHt/40I"
+Date: Thu, 26 Nov 2026 18:10:11 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"error":"unauthorized"}
+
+# 4. initialize with token
+$ curl -i ... -H "Authorization: Bearer <TOKEN>" -d <initialize>
+HTTP/1.1 200 OK
+X-Powered-By: Express
+cache-control: no-cache, no-transform
+connection: keep-alive
+content-type: text/event-stream
+x-accel-buffering: no
+content-length: 191
+Date: Thu, 26 Nov 2026 18:10:11 GMT
+
+event: message
+data: {"result":{"protocolVersion":"2025-06-18","capabilities":{"tools":{"listChanged":true}},"serverInfo":{"name":"defi-lens-mcp","version":"0.1.0"}},"jsonrpc":"2.0","id":1}
+
+
+
+# 5. tools/list with token
+HTTP/1.1 200 OK
+X-Powered-By: Express
+cache-control: no-cache, no-transform
+connection: keep-alive
+content-type: text/event-stream
+x-accel-buffering: no
+content-length: 3699
+Date: Thu, 26 Nov 2026 18:10:11 GMT
+
+event: message
+data: {"result":{"tools":[{"name":"get_pool_state","title":"Uniswap v3 pool state","description":"Current state of a Uniswap v3 pool (Uniswap v3 only) at the latest block: tokens, fee tier, tick spacing, sqrtPriceX96, tick, active liquidity, the token balances held by the pool and its spot price in both directions (price0In1 = token1 per token0). The price is the pool's own spot price, not a market-wide or USD price. Identify the pool either by `pool`, or by `tokenA` + `tokenB` + `feeTier` (in either token order).","inputSchema":{"type":"object","$schema":"https://json-schema.org/draft/2020-12
+
+
+
+# 6. tools/call get_pool_state (ethereum, USDC/WETH 0.05%) with token
+$ curl -i ... -H "Authorization: Bearer <TOKEN>" -d <tools/call get_pool_state chain=ethereum pool=0x88e6...5640>
+HTTP/1.1 200 OK
+X-Powered-By: Express
+cache-control: no-cache, no-transform
+connection: keep-alive
+content-type: text/event-stream
+x-accel-buffering: no
+Date: Thu, 26 Nov 2026 18:10:11 GMT
+Transfer-Encoding: chunked
+
+event: message
+data: {"result":{"content":[{"type":"text","text":"{\"chain\":\"ethereum\",\"blockNumber\":\"26501071\",\"blockTimestamp\":\"2026-11-26T18:09:59.000Z\",\"data\":{\"pool\":\"0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640\",\"token0\":{\"address\":\"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\"symbol\":\"USDC\",\"decimals\":6},\"token1\":{\"address\":\"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\"symbol\":\"WETH\",\"decimals\":18},\"feeTier\":500,\"tickSpacing\":10,\"sqrtPriceX96\":\"1925937642337958709456677663946404\",\"tick\":201981,\"liquidity\":\"1164719371462470649\",\"price0In1\":\"0.000590915355292\",\"price1In0\":\"1692.28975189\",\"reserves\":{\"amount0\":{\"raw\":\"12461458939391\",\"formatted\":\"12461458.939391\",\"decimals\":6},\"amount1\":{\"raw\":\"33391115737805674881013\",\"formatted\":\"33391.115737805674881013\",\"decimals\":18},\"usd0\":null,\"usd1\":null},\"tvlUsd\":null},\"warnings\":[]}"}],"structuredContent":{"chain":"ethereum","blockNumber":"26501071","blockTimestamp":"2026-11-26T18:09:59.000Z","data":{"pool":"0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640","token0":{"address":"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48","symbol":"USDC","decimals":6},"token1":{"address":"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2","symbol":"WETH","decimals":18},"feeTier":500,"tickSpacing":10,"sqrtPriceX96":"1925937642337958709456677663946404","tick":201981,"liquidity":"1164719371462470649","price0In1":"0.000590915355292","price1In0":"1692.28975189","reserves":{"amount0":{"raw":"12461458939391","formatted":"12461458.939391","decimals":6},"amount1":{"raw":"33391115737805674881013","formatted":"33391.115737805674881013","decimals":18},"usd0":null,"usd1":null},"tvlUsd":null},"warnings":[]}},"jsonrpc":"2.0","id":3}
+
+

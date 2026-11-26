@@ -167,7 +167,8 @@ export function readTokens(ctx: AppContext, chain: ChainId, addresses: Address[]
 
 // src/tools/shared.ts
 export const chainSchema: z.ZodEnum;          // CHAIN_IDS
-export const addressSchema: z.ZodType<Address>; // validates, outputs checksummed
+export const addressSchema: z.ZodType<Address>; // validates, outputs checksummed (input schemas only)
+export const checksumAddressSchema: z.ZodType<Address>; // no transform; use it in OUTPUT schemas, because transforms break tools/list
 export const amountSchema, tokenSchema, usdSchema; // match Amount, TokenInfo, { usd, priceSource }
 export function envelope<T extends z.ZodType>(data: T): z.ZodObject; // { chain, blockNumber, blockTimestamp, data, warnings }
 export interface ToolOutput<T> { chain: ChainId; blockNumber: string; blockTimestamp: string; data: T; warnings: string[] }

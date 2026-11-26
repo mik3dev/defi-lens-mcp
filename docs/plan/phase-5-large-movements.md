@@ -4,7 +4,9 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 
 **Outcome:** `get_large_movements` finds large token transfers, large pool swaps, and large transfers of one wallet over a bounded recent window, and reports honestly how much of the window it covered.
 
-**Depends on:** phase 1 signed off. Spike answers Q6 (log limits and error text) and Q8 (asset-transfer method). This file is revised with the spike's decisions before the phase starts.
+**Depends on:** phase 1 signed off. Spike answers Q6 (log limits and error text) and Q8 (asset-transfer method) are applied below; see [the spike report](../spikes/provider-capabilities.md), decisions 12–15.
+
+**Free-tier facts this phase is built on (spike, 2026-11-26):** Alchemy free tier accepts `eth_getLogs` over at most 10 blocks, counted inclusively (`toBlock − fromBlock + 1 ≤ 10`), on all four chains; no result-count cap was reached; 30 parallel requests were not throttled. With the defaults (10 × 30 = 300 blocks) one call covers about 60 min on Ethereum, 10 min on Base and Polygon, and 75 s on Arbitrum.
 
 **Branch:** `phase-5-large-movements`
 
@@ -25,12 +27,14 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
   export interface ScanReport { requestedFromBlock: bigint; fromBlock: bigint; toBlock: bigint;
     requests: number; logsScanned: number; truncated: boolean }
   export function lookbackToFromBlock(latest: bigint, lookbackMinutes: number, blockTimeSeconds: number): bigint;
-  export function isLogRangeError(e: unknown): boolean; // matches the provider error text recorded in spike Q6
+  export function isLogRangeError(e: unknown): boolean; // see "Range errors" below
   export function scanLogs<T>(fetchRange: (fromBlock: bigint, toBlock: bigint) => Promise<T[]>,
     range: { fromBlock: bigint; toBlock: bigint }, budget: ScanBudget): Promise<{ logs: T[]; report: ScanReport }>;
   ```
 
 **Scan rules:** newest first, in windows of `maxBlockRange` blocks. When `fetchRange` throws a range error, halve the window (minimum 1 block) and retry the same span; the failed call counts as a request and the smaller window stays in effect. Stop when `fromBlock` is reached, when `requests === maxRequests`, or when `logsScanned >= maxLogs`. On an early stop `truncated` is true and `report.fromBlock` is the oldest block actually covered. Any other error propagates.
+
+**Range errors** (spike Q6): `isLogRangeError` is true for JSON-RPC code −32600 whose message (viem: `details` of the `InvalidRequestRpcError` / `RpcRequestError` chain) matches `/block range/i` — Alchemy's exact text is `Under the Free tier plan, you can make eth_getLogs requests with up to a 10 block range. Based on your parameters, this block range should work: [0x1945aa9, 0x1945ab2]. Upgrade to PAYG for expanded block range.` (HTTP 400). It also matches, for any code, the common texts of other providers: `/query returned more than \d+ results/i`, `/exceed(s|ed)? (the )?max(imum)? block range/i`, `/block range (is )?too (large|wide)/i`. HTTP 429 (`Your app has exceeded its compute units per second capacity…`) is not a range error: it propagates, and `toAppError` maps it to a retryable `UPSTREAM_ERROR` (`RATE_LIMITED` is reserved for this server's own HTTP rate limit, phase 7; see validation deviation 8). With the default range the Alchemy free tier never returns a range error; halving exists for other providers and lower limits.
 
 - [ ] **Step 1: Write the failing tests.**
   ```ts
@@ -43,8 +47,10 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
   it('stops at the log budget', …);               // each call returns 5 logs, maxLogs 10: 2 calls; truncated true; fromBlock 80n
   it('halves the window on a range error', …);    // first call throws a range error: calls [90,99],[95,99],[90,94],[85,89]…; requests counts the failed call
   it('never shrinks below one block', …);
-  it('propagates other errors', …);
+  it('propagates other errors', …);               // including an HTTP 429 compute-units error
   it('reports requestedFromBlock unchanged', …);
+  // isLogRangeError: true for the recorded Alchemy error (as a raw object and as viem's InvalidRequestRpcError);
+  //   false for "Unsupported method: … on ETH_MAINNET" (also −32600) and for a 429
   ```
 - [ ] **Step 2: Run** `pnpm vitest run test/unit/services/logs.test.ts` — fails: module not found.
 - [ ] **Step 3: Implement.**
@@ -125,7 +131,18 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
   it('skips entries with no raw value', …);
   ```
 - [ ] **Step 2: Run** `pnpm vitest run test/unit/services/indexer.test.ts` — fails: `getAssetTransfers` not exported.
-- [ ] **Step 3: Implement** with `alchemy_getAssetTransfers`, using the request and response shape recorded in spike answer Q8.
+- [ ] **Step 3: Implement** with `alchemy_getAssetTransfers`, using the request and response shape recorded in spike answer Q8:
+  ```jsonc
+  // params[0], once with fromAddress and once with toAddress; pageKey added for later pages
+  { "fromBlock": "0x…", "toBlock": "0x…", "fromAddress": "0x…", "category": ["external", "erc20"],
+    "order": "desc", "excludeZeroValue": true, "withMetadata": false }   // maxCount omitted: default page of 1000
+  // result
+  { "transfers": [ { "blockNum": "0x19449db", "uniqueId": "0x…:log:617", "hash": "0x…", "from": "0x…", "to": "0x…",
+      "value": 1, "asset": "HEX", "category": "erc20",
+      "rawContract": { "value": "0x5f5e100", "address": "0x2b59…", "decimal": "0x8" } } ],
+    "pageKey": "…" }                                                     // absent on the last page
+  ```
+  Rules from the spike: these two categories work on all four chains; never request `internal` (Arbitrum rejects it with −32602). `rawAmount` comes from `rawContract.value` (hex), never from the float `value`; an entry whose `rawContract.value` is null is skipped. `rawContract.address === null` (category `external`, `uniqueId` `<hash>:external`) is a native transfer → `NATIVE_ADDRESS`. Decimals come from `readTokens` on-chain, not from `rawContract.decimal`.
 - [ ] **Step 4: Run** the same command — all pass.
 - [ ] **Step 5: Commit** `feat: add indexer asset transfers`
 
@@ -182,7 +199,7 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
   // chain (arbitrum): token mode with the default lookback is truncated by the budget and says so.
   ```
 - [ ] **Step 2: Run** `pnpm vitest run test/unit/tools/get-large-movements.test.ts test/chain/large-movements.test.ts` — fails: module not found.
-- [ ] **Step 3: Implement.** Set the `LOGS_MAX_REQUESTS` default from the spike's rate-limit findings and document both log settings in `.env.example`.
+- [ ] **Step 3: Implement.** The log-setting defaults are settled by the spike and already in `src/config.ts` and `.env.example`: `LOGS_MAX_BLOCK_RANGE=10` (the free-tier limit) and `LOGS_MAX_REQUESTS=30` (a 30-request burst was not throttled; ~160 ms per sequential request, so a full budget is about 5 s).
 - [ ] **Step 4: Record and run.** Derive fixtures with `cast logs`, record, then `pnpm build && pnpm test`. All pass.
 - [ ] **Step 5: Commit** `feat: add get_large_movements`
 
@@ -202,7 +219,7 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
   | 2 | No transfer above the threshold in the scanned range is missing | Same explorer list, sorted by amount |
   | 3 | Live pool mode on the USDC/WETH pool: returned swaps and their direction | Explorer event log or a pool analytics page |
   | 4 | Live wallet mode for an active wallet | Explorer transfers of the address in the window |
-  | 5 | Free-tier coverage table: for each chain, the window actually scanned with default settings for a busy token, requests made and wall time | Server logs; recorded as a table. This is the evidence for whether a paid tier is worth it |
+  | 5 | Free-tier coverage table: for each chain, the window actually scanned with default settings for a busy token, requests made and wall time | Server logs; recorded as a table and compared with the spike's prediction (≈ 60 min Ethereum, 10 min Base and Polygon, 75 s Arbitrum). This is the evidence for whether a paid tier is worth it |
   | 6 | Truncated result on Arbitrum or Base carries `truncated: true`, the warning, and correct block numbers | Captured output |
   | 7 | Agent-readability: ask a desktop client "any USDC transfers over $1M in the last half hour?" and check it relays the truncation when there is one | Transcript |
 
