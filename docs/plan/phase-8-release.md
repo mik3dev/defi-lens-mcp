@@ -130,3 +130,14 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 - [ ] **Step 4: Owner review and sign-off.** Merge the pull request.
 - [ ] **Step 5: Release.** After the owner confirms: tag `v0.1.0` on `main` and push the tag. Publishing to npm and GHCR is public and cannot be undone, so the tag is pushed only on the owner's explicit go-ahead.
 - [ ] **Step 6: Post-release check.** `npx defi-lens-mcp@0.1.0` on a clean machine lists seven tools; `docker pull ghcr.io/<owner>/defi-lens-mcp:0.1.0` runs and answers `/healthz`; the GitHub release shows the changelog. Record the three results in `docs/validation/phase-8.md`.
+
+---
+
+## Carried forward from phase 0
+
+Minor findings from the phase 0 whole-branch review that this phase owns. Fold each into the task that touches the code; record any left open in this phase's validation document.
+
+- pnpm 12 lockfile has two YAML documents: confirm Dependabot and the dependency graph accept it.
+- `--passWithNoTests` is duplicated in scripts and `vitest.config.ts`.
+- CI `cancel-in-progress` also cancels `main` pushes; SHA-pin actions in `release.yml`, which holds `NPM_TOKEN`.
+- `docs/design.md` §7 table (lines 280-281) lags spike decisions 12-13 for `LOGS_MAX_*`: owner to update the spec.

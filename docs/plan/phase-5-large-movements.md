@@ -225,3 +225,12 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 
 - [ ] **Step 3: Commit** `docs: add phase 5 validation record`
 - [ ] **Step 4: Owner review and sign-off.**
+
+---
+
+## Carried forward from phase 0
+
+Minor findings from the phase 0 whole-branch review that this phase owns. Fold each into the task that touches the code; record any left open in this phase's validation document.
+
+- Range-error regexes for providers other than Alchemy are unverified; the Q6 burst was measured on ethereum only. Confirm with the coverage table.
+- Task 5.3 test comment omits `withMetadata: false`, which the request shape includes.

@@ -163,3 +163,20 @@ One test file per property the design claims (§8), each running across all seve
 
 - [ ] **Step 3: Commit** `docs: add phase 7 validation record`
 - [ ] **Step 4: Owner review and sign-off.**
+
+---
+
+## Carried forward from phase 0
+
+Minor findings from the phase 0 whole-branch review that this phase owns. Fold each into the task that touches the code; record any left open in this phase's validation document.
+
+- Validate the Alchemy key charset instead of interpolating it raw; remove the double cast in `resolveRpcUrls` (Task 7.2).
+- Logger stringifies every field value (`durationMs:"589"`); Error fields log only the message.
+- `cleanUpstreamMessage` splits surrogates and truncates before redaction (Task 7.3).
+- Redaction is exact-string only: also register long path segments and query values of explicit `RPC_URL_*` as secrets (Task 7.3).
+- Test harness: `freePort` race, `isReady` fetch without timeout, `RECORD=1` overwrites a fixture on a partial run, env-leak test compares names only, `RecordingTransport.close` hangs on spawn error, loose `/invalid|validation/` regex (pin the SDK `Input validation error` prefix).
+- HTTP: Host/Origin checks for a non-local `HOST` (`ALLOWED_HOSTS`), body parsed before auth, 415 mapped to 500, SDK `console.warn` bypasses the logger, `X-Powered-By: Express` sent (`app.disable('x-powered-by')`).
+- HTTP tests: Basic-scheme `WWW-Authenticate`, bad Host 403, malformed JSON 400 body, `index.ts` HTTP startup; duplicated `readVersion`; stale `dist/` used by e2e tests.
+- `RATE_LIMIT_RPM` is parsed but not enforced until Task 7.1.
+- `TENDERLY_TIMEOUT_MS` (60 s) exceeds `TOOL_TIMEOUT_MS` (30 s) and the MCP client's 60 s request timeout: give `simulate_transaction` its own deadline (Task 7.2) so a rejected key still yields `SIMULATION_UNAVAILABLE`.
+- CI: `pnpm audit` needs network and may flake; actions pinned to major tags.

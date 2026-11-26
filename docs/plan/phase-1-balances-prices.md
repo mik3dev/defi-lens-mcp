@@ -172,3 +172,19 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 
 - [ ] **Step 3: Commit** `docs: add phase 1 validation record`
 - [ ] **Step 4: Owner review and sign-off.**
+
+---
+
+## Carried forward from phase 0
+
+Minor findings from the phase 0 whole-branch review that this phase owns. Fold each into the task that touches the code; record any left open in this phase's validation document.
+
+- `usdValue` (src/lib/format.ts): guard NaN, negative and non-finite prices before the first price is used (Task 1.1/1.3).
+- `sanitizeSymbol`: truncation at 32 can split a surrogate pair; U+2028/U+2029 survive. Fix with the validation check 5 evidence (Task 1.3).
+- Cache treats a cached `undefined` as a miss (src/lib/cache.ts).
+- `readTokens` is not deduplicated across concurrent calls for the same address.
+- `runTool` logs `ok` before building the success result (src/tools/shared.ts); log after.
+- Multicall result type guards are duplicated in `src/protocols/erc20/tokens.ts` and `src/protocols/uniswap/pool.ts`: extract `src/lib/multicall.ts` before a third copy (Task 1.1).
+- `get_pool_state` returns `NOT_FOUND` for an existing canonical pool when a token lacks `symbol()` (tokens.ts:98-100, pool.ts:177-181): fall back to a placeholder symbol instead (Task 1.4).
+- `get_pool_state` USD fields are always `null` and the description does not say so: closed by Task 1.4; update the description.
+- Spike doc `docs/spikes/provider-capabilities.md` lines 133, 325, 332 mention "fix round 1": reword as plain facts.
