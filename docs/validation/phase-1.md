@@ -1,7 +1,7 @@
 # Phase 1 validation — Balances and prices
 
 - Date: 2026-11-26
-- Commit: `265ecf5` (branch `phase-1-balances-prices`; `src/` is identical to `39eda92`; this record is added on top)
+- Commit: `265ecf5` (branch `phase-1-balances-prices`; `src/` is identical to `39eda92`; this record is added on top). After the whole-branch review, fixes `82161a4`, `77e8408`, `682858a` and `24bbbc1` were applied; check 3 was re-run and the verification rows re-run at `24bbbc1`
 - RPC provider and tier: Alchemy free tier, all four chains, for both chain reads (`RPC_URL_*`) and token discovery (`alchemy_getTokenBalances`, from `ALCHEMY_API_KEY`). Simulation backend not used in this phase.
 - Pinned blocks (`test/fixtures/blocks.ts`, unchanged since phase 0): ethereum `26499763`, base `62611111`, arbitrum `527782324`, polygon `98004500`
 
@@ -11,10 +11,10 @@
 |-------|----------------|--------|
 | Lint | `pnpm lint` | Pass: `Checked 82 files … No fixes applied.` |
 | Types | `pnpm typecheck` | Pass, no output |
-| Coverage | `pnpm coverage` | Pass: 30 test files, 324 tests passed, 0 skipped. Statements 97.93 %, branches 95.09 %, functions 98.71 %, lines 98.23 % (thresholds 80/80) |
+| Coverage | `pnpm coverage` | Pass at `24bbbc1`: 30 test files, 326 tests passed, 0 skipped. Statements 97.95 %, branches 95.09 %, functions 98.73 %, lines 98.25 % (thresholds 80/80) |
 | Build | `pnpm build` | Pass (`dist/index.js` produced) |
-| Fork run and re-record | `RECORD=1 pnpm test:fork` | Pass: `Test Files 8 passed (8)`, `Tests 76 passed (76)`, 41.5 s, no HTTP 429. Two recordings changed: `test/fixtures/rpc/indexer.ethereum.json` and `test/fixtures/rpc/token-balances.ethereum.json`, 4 lines each. In both, the `alchemy_getTokenBalances` answer reports a new `tokenBalance` for the same four spam tokens held by the reference wallet (`0x296a…6e30`, `0x2ea0…1189`, `0xef54…c1e4`, `0x02c9…1a96`). The indexer reports current state, not state at the pinned block, so this is expected. The token set and every pinned-block read are byte for byte unchanged. Committed as `265ecf5` (`test: refresh recordings at the phase 1 gate`) |
-| Replay from the recordings, no RPC variables | `env -u ALCHEMY_API_KEY -u RPC_URL_ETHEREUM -u RPC_URL_BASE -u RPC_URL_ARBITRUM -u RPC_URL_POLYGON pnpm test` | Pass, run after the re-record: `Test Files 30 passed (30)`, `Tests 324 passed (324)`, 0 skipped, 4.8 s |
+| Fork run and re-record | `RECORD=1 pnpm test:fork` | Pass: `Test Files 8 passed (8)`, `Tests 76 passed (76)`, 41.5 s, no HTTP 429. Two recordings changed: `test/fixtures/rpc/indexer.ethereum.json` and `test/fixtures/rpc/token-balances.ethereum.json`, 4 lines each. In both, the `alchemy_getTokenBalances` answer reports a new `tokenBalance` for the same four spam tokens held by the reference wallet (`0x296a…6e30`, `0x2ea0…1189`, `0xef54…c1e4`, `0x02c9…1a96`). The indexer reports current state, not state at the pinned block, so this is expected. The token set and every pinned-block read are byte for byte unchanged. Committed as `265ecf5` (`test: refresh recordings at the phase 1 gate`). After the review fix `82161a4` (discovery also reads the chain's Chainlink-priced tokens), only the file whose requests changed was re-recorded: `CHAIN_MODE=fork RECORD=1 pnpm vitest run --no-file-parallelism test/chain/token-balances.test.ts`, 6 passed; `test/fixtures/rpc/token-balances.ethereum.json` changed (the discovery multicalls now include the feed tokens), the other three chains' recordings were byte for byte unchanged |
+| Replay from the recordings, no RPC variables | `env -u ALCHEMY_API_KEY -u RPC_URL_ETHEREUM -u RPC_URL_BASE -u RPC_URL_ARBITRUM -u RPC_URL_POLYGON pnpm test` | Pass at `24bbbc1`, after the re-record: `Test Files 30 passed (30)`, `Tests 326 passed (326)`, 0 skipped, 4.2 s |
 | Live provider suite | `pnpm test:live` | Not applicable: phase 1 added no live tests (`test/live/` does not exist) |
 | Secret scan | Script comparing every `.env` value whose name matches `KEY\|TOKEN\|RPC_URL\|TENDERLY` (longer than 8 characters) against every tracked and untracked, non-ignored file; prints variable names only. Plus a grep of the new docs for the Alchemy endpoint host and path patterns and for the local home path | 0 secret hits. The only match is `TENDERLY_PROJECT`, whose value is the public package name `defi-lens-mcp`. 0 hits for the URL and home-path patterns |
 | Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet. The tool descriptions for `get_token_balances` and the updated `get_pool_state` are written and appear in `tools/list` (`phase-1/stdio-tools-list.txt`) |
@@ -36,7 +36,7 @@ Tool calls are live (no fork), through the built server over stdio (`node dist/i
 | 2b | WBTC/USD, arbitrum WBTC row, block 527830590 | CoinGecko `wrapped-bitcoin` (DefiLlama `arbitrum:0x2f2a…5B0f`) | 60810.22 (60814.39) | 60778.06 | ±0.5 % (diff −0.053 %; −0.060 %) | Pass |
 | 2c | USDC/USD, ethereum USDC row, block 26502012 | CoinGecko `usd-coin` (DefiLlama) | 0.999591 (0.999849) | 0.999870 | ±0.5 % (diff +0.028 %; +0.002 %) | Pass |
 | 2d | POL/USD, polygon native row, block 98014970 | CoinGecko `polygon-ecosystem-token` (DefiLlama) | 0.077453 (0.077456) | 0.077503 | ±0.5 % (diff +0.065 %; +0.060 %) | Pass |
-| 3 | Spam-heavy wallet returns within the tool timeout with truncation warnings | Captured output and duration | warnings present; well under 30 s | polygon `0xe780…e245` (more than 2 000 non-zero tokens): 3 061 ms server-side (3 073 ms round trip), 29 upstream requests, warnings `More tokens exist than were scanned.` and `Showing 50 of 400 tokens.`. Ethereum `0x28C6…1d60` with `maxTokens: 200`: 3 235 ms, 31 upstream requests, `More tokens exist than were scanned.` and `Showing 200 of 400 tokens.` | 30 s (planned `TOOL_TIMEOUT_MS` default, phase 7); MCP client request timeout 60 s | Pass |
+| 3 | Spam-heavy wallet returns within the tool timeout with truncation warnings, and its Chainlink-priced tokens are counted | Captured output and duration | warnings present; well under 30 s; every held feed token priced | Re-run at `24bbbc1`. Polygon `0xe780…e245` (more than 2 000 non-zero tokens), block 98015835: 3 135 ms server-side (3 142 ms round trip), 29 upstream requests, warnings `More tokens exist than were scanned.` and `Showing 50 of 406 tokens.`, 8 priced rows (POL, USDC, WPOL, WETH, WBTC, DAI, bridged USDC `0x2791…4174`, USDT0), `totalUsd` 49 275.84. Ethereum `0x28C6…1d60` with `maxTokens: 200`, block 26502122: 3 533 ms (3 545 ms round trip), 31 upstream requests, `More tokens exist than were scanned.` and `Showing 200 of 403 tokens.`, 4 priced rows (ETH, USDT, USDC, DAI), `totalUsd` 1 404 077.89 | 30 s (planned `TOOL_TIMEOUT_MS` default, phase 7); MCP client request timeout 60 s | Pass |
 | 4 | Server without `ALCHEMY_API_KEY`, explicit RPC URLs | Captured output | native only with the discovery warning; explicit `tokens` still read | Without `tokens`: `discovery: "none"`, one row (ETH `1220494875405186557374578`), warning `Token discovery unavailable: set ALCHEMY_API_KEY or pass "tokens". Returning native balance only.`. With `tokens` [USDC, USDT, LINK]: `discovery: "explicit"`, 4 rows with the same raw values as 1a, no warning | exact text | Pass |
 | 5 | Symbols with invisible characters or more than 32 code points are returned sanitized | Raw `symbol()` via `cast call … --block 527831493`, decoded to code points; unit tests | `U<U+200C>SDT`; `<U+206D>U<U+206F><U+0405><U+206B>D<U+200E><U+0422><U+2064>`; `Airdrop(s) to be claimed at https://t.ly/drops` (46 code points) | `USDT`; `UЅDТ` (U+0055 U+0405 U+0044 U+0422); `Airdrop(s) to be claimed at http` (32 code points) | exact | Pass |
 | 6 | `get_pool_state` TVL, ethereum USDC/WETH 0.05 % pool `0x88e6…5640`, block 26502014 | GeckoTerminal API `reserve_in_usd` (DefiLlama yields API `tvlUsd` as second source) | 69 156 299.97 (69 192 781) | 69 128 966.10 (`usd0` 12 961 474.52 + `usd1` 56 167 491.57) | ±2 % (diff −0.040 %; −0.092 %) | Pass |
@@ -58,13 +58,15 @@ Notes on check 3:
 
 - Both are high-activity addresses holding large numbers of airdropped tokens: polygon `0xe7804c37c13166fF0b37F5aE0BB07A3aEbb6e245` more than 2 000 non-zero tokens, ethereum `0x28C6c06298d514Db089934071355E5743bf21d60` more than 1 400 (counted directly with `alchemy_getTokenBalances`, 25 pages). Discovery stops at `DISCOVERY_CANDIDATE_CAP` (400), sets `truncated`, and the tool then caps the rows at `maxTokens`.
 - There is no server-side tool timeout yet (phase 7 adds `TOOL_TIMEOUT_MS`, planned default 30 s). Both calls finished in about a tenth of that.
-- Observation: because the indexer returns tokens roughly in contract-address order and discovery stops at 400, a spam-heavy wallet's priced tokens can fall outside the scanned set. For `0x28C6…1d60` the only priced row was native ETH (`totalUsd` 1 375.36). The result is flagged by `More tokens exist than were scanned.`, so it is not silent. Passing `tokens` reads any token regardless of the cap. Recorded under Open findings for the review.
+- First run (at `265ecf5`): because the indexer returns tokens roughly in contract-address order and discovery stops at 400, the priced tokens of both wallets fell outside the scanned set. Ethereum `0x28C6…1d60` (block 26502023, 3 235 ms) had native ETH as its only priced row, `totalUsd` 1 375.36; polygon `0xe780…e245` (block 98015037, 3 061 ms) had `totalUsd` 357.52. Both carried `More tokens exist than were scanned.` and `Showing N of 400 tokens.`.
+- Fix `82161a4`: only tokens with a Chainlink feed can add to `totalUsd`, and that set is small and fixed per chain (`src/protocols/chainlink/feeds.ts`). Discovery now appends the chain's feed tokens to the (at most 400) discovered candidates, deduplicated case-insensitively; those the wallet does not hold are dropped as zero balances. The scanned count is therefore up to 400 plus the chain's feed tokens (406 and 403 above). The truncation warning is unchanged, since unpriced tokens beyond the cap are still not scanned.
+- Re-run (at `24bbbc1`): `totalUsd` went from 1 375.36 to 1 404 077.89 on ethereum (USDT, USDC, DAI now counted) and from 357.52 to 49 275.84 on polygon (USDC, WETH, WBTC, DAI, bridged USDC, USDT0 now counted). Duration and upstream request counts are unchanged within noise. Transcripts: `phase-1/spam-wallet-polygon.txt`, `phase-1/spam-wallet-ethereum.txt` (replaced).
 
 Notes on check 5:
 
 - No live symbol with C0/C1 control characters (`\p{Cc}`) or U+2028/U+2029 was found. Raw `symbol()` values of the first 400-odd discovered tokens of six wallets (about 2 570 tokens across the four chains) were scanned for `[\p{C}\p{Zl}\p{Zp}]` and length. The only unsafe characters found were format characters (`\p{Cf}`: U+200C, U+200E and U+2060–U+206F) in fake "USDT"/"USDC" tokens on arbitrum and base. Two of them are in the live call above (`phase-1/stdio-sanitized-symbols.txt`, raw values in `phase-1/cast-symbols.txt`). Long symbols (33–46 code points) are common; besides the arbitrum token above, the ethereum reference wallet's `$ EthCRV.com - Visit to claim bonus rewards` (43 code points) comes back as `$ EthCRV.com - Visit to claim bo` in `phase-1/stdio-balances-ethereum.txt`.
 - Control characters, U+2028/U+2029 and surrogate-pair-safe truncation are covered by the unit tests in `test/unit/lib/sanitize.test.ts`: `strips control characters`, `truncates to 32`, `truncates by code points without splitting a surrogate pair`, `strips line and paragraph separators`, `falls back to UNKNOWN` (plus `trims`). `pnpm vitest run --reporter=verbose test/unit/lib/sanitize.test.ts`: 6 passed.
-- Observation: stripping invisible characters makes `U<U+200C>SDT` read as `USDT`, the same symbol as the real token. Such tokens have no Chainlink feed, so they come back with `usd: null`, and their address differs. Cyrillic look-alikes (`UЅDТ`) are letters and are kept. Recorded under Open findings for the review.
+- Observation: stripping invisible characters makes `U<U+200C>SDT` read as `USDT`, the same symbol as the real token. Such tokens have no Chainlink feed, so they come back with `usd: null`, and their address differs. Cyrillic look-alikes (`UЅDТ`) are letters and are kept. Since `77e8408` both tool descriptions say that symbols are untrusted deployer-controlled text and that tokens are identified by address. See Open findings.
 
 Notes on check 6:
 
@@ -85,6 +87,8 @@ Client: MCP Inspector CLI mode, `@modelcontextprotocol/inspector` 1.0.6 (`npx -y
 | Raw JSON-RPC client with the server's stderr log line (check 3) | `spam-wallet-polygon.txt`, `spam-wallet-ethereum.txt` |
 | `cast` references at the response blocks (checks 1 and 5) | `cast-balances.txt`, `cast-symbols.txt` |
 | Public API reference values (checks 2 and 6) | `references.txt` |
+
+`stdio-tools-list.txt` was captured at `265ecf5`, before `77e8408` added the untrusted-symbols sentence (and the `totalUsd` sentence for `get_token_balances`) to the descriptions; the new text is asserted by the unit tests of both tools. The check 3 transcripts were re-captured at `24bbbc1`.
 
 The calls in this phase do not depend on the transport; phase 1 did not change HTTP, so no HTTP demonstration was run. In the raw client captures, stdout carried only protocol frames and stderr only the server's JSON log line.
 
@@ -117,12 +121,30 @@ The phase 7 hardening items and the other open issues listed in `docs/validation
 
 ## Open findings
 
-_To be filled after the whole-branch review of the phase diff._
+From the whole-branch review of the phase diff. Closed by this phase: discovery truncation hiding priced tokens (`82161a4`, check 3), untrusted symbols not mentioned in the tool descriptions (`77e8408`), the discovery cap test counting distinct targets instead of reads (`682858a`), and the duplicated `UNKNOWN` constant (`24bbbc1`). Still open:
 
-Observations from this validation, for the review to classify:
+| # | Finding | Impact and workaround | Owner | Fix option |
+|---|---------|-----------------------|-------|------------|
+| 1 | A hostile airdropped token can make discovery fail for a wallet | Multicall3 `aggregate3` gives each inner call 63/64 of the remaining gas. A token whose `symbol()`, `decimals()` or `balanceOf()` burns gas or returns huge data can make the whole `aggregate3` fail, which since `d6d582d` surfaces as a non-retryable `UPSTREAM_ERROR` for the whole call. Workaround: pass `tokens` | Phase 7 (hardening) | Bisect the chunk on a chunk-level execution error and count the isolated token as skipped |
+| 2 | Sanitizing strips invisible characters, so `U<U+200C>SDT` renders as `USDT` | A look-alike reads as the real symbol; its address differs and it comes back with `usd: null`. Mitigated in phase 1 by the tool-description sentence on untrusted symbols (`77e8408`) | Phase 7 | Warn when an unpriced token's symbol equals a feed token's symbol, or when sanitizing changed a symbol |
+| 3 | The `UNKNOWN` placeholder symbol emits no warning | A missing optional `symbol()` is not degraded data under EIP-20, so no warning is added | Phase 7, with #2 | Revisit together with #2 |
 
-- Discovery truncation can hide a spam-heavy wallet's priced tokens (check 3 notes); flagged by the warning, but `totalUsd` then covers only the scanned tokens.
-- Sanitized look-alike symbols (`USDT` from `U<U+200C>SDT`) are indistinguishable by symbol from the real token (check 5 notes).
+Remaining deferred minors, one line each:
+
+- `prices.ts` `has()`/`get()` TOCTOU on cache expiry; the result is a safe `null` price. Owner: phase 7.
+- Token decimals read back from the cache after eviction; the result is a safe `null` price. Owner: phase 7.
+- Feed heartbeats are taken from the Chainlink directory JSON; spot-check them against the Chainlink docs. Owner: phase 7.
+- An unreadable feed returns a `null` price without a warning. Owner: phase 7.
+- One malformed indexer entry fails the whole page. Owner: phase 7.
+- `truncated` conflates the 400-candidate cap and the 20-page limit. Owner: phase 7.
+- Request cast in `src/services/indexer.ts`. Owner: phase 7.
+- Test helper `serveStatus` duplicates `startRpcServer({ status })`. Owner: phase 7.
+- Harness `indexerUpstreamFor` treats a configuration failure as a missing key. Owner: phase 7.
+- The reference wallet is near the 400-candidate cap; assert `truncated === false` at the next re-record. Owner: next phase that re-records (phase 2).
+- The `maxTokens` default is applied in code, not in the schema. Owner: phase 7.
+- Duplicated e2e constants. Owner: phase 7.
+- Redundant `RpcError` in the multicall transport error list. Owner: phase 7.
+- `fixturePrice` `as never` casts in tests. Owner: phase 7.
 
 ## Owner sign-off
 
