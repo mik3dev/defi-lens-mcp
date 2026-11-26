@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-import { CHAIN_IDS, type ChainId } from './chains.js';
+import { alchemyUrl, CHAIN_IDS, type ChainId } from './chains.js';
 
 export interface Config {
   transport: 'stdio' | 'http';
@@ -24,14 +24,6 @@ export class ConfigError extends Error {
 }
 
 const MIN_TOKEN_LENGTH = 32;
-
-// Alchemy network subdomain per chain.
-const ALCHEMY_SUBDOMAINS: Record<ChainId, string> = {
-  ethereum: 'eth-mainnet',
-  base: 'base-mainnet',
-  arbitrum: 'arb-mainnet',
-  polygon: 'polygon-mainnet',
-};
 
 const RPC_ENV: Record<ChainId, string> = {
   ethereum: 'RPC_URL_ETHEREUM',
@@ -103,7 +95,7 @@ function resolveRpcUrls(env: Env): Partial<Record<ChainId, string>> {
     const explicit = env[RPC_ENV[chain] as keyof Env] as string | undefined;
     if (explicit) urls[chain] = explicit;
     else if (env.ALCHEMY_API_KEY) {
-      urls[chain] = `https://${ALCHEMY_SUBDOMAINS[chain]}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`;
+      urls[chain] = alchemyUrl(chain, env.ALCHEMY_API_KEY);
     }
   }
   return urls;
