@@ -6,7 +6,7 @@ import type { AppContext } from '../../src/context.js';
 import { pinBlock } from '../../src/lib/blocks.js';
 import { readBalances, readTokens } from '../../src/protocols/erc20/tokens.js';
 import { PINNED } from '../fixtures/blocks.js';
-import { chainEndpoint, hasRecording, hasRpc } from '../helpers/chain-endpoint.js';
+import { chainEndpoint } from '../helpers/chain-endpoint.js';
 import { testContext } from '../helpers/context.js';
 
 const WRAPPED_SYMBOL: Record<ChainId, string> = {
@@ -35,7 +35,7 @@ function expectedBalances(): ExpectedBalances {
 describe.each(CHAIN_IDS)('erc20 on %s', (chain) => {
   const fixture = `erc20.${chain}`;
 
-  describe.skipIf(!hasRpc() && !hasRecording(fixture))('at the pinned block', () => {
+  describe('at the pinned block', () => {
     let endpoint: Awaited<ReturnType<typeof chainEndpoint>> | undefined;
     let ctx: AppContext;
 
@@ -64,42 +64,44 @@ describe.each(CHAIN_IDS)('erc20 on %s', (chain) => {
       expect(block.timestamp).toBeGreaterThan(0n);
     });
 
-    describe.runIf(chain === 'ethereum')('ethereum only', () => {
-      it('decodes a bytes32 symbol', async () => {
-        const tokens = await readTokens(ctx, chain, [MKR], await pinBlock(ctx, chain));
-        expect(tokens.get(MKR)).toEqual({ address: MKR, symbol: 'MKR', decimals: 18 });
-      });
+    // A plain conditional, not runIf: the other chains must not report skipped tests.
+    if (chain === 'ethereum')
+      describe('ethereum only', () => {
+        it('decodes a bytes32 symbol', async () => {
+          const tokens = await readTokens(ctx, chain, [MKR], await pinBlock(ctx, chain));
+          expect(tokens.get(MKR)).toEqual({ address: MKR, symbol: 'MKR', decimals: 18 });
+        });
 
-      it('returns null for an address with no code', async () => {
-        const tokens = await readTokens(ctx, chain, [DEAD], await pinBlock(ctx, chain));
-        expect(tokens.get(DEAD)).toBeNull();
-      });
+        it('returns null for an address with no code', async () => {
+          const tokens = await readTokens(ctx, chain, [DEAD], await pinBlock(ctx, chain));
+          expect(tokens.get(DEAD)).toBeNull();
+        });
 
-      it('returns null for a contract that is not an ERC-20', async () => {
-        const tokens = await readTokens(ctx, chain, [MULTICALL3], await pinBlock(ctx, chain));
-        expect(tokens.get(MULTICALL3)).toBeNull();
-      });
+        it('returns null for a contract that is not an ERC-20', async () => {
+          const tokens = await readTokens(ctx, chain, [MULTICALL3], await pinBlock(ctx, chain));
+          expect(tokens.get(MULTICALL3)).toBeNull();
+        });
 
-      it('resolves the native descriptor without an RPC call', async () => {
-        const tokens = await readTokens(ctx, chain, [NATIVE_ADDRESS], await pinBlock(ctx, chain));
-        expect(tokens.get(NATIVE_ADDRESS)).toEqual({
-          address: NATIVE_ADDRESS,
-          symbol: 'ETH',
-          decimals: 18,
+        it('resolves the native descriptor without an RPC call', async () => {
+          const tokens = await readTokens(ctx, chain, [NATIVE_ADDRESS], await pinBlock(ctx, chain));
+          expect(tokens.get(NATIVE_ADDRESS)).toEqual({
+            address: NATIVE_ADDRESS,
+            symbol: 'ETH',
+            decimals: 18,
+          });
+        });
+
+        it('readBalances returns native and token balances', async () => {
+          const expected = expectedBalances();
+          const block = await pinBlock(ctx, chain);
+          expect(expected.block).toBe(block.number.toString());
+          const tokens = Object.keys(expected.balances) as Address[];
+          const balances = await readBalances(ctx, chain, expected.owner, tokens, block);
+          expect(balances.get(NATIVE_ADDRESS)).toBeGreaterThan(0n);
+          for (const token of tokens) {
+            expect(balances.get(token)).toBe(BigInt(expected.balances[token] ?? ''));
+          }
         });
       });
-
-      it('readBalances returns native and token balances', async () => {
-        const expected = expectedBalances();
-        const block = await pinBlock(ctx, chain);
-        expect(expected.block).toBe(block.number.toString());
-        const tokens = Object.keys(expected.balances) as Address[];
-        const balances = await readBalances(ctx, chain, expected.owner, tokens, block);
-        expect(balances.get(NATIVE_ADDRESS)).toBeGreaterThan(0n);
-        for (const token of tokens) {
-          expect(balances.get(token)).toBe(BigInt(expected.balances[token] ?? ''));
-        }
-      });
-    });
   });
 });

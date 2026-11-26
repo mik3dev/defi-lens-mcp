@@ -10,16 +10,15 @@ import { type Endpoint, startProxyServer, startReplayServer } from './rpc-server
 const ROOT = new URL('../../', import.meta.url);
 const ENV_FILE = fileURLToPath(new URL('.env', ROOT));
 
-let envLoaded = false;
-
 function isForkMode(): boolean {
   return process.env.CHAIN_MODE === 'fork';
 }
 
-/** Vitest does not load .env; fork mode needs the upstream variables from it. */
+/**
+ * Vitest does not load .env; fork mode needs the upstream variables from it. Idempotent: variables
+ * already in the environment win, so repeated loads change nothing.
+ */
 function loadDotEnv(): void {
-  if (envLoaded) return;
-  envLoaded = true;
   if (existsSync(ENV_FILE)) process.loadEnvFile(ENV_FILE);
 }
 

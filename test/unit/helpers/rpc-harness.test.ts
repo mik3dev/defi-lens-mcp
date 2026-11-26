@@ -177,6 +177,12 @@ describe('recording proxy', () => {
     ]);
   });
 
+  it('rejects cleanly, without an unhandled rejection, when anvil cannot start', async () => {
+    await expect(startAnvil({ binary: 'anvil-binary-that-does-not-exist' })).rejects.toThrow(
+      /anvil failed to start/,
+    );
+  });
+
   it.skipIf(!hasAnvil())(
     'round-trips a local anvil session through record and replay',
     async () => {

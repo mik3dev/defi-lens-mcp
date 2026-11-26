@@ -1,8 +1,15 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { chainEndpoint, hasRecording, hasRpc } from '../../helpers/chain-endpoint.js';
 
+// Fork mode loads the repo .env; never let the real one into this worker's environment.
+const loadEnvFile = vi.fn();
+const initialEnvKeys = Object.keys(process.env).sort();
+beforeEach(() => {
+  vi.spyOn(process, 'loadEnvFile').mockImplementation(loadEnvFile);
+});
 afterEach(() => {
   vi.unstubAllEnvs();
+  vi.restoreAllMocks();
 });
 
 describe('chain endpoint selection', () => {
@@ -16,6 +23,13 @@ describe('chain endpoint selection', () => {
     vi.stubEnv('CHAIN_MODE', 'fork');
     vi.stubEnv('RPC_URL_ETHEREUM', 'https://rpc.invalid');
     expect(hasRpc()).toBe(true);
+  });
+
+  it('never loads the real .env into the unit-test worker', () => {
+    vi.stubEnv('CHAIN_MODE', 'fork');
+    hasRpc();
+    vi.unstubAllEnvs();
+    expect(Object.keys(process.env).sort()).toEqual(initialEnvKeys);
   });
 
   it('detects missing recordings', () => {

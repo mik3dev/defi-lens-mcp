@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from 'node:child_process';
+import { type ChildProcess, spawn, spawnSync } from 'node:child_process';
 import { once } from 'node:events';
 import { createServer } from 'node:net';
 import { redact } from '../../src/lib/errors.js';
@@ -34,6 +34,47 @@ async function isReady(url: string): Promise<boolean> {
   }
 }
 
+interface AnvilProcess {
+  child: ChildProcess;
+  output: () => string;
+  spawnError: () => Error | undefined;
+  exited: Promise<void>;
+}
+
+function spawnAnvil(binary: string, args: string[]): AnvilProcess {
+  const child = spawn(binary, args, { stdio: ['ignore', 'pipe', 'pipe'] });
+  let output = '';
+  let spawnError: Error | undefined;
+  const capture = (chunk: Buffer) => {
+    output = (output + chunk.toString()).slice(-4_000);
+  };
+  child.stdout?.on('data', capture);
+  child.stderr?.on('data', capture);
+  // Settles on exit or on a spawn error (e.g. binary missing); never rejects, so nothing goes unhandled.
+  const exited = new Promise<void>((resolve) => {
+    child.once('exit', () => resolve());
+    child.once('error', (e) => {
+      spawnError = e;
+      resolve();
+    });
+  });
+  return { child, output: () => output, spawnError: () => spawnError, exited };
+}
+
+async function waitReady(proc: AnvilProcess, rpcUrl: string, fail: (why: string) => Error) {
+  const deadline = Date.now() + READY_TIMEOUT_MS;
+  while (!(await isReady(rpcUrl))) {
+    const spawnError = proc.spawnError();
+    if (spawnError) throw fail(`failed to start (${spawnError.message})`);
+    if (proc.child.exitCode !== null) throw fail(`exited with code ${proc.child.exitCode}`);
+    if (Date.now() > deadline) {
+      proc.child.kill('SIGKILL');
+      throw fail('did not become ready');
+    }
+    await new Promise((resolve) => setTimeout(resolve, READY_POLL_MS));
+  }
+}
+
 /**
  * Starts anvil on a free local port; forks `forkUrl` at `forkBlockNumber` when given. Anvil output is
  * captured, never printed, and redacted of the fork URL before it appears in an error.
@@ -41,40 +82,29 @@ async function isReady(url: string): Promise<boolean> {
 export async function startAnvil(opts: {
   forkUrl?: string;
   forkBlockNumber?: bigint;
+  binary?: string;
 }): Promise<Endpoint> {
   const port = await freePort();
   const fork = opts.forkUrl
     ? ['--fork-url', opts.forkUrl, '--fork-block-number', String(opts.forkBlockNumber ?? 0n)]
     : [];
-  const child = spawn('anvil', ['--host', '127.0.0.1', '--port', String(port), ...fork], {
-    stdio: ['ignore', 'pipe', 'pipe'],
-  });
-  let output = '';
-  const capture = (chunk: Buffer) => {
-    output = (output + chunk.toString()).slice(-4_000);
-  };
-  child.stdout.on('data', capture);
-  child.stderr.on('data', capture);
-  const exited = once(child, 'exit');
+  const proc = spawnAnvil(opts.binary ?? 'anvil', [
+    '--host',
+    '127.0.0.1',
+    '--port',
+    String(port),
+    ...fork,
+  ]);
   const rpcUrl = `http://127.0.0.1:${port}`;
   const fail = (why: string) =>
-    new Error(`anvil ${why}: ${redact(output, opts.forkUrl ? [opts.forkUrl] : [])}`);
-
-  const deadline = Date.now() + READY_TIMEOUT_MS;
-  while (!(await isReady(rpcUrl))) {
-    if (child.exitCode !== null) throw fail(`exited with code ${child.exitCode}`);
-    if (Date.now() > deadline) {
-      child.kill('SIGKILL');
-      throw fail('did not become ready');
-    }
-    await new Promise((resolve) => setTimeout(resolve, READY_POLL_MS));
-  }
+    new Error(`anvil ${why}: ${redact(proc.output(), opts.forkUrl ? [opts.forkUrl] : [])}`);
+  await waitReady(proc, rpcUrl, fail);
   return {
     rpcUrl,
     stop: async () => {
-      if (child.exitCode === null) {
-        child.kill('SIGTERM');
-        await exited;
+      if (proc.child.exitCode === null && proc.child.signalCode === null) {
+        proc.child.kill('SIGTERM');
+        await proc.exited;
       }
     },
   };
