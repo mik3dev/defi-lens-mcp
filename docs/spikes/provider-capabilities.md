@@ -12,7 +12,7 @@ The Tenderly response saved for phase 6 is [`tenderly-simulate-swap.json`](tende
 |---|----------|--------|
 | Q1 | Alchemy free tier serves `eth_simulateV1`? | **Yes**, on all four chains, at `latest` and at historical blocks, with `traceTransfers` |
 | Q2 | anvil serves `eth_simulateV1` in fork mode? | **Yes** (1.5.0-stable), at the fork block and at locally mined blocks. Blocks **before** the fork block fail when state overrides are used, and viem's asset tracing always uses them |
-| Q3 | viem `simulateCalls` with `traceAssetChanges` + `traceTransfers`, historical `blockNumber`? | **Yes** on Alchemy (all four chains, up to 100 000 blocks back). On anvil only at or after the fork block |
+| Q3 | viem `simulateCalls` with `traceAssetChanges` + `traceTransfers`, historical `blockNumber`? | **Yes** on Alchemy: all four chains at `latest` and at `PINNED − 100 000` (ethereum with a swap and an ETH transfer; base, arbitrum and polygon with an ETH transfer). On anvil only at or after the fork block |
 | Q4 | `debug_traceCall` on the free tier? | **No** (nor `trace_call`) on all four chains |
 | Q5 | Tenderly simulation API | **Works**: endpoint, header and shapes recorded. Quotas could not be read from the API (see Q5) |
 | Q6 | `eth_getLogs` limits | **10 blocks** per request on all four chains (inclusive count). No result cap was reached. A burst of 30 parallel requests was not throttled |
@@ -83,7 +83,11 @@ Swap used: SwapRouter02 `0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45`, `exactInpu
 | Alchemy ethereum | `latest` | success, gas 119 755. Changes: ETH −0.1, USDC +169.004672 | 6 | 1 382 ms |
 | Alchemy ethereum | `PINNED − 10` | success, gas 119 771. ETH −0.1, USDC +170.113349 | 5 | 350 ms |
 | Alchemy ethereum | `PINNED − 100 000` | success, gas 119 793. ETH −0.1, USDC +200.176539 | 5 | 351 ms |
-| Alchemy base / arbitrum / polygon | `latest` and `PINNED − 100 000` (arbitrum, polygon) | ETH transfer: success, gas 21 000, one change of −1 wei | 5 | ≈ 1.3 s |
+| Alchemy ethereum | `PINNED − 100 000` (`26399763`) | ETH transfer (1 wei): success, gas 21 000, one change ETH −1, native pseudo-log. *Fix round 1* | 4 | 1 484 ms |
+| Alchemy base | `latest` | ETH transfer: success, gas 21 000, one change ETH −1 | 5 | 1 306 ms |
+| Alchemy base | `PINNED − 100 000` (`62511111`) | ETH transfer: success, gas 21 000, one change ETH −1, native pseudo-log; simulated block reported as `62511112`. *Fix round 1* | 4 | 952 ms |
+| Alchemy arbitrum | `latest` and `PINNED − 100 000` (`527682324`) | ETH transfer: success, one change ETH −1 at both blocks | not counted | — |
+| Alchemy polygon | `latest` and `PINNED − 100 000` (`97904500`) | ETH transfer: success, one change ETH −1 at both blocks (viem labels it `ETH`) | not counted | — |
 | anvil ethereum | `latest` = `PINNED` | success, gas 119 771. ETH −0.1, USDC +170.156848 | 6 | 2 909 ms (cold) |
 | anvil ethereum | `PINNED − 10` | error: `Evm override error: not available on past forked blocks` | — | — |
 | Alchemy ethereum, USDC `transfer` above balance | `PINNED` | `status 'failure'`, gas 36 085. `data` holds `Error("ERC20: transfer amount exceeds balance")`. Asset changes ETH 0, USDC 0 | 5 | — |
@@ -92,7 +96,7 @@ Observations:
 
 - Logs for the swap: native pseudo-log (sender → router), USDC `Transfer`, native pseudo-log (router → WETH), WETH `Deposit`, WETH `Transfer`, pool `Swap`.
 - The ETH change is exactly −0.1: with validation off the gas fee is not charged, so asset changes exclude gas.
-- An omitted `blockNumber` costs one extra `eth_blockNumber` request (6 instead of 5).
+- Request count with an explicit `blockNumber`: two `eth_simulateV1` (discovery and main) + one `eth_call` for the native balance + one `eth_call` per candidate token (tokens seen in `Transfer` logs plus each call's `to`). That gives 4 for an ETH transfer and 5 for the swap. An omitted `blockNumber` adds one `eth_blockNumber` request.
 - viem labels the native asset `ETH` on Polygon too, so the server must map `0xeeee…` to the chain's own native descriptor.
 - Gas agrees across backends for the same state: 119 771 on Alchemy, anvil and Tenderly; 36 085 for the revert on Alchemy and Tenderly.
 
@@ -126,7 +130,7 @@ Simulations sent (4 in total, plus one rejected credential check):
 | 2 | swap, `"quick"`, `block_number: 26499762` | HTTP 200, 587 ms, **65 KB**. Has `status`, `gas_used`, `transaction_info.logs[].raw`, `asset_changes`, `balance_diff` and `call_trace.output`; `contracts` empty. Saved, trimmed, as [`tenderly-simulate-swap.json`](tenderly-simulate-swap.json) |
 | 3 | USDC `transfer` above balance, `"quick"`, `block_number: PINNED` | HTTP 200, `transaction.status: false`, `error_message: "ERC20: transfer amount exceeds balance"`, `gas_used 36085`. Revert bytes in `transaction.transaction_info.call_trace.output` (`0x08c379a0…`) |
 | 4 | base (`network_id: "8453"`) ETH transfer of 1 wei, `"quick"`, `block_number: latest + 1` (`62622974`) | HTTP 200, `status true`, `gas_used 21000`, one `NativeCurrency` asset change. Without `gas_price: "0"`, `balance_diff` also shows the sender paying the fee and the OP fee vaults `0x4200…0019` / `0x4200…001A` receiving it |
-| — | wrong access key | **HTTP 403** after **50 s**: `{"error":{"id":"…","slug":"insufficient_permissions","message":"Insufficient permissions"}}` |
+| — | wrong access key | **HTTP 403** after **50 s**: `{"error":{"id":"…","slug":"insufficient_permissions","message":"Insufficient permissions"}}`. Re-probed twice in fix round 1 with an obviously bogus key: 403 after 50 497 ms and 50 365 ms. The slow rejection is reliable (3 of 3) |
 
 **Response shape (fields the backend needs):**
 
@@ -286,7 +290,7 @@ USDC (Ethereum and Base) is a **ZeppelinOS** proxy: its implementation is not in
    - Native transfers ← `asset_changes` with `token_info.standard === "NativeCurrency"`.
    - `balanceDiffs` of `tx.from`: native from `balance_diff` (`dirty − original`), ERC-20 netted from `asset_changes` `raw_amount` by `from` / `to`.
    - On revert, `revertData` ← `transaction_info.call_trace.output`.
-   - A wrong key returns **403** `insufficient_permissions`; Tenderly took 50 s to send it in the spike, past the 20 s timeout. (Q5)
+   - A wrong key returns **403** `insufficient_permissions` after about 50 s, every time (3 of 3 probes). The Tenderly backend therefore gets its own 60 s timeout (`TENDERLY_TIMEOUT_MS = 60_000`) so rejected credentials surface as `SIMULATION_UNAVAILABLE`, not as a timeout. (Q5)
 7. **Asset changes exclude the gas fee on both backends.** viem runs with validation off; Tenderly gets `gas_price "0"`. This keeps the backends comparable and is stated in the tool description. (Q3, Q5)
 8. **Native asset identity.** viem's `assetChanges` entry for `0xeeee…` is mapped to `NATIVE_ADDRESS` and the chain's native descriptor; viem's `ETH` label is wrong on Polygon. Polygon's `LogTransfer` log from `0x…1010` is not an ERC-20 `Transfer` and is ignored by topic. (Q1, Q3)
 9. **Phase 6 chain tests run on the anvil harness.** anvil 1.5.0 serves `eth_simulateV1`, state overrides and viem asset tracing at the fork block and at locally mined blocks, but not with overrides at blocks before the fork block.
@@ -318,14 +322,14 @@ USDC (Ethereum and Base) is a **ZeppelinOS** proxy: its implementation is not in
     - `rawContract.address === null` means native.
     - `uniqueId` is `<hash>:log:<n>` or `<hash>:external`.
     - Decimals come from on-chain `readTokens`, not from `rawContract.decimal`.
-16. **`alchemy_getTokenBalances` notes for phase 1** (not edited here: outside this task's files):
+16. **`alchemy_getTokenBalances` notes for phase 1** (applied to `docs/plan/phase-1-balances-prices.md` in fix round 1):
     - Pages hold up to 100 entries and may be shorter while a `pageKey` follows.
     - Zero balances are returned and must be filtered.
     - On Polygon, `0x…1010` must be excluded so native POL is not counted twice. (Q8)
 
 ### Test harness
 
-17. **Cold fork runs need serial test files.** Four cold anvil forks starting in parallel exceed the free tier's compute units per second (HTTP 429, failed runs); serially a cold run takes 36 s and passes; warm runs take 20 s. Proposed follow-up, outside this task's files: run `test:fork` with `--no-file-parallelism`, or give anvil `--compute-units-per-second` / `--retries` in `test/helpers/anvil.ts`. (Q7)
+17. **Cold fork runs need serial test files.** Four cold anvil forks starting in parallel exceed the free tier's compute units per second (HTTP 429, failed runs); serially a cold run takes 36 s and passes; warm runs take 20 s. Applied in fix round 1: `test:fork` runs with `--no-file-parallelism`. (Q7)
 18. **No paid tier is needed** for phases 5 and 6. The free tier's only material limit is the 10-block log window, which the request budget and the honest `truncated` report already handle. (Q6, Q7)
 
 ### Plan and config changes applied
@@ -333,5 +337,7 @@ USDC (Ethereum and Base) is a **ZeppelinOS** proxy: its implementation is not in
 - `docs/plan/phase-5-large-movements.md`: decisions 12–15 (range error text, budget defaults, asset-transfer request and response shape).
 - `docs/plan/phase-6-simulation.md`: decisions 2–11 (no trace tier, unsupported detection, block semantics, Tenderly request and mapping, gas exclusion, native identity, harness historical test, ABI endpoints and proxy rule, replay constraint).
 - `.env.example`: log-setting comments no longer say provisional; the simulation backend comment states the measured support.
+- `docs/plan/phase-1-balances-prices.md`: decision 16 (zero balances, Polygon `0x…1010`).
+- `package.json` / `test/helpers/rpc-recording.ts`: decision 17 (`test:fork` runs test files serially).
 
 **Spec changes proposed:** none. Every decision fills a detail the spec left to the spike or to the plans; `docs/design.md` is unchanged.

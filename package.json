@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "coverage": "vitest run --coverage",
-    "test:fork": "CHAIN_MODE=fork vitest run --passWithNoTests test/chain test/e2e",
+    "test:fork": "CHAIN_MODE=fork vitest run --no-file-parallelism --passWithNoTests test/chain test/e2e",
     "test:live": "LIVE=1 vitest run --passWithNoTests test/live",
     "build": "tsc -p tsconfig.build.json"
   },

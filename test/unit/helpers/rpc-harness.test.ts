@@ -16,7 +16,8 @@ import {
 } from '../../helpers/rpc-recording.js';
 import { startProxyServer, startReplayServer } from '../../helpers/rpc-server.js';
 
-const MISSING = 'No recording for eth_getCode. Re-record with: RECORD=1 pnpm test:fork';
+const MISSING =
+  'No recording for eth_getCode. Re-record with: RECORD=1 pnpm test:fork (runs test files serially to stay under provider rate limits)';
 
 async function rpc(url: string, body: unknown, headers: Record<string, string> = {}) {
   const res = await fetch(url, {
@@ -77,7 +78,7 @@ describe('recording files', () => {
 
   it('fails with a re-record hint when the file is missing', async () => {
     await expect(readRecording(join(dir, 'nope.json'))).rejects.toThrow(
-      /Record with: RECORD=1 pnpm test:fork/,
+      /Record with: RECORD=1 pnpm test:fork \(runs test files serially to stay under provider rate limits\)/,
     );
   });
 });

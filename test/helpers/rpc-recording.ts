@@ -14,7 +14,9 @@ export type RecordedEntry =
 
 export type RecordedReply = { result: unknown } | { error: RpcErrorObject };
 
-export const RERECORD_HINT = 'RECORD=1 pnpm test:fork';
+/** Matches the `test:fork` script, which runs test files serially (`--no-file-parallelism`). */
+export const RERECORD_HINT =
+  'RECORD=1 pnpm test:fork (runs test files serially to stay under provider rate limits)';
 
 export function missingRecordingMessage(method: string): string {
   return `No recording for ${method}. Re-record with: ${RERECORD_HINT}`;

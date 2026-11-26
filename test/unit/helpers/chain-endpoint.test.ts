@@ -39,7 +39,7 @@ describe('chain endpoint selection', () => {
   it('fails in replay mode when the recording is missing', async () => {
     vi.stubEnv('CHAIN_MODE', '');
     await expect(chainEndpoint('ethereum', 'does-not-exist')).rejects.toThrow(
-      /Record with: RECORD=1 pnpm test:fork/,
+      /Record with: RECORD=1 pnpm test:fork \(runs test files serially to stay under provider rate limits\)/,
     );
   });
 });
