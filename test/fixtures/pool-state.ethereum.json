@@ -1,0 +1,15 @@
+{
+  "block": "26499763",
+  "pool": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+  "sqrtPriceX96": "1920198123971495122724260769848649",
+  "tick": 201922,
+  "liquidity": "3976494864047879410",
+  "reserve0": "12680946622080",
+  "reserve1": "33235071301287894750199",
+  "commands": [
+    "cast call 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 \"slot0()(uint160,int24,uint16,uint16,uint16,uint8,bool)\" --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 \"liquidity()(uint128)\" --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 \"balanceOf(address)(uint256)\" 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \"balanceOf(address)(uint256)\" 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\""
+  ]
+}
