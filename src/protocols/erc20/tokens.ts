@@ -22,6 +22,7 @@ export interface TokenInfo {
 }
 
 const NATIVE_DECIMALS = 18;
+const PLACEHOLDER_SYMBOL = 'UNKNOWN';
 
 const isNative = (address: Address): boolean => isAddressEqual(address, NATIVE_ADDRESS);
 const lower = (address: Address): string => address.toLowerCase();
@@ -83,9 +84,10 @@ async function fetchTokens(
   );
   return new Map(
     reads.map((r) => {
-      const symbol = r.symbol ?? bytes32.get(lower(r.address));
+      // EIP-20 makes symbol() optional: a token with decimals() but no symbol stays readable.
+      const symbol = r.symbol ?? bytes32.get(lower(r.address)) ?? PLACEHOLDER_SYMBOL;
       const info =
-        symbol === undefined || r.decimals === undefined
+        r.decimals === undefined
           ? null
           : {
               address: getAddress(r.address),
@@ -140,7 +142,7 @@ function startFetch(
 }
 
 /**
- * Token metadata at `block`. null = not a readable ERC-20 (no code, reverts, or no symbol/decimals).
+ * Token metadata at `block`. null = not a readable ERC-20 (no code, reverts, or no decimals); a missing symbol() becomes 'UNKNOWN'.
  * NATIVE_ADDRESS resolves to the native descriptor without an RPC call. Readable tokens are cached
  * forever under `token:<chain>:<address>`; nulls are not cached. Concurrent calls share the
  * in-flight read of a token; it is dropped once settled. Keys are the given addresses.

@@ -119,6 +119,21 @@ describe('getPoolState', () => {
     expect(out.data.pool).toBe(POOL);
   });
 
+  it('returns the pool when a token has no symbol()', async () => {
+    chain = await startFakeChain({
+      blockNumber: BLOCK_NUMBER,
+      contracts: {
+        [POOL]: fakePool(),
+        ...fakeTokens(2_500_000_000n, 10n ** 18n),
+        [USDC]: { decimals: 6, balances: { [POOL]: 2_500_000_000n } },
+      },
+    });
+    const ctx = testContext({ ethereum: chain.rpcUrl });
+    const out = await getPoolState(ctx, { chain: 'ethereum', pool: POOL });
+    expect(out.data.token0).toEqual({ address: USDC, symbol: 'UNKNOWN', decimals: 6 });
+    expect(out.data.token1.symbol).toBe('WETH');
+  });
+
   it('warns when the pool is not initialized', async () => {
     const ctx = await fakeContext(0n);
     const out = await getPoolState(ctx, { chain: 'ethereum', pool: POOL });

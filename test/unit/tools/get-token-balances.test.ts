@@ -271,10 +271,17 @@ describe('getTokenBalances', () => {
     const out = await getTokenBalances(ctx, {
       chain: 'ethereum',
       address: OWNER,
-      tokens: [AAA, DEAD, NOSYM],
+      tokens: [AAA, DEAD],
     });
     expect(symbols(out.data.balances)).toEqual(['ETH', 'AAA']);
-    expect(out.warnings).toContain('Skipped 2 tokens that are not readable ERC-20 contracts.');
+    expect(out.warnings).toContain('Skipped 1 tokens that are not readable ERC-20 contracts.');
+  });
+
+  it('keeps a token without symbol() under a placeholder symbol', async () => {
+    const ctx = await fakeContext();
+    const out = await getTokenBalances(ctx, { chain: 'ethereum', address: OWNER, tokens: [NOSYM] });
+    expect(symbols(out.data.balances)).toEqual(['ETH', 'UNKNOWN']);
+    expect(out.warnings.some((w) => w.startsWith('Skipped'))).toBe(false);
   });
 
   it('caps explicit tokens at maxTokens and says so', async () => {

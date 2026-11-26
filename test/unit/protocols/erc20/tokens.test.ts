@@ -72,10 +72,16 @@ describe('readTokens', () => {
     expect(tokens.get(MKR)).toEqual({ address: MKR, symbol: 'MKR', decimals: 18 });
   });
 
-  it('returns null for no code, non-ERC-20 contracts and unreadable symbols', async () => {
+  it('returns null for no code and non-ERC-20 contracts', async () => {
     const ctx = await setup();
-    const tokens = await readTokens(ctx, 'ethereum', [DEAD, MULTICALL3, NOSYM], BLOCK);
-    expect([...tokens.values()]).toEqual([null, null, null]);
+    const tokens = await readTokens(ctx, 'ethereum', [DEAD, MULTICALL3], BLOCK);
+    expect([...tokens.values()]).toEqual([null, null]);
+  });
+
+  it('keeps a token without symbol() under a placeholder symbol', async () => {
+    const ctx = await setup();
+    const tokens = await readTokens(ctx, 'ethereum', [NOSYM], BLOCK);
+    expect(tokens.get(NOSYM)).toEqual({ address: NOSYM, symbol: 'UNKNOWN', decimals: 6 });
   });
 
   it('sanitizes on-chain symbols', async () => {
@@ -140,7 +146,7 @@ describe('readTokens concurrency', () => {
     ]);
     expect(a.get(WETH)?.symbol).toBe('WETH');
     expect(b.get(WETH)?.symbol).toBe('WETH');
-    expect(b.get(NOSYM)).toBeNull();
+    expect(b.get(NOSYM)?.symbol).toBe('UNKNOWN');
     const reads = (t: Address) => chain?.callTargets.filter((c) => c === t).length;
     expect(reads(WETH)).toBe(2); // symbol + decimals, once
     expect(reads(NOSYM)).toBe(3); // symbol + decimals + bytes32 symbol retry
