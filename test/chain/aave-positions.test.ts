@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import type { Address } from 'viem';
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CHAIN_IDS, type ChainId } from '../../src/chains.js';
 import type { AppContext } from '../../src/context.js';
 import { resolveMarket } from '../../src/protocols/aave/market.js';
@@ -9,6 +9,11 @@ import { PINNED } from '../fixtures/blocks.js';
 import { AAVE_WALLETS } from '../fixtures/wallets.js';
 import { chainEndpoint } from '../helpers/chain-endpoint.js';
 import { testContext } from '../helpers/context.js';
+
+// The ethereum borrower's read covers every reserve of the market (68) in one multicall; through a
+// cold anvil fork cache that takes longer than the default fork timeout. Replay timing is unchanged.
+const COLD_FORK_TIMEOUT_MS = 180_000;
+if (process.env.CHAIN_MODE === 'fork') vi.setConfig({ testTimeout: COLD_FORK_TIMEOUT_MS });
 
 /** Raw values derived independently with `cast call … --block <pinned>` (see `commands`). */
 interface ExpectedWallet {
