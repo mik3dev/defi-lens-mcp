@@ -21,6 +21,8 @@ export interface FakeContract {
   revert?: boolean;
   /** Return data by 4-byte selector, answered for any arguments; takes precedence over the fields above. */
   raw?: Record<Hex, Hex>;
+  /** Return data computed from the full calldata; undefined falls through. Takes precedence over `raw`. */
+  respond?: (callData: Hex) => Hex | undefined;
 }
 
 export interface FakeChain extends Endpoint {
@@ -97,6 +99,8 @@ export async function startFakeChain(opts: {
   const inner = (target: Address, callData: Hex): CallResult => {
     callTargets.push(target);
     const contract = lookup(opts.contracts, target) ?? opts.fallback;
+    const computed = contract?.respond?.(callData);
+    if (computed !== undefined) return { success: true, returnData: computed };
     const raw = contract?.raw?.[callData.slice(0, 10).toLowerCase() as Hex];
     if (raw !== undefined) return { success: true, returnData: raw };
     const decoded = decodeInner(callData);

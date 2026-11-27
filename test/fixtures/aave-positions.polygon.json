@@ -1,0 +1,79 @@
+{
+  "block": "98004500",
+  "market": {
+    "pool": "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
+    "dataProvider": "0x243Aa95cAC2a25651eda86e80bEe66114413c43b",
+    "oracle": "0xb023e699F5a33916Ea823A16485e259257cA8Bd1"
+  },
+  "wallets": {
+    "borrower": {
+      "user": "0xB5999125353DD94a5Be96B3b23B32D0aBC19f9f7",
+      "accountData": {
+        "totalCollateralBase": "342008009188",
+        "totalDebtBase": "179118452705",
+        "availableBorrowsBase": "69008357960",
+        "currentLiquidationThreshold": "7753",
+        "ltv": "7255",
+        "healthFactor": "1480536430494116912"
+      },
+      "eModeCategory": 0,
+      "reserves": [
+        {
+          "asset": "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6",
+          "supplied": "5058797",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "6045994400000"
+        },
+        {
+          "asset": "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619",
+          "supplied": "13777171448410378",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "168988773049"
+        },
+        {
+          "asset": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+          "supplied": "34",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": false,
+          "price": "99875000"
+        },
+        {
+          "asset": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+          "supplied": "4402035211163753621972",
+          "stableDebt": "0",
+          "variableDebt": "22005330916594892437260",
+          "usedAsCollateral": true,
+          "price": "7684000"
+        },
+        {
+          "asset": "0x03b54A6e9a984069379fae1a4fC4dBAE93B3bCCD",
+          "supplied": "0",
+          "stableDebt": "0",
+          "variableDebt": "146012730365303",
+          "usedAsCollateral": false,
+          "price": "211270209673"
+        },
+        {
+          "asset": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+          "supplied": "75587945",
+          "stableDebt": "0",
+          "variableDebt": "100000004",
+          "usedAsCollateral": false,
+          "price": "99986414"
+        }
+      ]
+    }
+  },
+  "commands": [
+    "cast call 0x243Aa95cAC2a25651eda86e80bEe66114413c43b \"getAllReservesTokens()((string,address)[])\" --block 98004500 --rpc-url \"$RPC_URL_POLYGON\"",
+    "for each asset of getAllReservesTokens: cast call 0x243Aa95cAC2a25651eda86e80bEe66114413c43b \"getUserReserveData(address,address)(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint40,bool)\" <asset> <user> --block 98004500 --rpc-url \"$RPC_URL_POLYGON\" (reserves with a zero aToken balance, stable debt and variable debt are omitted)",
+    "cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD \"getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)\" 0xB5999125353DD94a5Be96B3b23B32D0aBC19f9f7 --block 98004500 --rpc-url \"$RPC_URL_POLYGON\"",
+    "cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD \"getUserEMode(address)(uint256)\" 0xB5999125353DD94a5Be96B3b23B32D0aBC19f9f7 --block 98004500 --rpc-url \"$RPC_URL_POLYGON\"",
+    "cast call 0xb023e699F5a33916Ea823A16485e259257cA8Bd1 \"getAssetsPrices(address[])(uint256[])\" \"[0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6,0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619,0xc2132D05D31c914a87C6611C10748AEb04B58e8F,0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270,0x03b54A6e9a984069379fae1a4fC4dBAE93B3bCCD,0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359]\" --block 98004500 --rpc-url \"$RPC_URL_POLYGON\""
+  ]
+}

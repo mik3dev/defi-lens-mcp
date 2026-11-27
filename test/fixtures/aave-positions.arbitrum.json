@@ -1,0 +1,47 @@
+{
+  "block": "527782324",
+  "market": {
+    "pool": "0x794a61358D6845594F94dc1DB02A252b5b4814aD",
+    "dataProvider": "0x243Aa95cAC2a25651eda86e80bEe66114413c43b",
+    "oracle": "0xb56c2F0B653B2e0b10C9b928C8580Ac5Df02C7C7"
+  },
+  "wallets": {
+    "borrower": {
+      "user": "0x0f66E3fb1CE72fA42ACc2122B3A232BeeEbd862b",
+      "accountData": {
+        "totalCollateralBase": "10507111977673",
+        "totalDebtBase": "5821603528063",
+        "availableBorrowsBase": "2372893103324",
+        "currentLiquidationThreshold": "8199",
+        "ltv": "7799",
+        "healthFactor": "1479975710883013868"
+      },
+      "eModeCategory": 0,
+      "reserves": [
+        {
+          "asset": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+          "supplied": "173630013",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "6051437624139"
+        },
+        {
+          "asset": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          "supplied": "442",
+          "stableDebt": "0",
+          "variableDebt": "58222930040",
+          "usedAsCollateral": true,
+          "price": "99988158"
+        }
+      ]
+    }
+  },
+  "commands": [
+    "cast call 0x243Aa95cAC2a25651eda86e80bEe66114413c43b \"getAllReservesTokens()((string,address)[])\" --block 527782324 --rpc-url \"$RPC_URL_ARBITRUM\"",
+    "for each asset of getAllReservesTokens: cast call 0x243Aa95cAC2a25651eda86e80bEe66114413c43b \"getUserReserveData(address,address)(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint40,bool)\" <asset> <user> --block 527782324 --rpc-url \"$RPC_URL_ARBITRUM\" (reserves with a zero aToken balance, stable debt and variable debt are omitted)",
+    "cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD \"getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)\" 0x0f66E3fb1CE72fA42ACc2122B3A232BeeEbd862b --block 527782324 --rpc-url \"$RPC_URL_ARBITRUM\"",
+    "cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD \"getUserEMode(address)(uint256)\" 0x0f66E3fb1CE72fA42ACc2122B3A232BeeEbd862b --block 527782324 --rpc-url \"$RPC_URL_ARBITRUM\"",
+    "cast call 0xb56c2F0B653B2e0b10C9b928C8580Ac5Df02C7C7 \"getAssetsPrices(address[])(uint256[])\" \"[0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f,0xaf88d065e77c8cC2239327C5EDb3A432268e5831]\" --block 527782324 --rpc-url \"$RPC_URL_ARBITRUM\""
+  ]
+}

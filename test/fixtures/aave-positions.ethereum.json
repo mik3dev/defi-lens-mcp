@@ -1,0 +1,127 @@
+{
+  "block": "26499763",
+  "market": {
+    "pool": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+    "dataProvider": "0x0a16f2FCC0D44FaE41cc54e079281D84A363bECD",
+    "oracle": "0x54586bE62E3c3580375aE3723C145253060Ca0C2"
+  },
+  "wallets": {
+    "borrower": {
+      "user": "0xa18Ce9B63ac6cb0b30ed3FC97522688e432aFAe5",
+      "accountData": {
+        "totalCollateralBase": "19364695742709",
+        "totalDebtBase": "10760615406880",
+        "availableBorrowsBase": "4308990820096",
+        "currentLiquidationThreshold": "8147",
+        "ltv": "7782",
+        "healthFactor": "1466248122815760417"
+      },
+      "eModeCategory": 40,
+      "reserves": [
+        {
+          "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "supplied": "64629914410389028501",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "170209000000"
+        },
+        {
+          "asset": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+          "supplied": "69847120",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "6089987032200"
+        },
+        {
+          "asset": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "supplied": "0",
+          "stableDebt": "0",
+          "variableDebt": "10000558406",
+          "usedAsCollateral": false,
+          "price": "99988641"
+        },
+        {
+          "asset": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+          "supplied": "4382235452302041220672",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "923343000"
+        },
+        {
+          "asset": "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9",
+          "supplied": "6705598574134649531",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "9561512000"
+        },
+        {
+          "asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "supplied": "0",
+          "stableDebt": "0",
+          "variableDebt": "97747607433",
+          "usedAsCollateral": false,
+          "price": "99855878"
+        }
+      ]
+    },
+    "supplier": {
+      "user": "0x83d8b74721fa3B0b7FdfC1F93238a8A0dEF50C0B",
+      "accountData": {
+        "totalCollateralBase": "77752790480561",
+        "totalDebtBase": "0",
+        "availableBorrowsBase": "62979760289254",
+        "currentLiquidationThreshold": "8400",
+        "ltv": "8100",
+        "healthFactor": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      },
+      "eModeCategory": 0,
+      "reserves": [
+        {
+          "asset": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+          "supplied": "456807750944787183493",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "170209000000"
+        },
+        {
+          "asset": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "supplied": "4680220",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": false,
+          "price": "99855878"
+        }
+      ]
+    },
+    "unused": {
+      "user": "0xd0123bfa0Bc20306fbecDa51FD802f796042CAe7",
+      "accountData": {
+        "totalCollateralBase": "0",
+        "totalDebtBase": "0",
+        "availableBorrowsBase": "0",
+        "currentLiquidationThreshold": "0",
+        "ltv": "0",
+        "healthFactor": "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      },
+      "eModeCategory": 0,
+      "reserves": []
+    }
+  },
+  "commands": [
+    "cast call 0x0a16f2FCC0D44FaE41cc54e079281D84A363bECD \"getAllReservesTokens()((string,address)[])\" --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "for each asset of getAllReservesTokens: cast call 0x0a16f2FCC0D44FaE41cc54e079281D84A363bECD \"getUserReserveData(address,address)(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint40,bool)\" <asset> <user> --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\" (reserves with a zero aToken balance, stable debt and variable debt are omitted)",
+    "cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 \"getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)\" 0xa18Ce9B63ac6cb0b30ed3FC97522688e432aFAe5 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 \"getUserEMode(address)(uint256)\" 0xa18Ce9B63ac6cb0b30ed3FC97522688e432aFAe5 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x54586bE62E3c3580375aE3723C145253060Ca0C2 \"getAssetsPrices(address[])(uint256[])\" \"[0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599,0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48,0x514910771AF9Ca656af840dff83E8264EcF986CA,0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9,0xdAC17F958D2ee523a2206206994597C13D831ec7]\" --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 \"getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)\" 0x83d8b74721fa3B0b7FdfC1F93238a8A0dEF50C0B --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 \"getUserEMode(address)(uint256)\" 0x83d8b74721fa3B0b7FdfC1F93238a8A0dEF50C0B --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x54586bE62E3c3580375aE3723C145253060Ca0C2 \"getAssetsPrices(address[])(uint256[])\" \"[0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2,0xdAC17F958D2ee523a2206206994597C13D831ec7]\" --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 \"getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)\" 0xd0123bfa0Bc20306fbecDa51FD802f796042CAe7 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
+    "cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 \"getUserEMode(address)(uint256)\" 0xd0123bfa0Bc20306fbecDa51FD802f796042CAe7 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\""
+  ]
+}
