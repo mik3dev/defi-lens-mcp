@@ -1,0 +1,37 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_aave_positions --tool-arg chain=ethereum --tool-arg address=0xd0123bfa0Bc20306fbecDa51FD802f796042CAe7
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 3 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26508680\",\"blockTimestamp\":\"2026-11-27T19:36:11.000Z\",\"data\":{\"address\":\"0xd0123bfa0Bc20306fbecDa51FD802f796042CAe7\",\"market\":{\"name\":\"Aave v3 Core\",\"pool\":\"0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2\"},\"priceSource\":\"aave-oracle\",\"summary\":{\"totalCollateralUsd\":0,\"totalDebtUsd\":0,\"availableBorrowsUsd\":0,\"ltv\":0,\"liquidationThreshold\":0,\"healthFactor\":null,\"eModeCategory\":0,\"healthFactorNote\":\"no debt\"},\"reserves\":[]},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "ethereum",
+    "blockNumber": "26508680",
+    "blockTimestamp": "2026-11-27T19:36:11.000Z",
+    "data": {
+      "address": "0xd0123bfa0Bc20306fbecDa51FD802f796042CAe7",
+      "market": {
+        "name": "Aave v3 Core",
+        "pool": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+      },
+      "priceSource": "aave-oracle",
+      "summary": {
+        "totalCollateralUsd": 0,
+        "totalDebtUsd": 0,
+        "availableBorrowsUsd": 0,
+        "ltv": 0,
+        "liquidationThreshold": 0,
+        "healthFactor": null,
+        "eModeCategory": 0,
+        "healthFactorNote": "no debt"
+      },
+      "reserves": []
+    },
+    "warnings": []
+  }
+}

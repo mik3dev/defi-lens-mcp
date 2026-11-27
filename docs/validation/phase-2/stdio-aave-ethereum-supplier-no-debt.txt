@@ -1,0 +1,88 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_aave_positions --tool-arg chain=ethereum --tool-arg address=0x83d8b74721fa3B0b7FdfC1F93238a8A0dEF50C0B
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 3 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26508680\",\"blockTimestamp\":\"2026-11-27T19:36:11.000Z\",\"data\":{\"address\":\"0x83d8b74721fa3B0b7FdfC1F93238a8A0dEF50C0B\",\"market\":{\"name\":\"Aave v3 Core\",\"pool\":\"0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2\"},\"priceSource\":\"aave-oracle\",\"summary\":{\"totalCollateralUsd\":825530.05350524,\"totalDebtUsd\":0,\"availableBorrowsUsd\":668679.34333924,\"ltv\":0.81,\"liquidationThreshold\":0.84,\"healthFactor\":null,\"eModeCategory\":0,\"healthFactorNote\":\"no debt\"},\"reserves\":[{\"token\":{\"address\":\"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\"symbol\":\"WETH\",\"decimals\":18},\"supplied\":{\"raw\":\"494026863254417159404\",\"formatted\":\"494.026863254417159404\",\"decimals\":18},\"suppliedUsd\":825530.0535052406,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0xdAC17F958D2ee523a2206206994597C13D831ec7\",\"symbol\":\"USDT\",\"decimals\":6},\"supplied\":{\"raw\":\"4680693\",\"formatted\":\"4.680693\",\"decimals\":6},\"suppliedUsd\":4.67559656784774,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"debtUsd\":0,\"usedAsCollateral\":false}]},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "ethereum",
+    "blockNumber": "26508680",
+    "blockTimestamp": "2026-11-27T19:36:11.000Z",
+    "data": {
+      "address": "0x83d8b74721fa3B0b7FdfC1F93238a8A0dEF50C0B",
+      "market": {
+        "name": "Aave v3 Core",
+        "pool": "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2"
+      },
+      "priceSource": "aave-oracle",
+      "summary": {
+        "totalCollateralUsd": 825530.05350524,
+        "totalDebtUsd": 0,
+        "availableBorrowsUsd": 668679.34333924,
+        "ltv": 0.81,
+        "liquidationThreshold": 0.84,
+        "healthFactor": null,
+        "eModeCategory": 0,
+        "healthFactorNote": "no debt"
+      },
+      "reserves": [
+        {
+          "token": {
+            "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+            "symbol": "WETH",
+            "decimals": 18
+          },
+          "supplied": {
+            "raw": "494026863254417159404",
+            "formatted": "494.026863254417159404",
+            "decimals": 18
+          },
+          "suppliedUsd": 825530.0535052406,
+          "variableDebt": {
+            "raw": "0",
+            "formatted": "0",
+            "decimals": 18
+          },
+          "stableDebt": {
+            "raw": "0",
+            "formatted": "0",
+            "decimals": 18
+          },
+          "debtUsd": 0,
+          "usedAsCollateral": true
+        },
+        {
+          "token": {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          "supplied": {
+            "raw": "4680693",
+            "formatted": "4.680693",
+            "decimals": 6
+          },
+          "suppliedUsd": 4.67559656784774,
+          "variableDebt": {
+            "raw": "0",
+            "formatted": "0",
+            "decimals": 6
+          },
+          "stableDebt": {
+            "raw": "0",
+            "formatted": "0",
+            "decimals": 6
+          },
+          "debtUsd": 0,
+          "usedAsCollateral": false
+        }
+      ]
+    },
+    "warnings": []
+  }
+}

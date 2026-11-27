@@ -1,0 +1,88 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_aave_positions --tool-arg chain=arbitrum --tool-arg address=0x0f66E3fb1CE72fA42ACc2122B3A232BeeEbd862b
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 3 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"arbitrum\",\"blockNumber\":\"528095996\",\"blockTimestamp\":\"2026-11-27T19:36:16.000Z\",\"data\":{\"address\":\"0x0f66E3fb1CE72fA42ACc2122B3A232BeeEbd862b\",\"market\":{\"name\":\"Aave v3 Arbitrum\",\"pool\":\"0x794a61358D6845594F94dc1DB02A252b5b4814aD\"},\"priceSource\":\"aave-oracle\",\"summary\":{\"totalCollateralUsd\":108955.89861563,\"totalDebtUsd\":58225.86581996,\"availableBorrowsUsd\":26748.83951036,\"ltv\":0.7799,\"liquidationThreshold\":0.8199,\"healthFactor\":1.5344,\"eModeCategory\":0,\"healthFactorNote\":null},\"reserves\":[{\"token\":{\"address\":\"0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f\",\"symbol\":\"WBTC\",\"decimals\":8},\"supplied\":{\"raw\":\"181868345\",\"formatted\":\"1.81868345\",\"decimals\":8},\"suppliedUsd\":108955.89817367028,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":8},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":8},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0xaf88d065e77c8cC2239327C5EDb3A432268e5831\",\"symbol\":\"USDC\",\"decimals\":6},\"supplied\":{\"raw\":\"442\",\"formatted\":\"0.000442\",\"decimals\":6},\"suppliedUsd\":0.00044196070178000003,\"variableDebt\":{\"raw\":\"58231043142\",\"formatted\":\"58231.043142\",\"decimals\":6},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"debtUsd\":58225.86581995425,\"usedAsCollateral\":true}]},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "arbitrum",
+    "blockNumber": "528095996",
+    "blockTimestamp": "2026-11-27T19:36:16.000Z",
+    "data": {
+      "address": "0x0f66E3fb1CE72fA42ACc2122B3A232BeeEbd862b",
+      "market": {
+        "name": "Aave v3 Arbitrum",
+        "pool": "0x794a61358D6845594F94dc1DB02A252b5b4814aD"
+      },
+      "priceSource": "aave-oracle",
+      "summary": {
+        "totalCollateralUsd": 108955.89861563,
+        "totalDebtUsd": 58225.86581996,
+        "availableBorrowsUsd": 26748.83951036,
+        "ltv": 0.7799,
+        "liquidationThreshold": 0.8199,
+        "healthFactor": 1.5344,
+        "eModeCategory": 0,
+        "healthFactorNote": null
+      },
+      "reserves": [
+        {
+          "token": {
+            "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            "symbol": "WBTC",
+            "decimals": 8
+          },
+          "supplied": {
+            "raw": "181868345",
+            "formatted": "1.81868345",
+            "decimals": 8
+          },
+          "suppliedUsd": 108955.89817367028,
+          "variableDebt": {
+            "raw": "0",
+            "formatted": "0",
+            "decimals": 8
+          },
+          "stableDebt": {
+            "raw": "0",
+            "formatted": "0",
+            "decimals": 8
+          },
+          "debtUsd": 0,
+          "usedAsCollateral": true
+        },
+        {
+          "token": {
+            "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            "symbol": "USDC",
+            "decimals": 6
+          },
+          "supplied": {
+            "raw": "442",
+            "formatted": "0.000442",
+            "decimals": 6
+          },
+          "suppliedUsd": 0.00044196070178000003,
+          "variableDebt": {
+            "raw": "58231043142",
+            "formatted": "58231.043142",
+            "decimals": 6
+          },
+          "stableDebt": {
+            "raw": "0",
+            "formatted": "0",
+            "decimals": 6
+          },
+          "debtUsd": 58225.86581995425,
+          "usedAsCollateral": true
+        }
+      ]
+    },
+    "warnings": []
+  }
+}
