@@ -23,7 +23,6 @@ import {
   runTool,
   type ToolOutput,
   tokenSchema,
-  UNTRUSTED_SYMBOLS_NOTE,
 } from './shared.js';
 
 const TOOL_NAME = 'get_aave_positions';
@@ -35,12 +34,17 @@ const DESCRIPTION = [
   '(total collateral and debt in USD, borrowing power left, LTV, liquidation threshold, health',
   'factor, e-mode category) and every reserve it supplies or borrows (supplied amount, variable and',
   'stable debt, whether it counts as collateral).',
+  'Other Aave markets on the same chain (e.g. Ethereum Prime/Lido, EtherFi) and Aave v2 are not',
+  'covered: a position there reads as empty.',
   "USD values use Aave's own oracle, the prices the protocol liquidates on, not a market-wide price;",
   'a reserve USD field is null when the oracle has no usable price for it (never estimated).',
-  'A health factor below 1 means the position is liquidatable;',
+  'ltv and liquidationThreshold are fractions from 0 to 1; eModeCategory 0 means no e-mode.',
+  'A health factor below 1 means the position is liquidatable; healthFactor is truncated (not',
+  'rounded) to 4 decimals, so a liquidatable position never reads as 1.',
   `healthFactor is null with healthFactorNote "${NO_DEBT_NOTE}" when the address has no debt.`,
   'Reserves are sorted by supplied plus borrowed USD, largest first.',
-  UNTRUSTED_SYMBOLS_NOTE,
+  "Reserve tokens are the market's governance-listed assets, identified by address; their symbols",
+  'are read on-chain.',
 ].join(' ');
 
 const inputSchema = z.object({
