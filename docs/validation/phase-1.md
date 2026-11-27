@@ -18,7 +18,7 @@
 | Live provider suite | `pnpm test:live` | Not applicable: phase 1 added no live tests (`test/live/` does not exist) |
 | Secret scan | Script comparing every `.env` value whose name matches `KEY\|TOKEN\|RPC_URL\|TENDERLY` (longer than 8 characters) against every tracked and untracked, non-ignored file; prints variable names only. Plus a grep of the new docs for the Alchemy endpoint host and path patterns and for the local home path | 0 secret hits. The only match is `TENDERLY_PROJECT`, whose value is the public package name `defi-lens-mcp`. 0 hits for the URL and home-path patterns |
 | Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet. The tool descriptions for `get_token_balances` and the updated `get_pool_state` are written and appear in `tools/list` (`phase-1/stdio-tools-list.txt`, captured before the untrusted-symbol sentence was added in `77e8408`) |
-| CI green on the phase pull request | — | Pending: no pull request yet |
+| CI green on the phase pull request | [PR #3](https://github.com/mik3dev/defi-lens-mcp/pull/3), Actions run 45919014272 | Pass: lint, typecheck, build, coverage and audit green |
 | Code review of the phase diff | Whole-branch review `2333911..c50aa6d` | Pass: no critical findings; both important findings (discovery missing priced tokens on spam-heavy wallets, tool descriptions not marking symbols as untrusted) fixed in `82161a4` and `77e8408` and re-reviewed; the third important finding (hostile token exhausting multicall gas) and the remaining minors are listed under Open findings |
 | Owner sign-off | — | Pending |
 
