@@ -474,7 +474,7 @@
         },
         {
           "contractAddress": "0x296a1511bb5b9fb94c1fbcf8d837b54427166e30",
-          "tokenBalance": "0xcb08e0f86a4bd142c208a455ccc45ae9ce6b0bd4548e6513deffc81511980366"
+          "tokenBalance": "0xc20ef217345bac59642521b7c4a55723eb5cf7f473ddb2478cf97c0cefc3abbc"
         },
         {
           "contractAddress": "0x296fde08d9f3aebe33ac2e9133c26a33d568013d",
@@ -578,7 +578,7 @@
         },
         {
           "contractAddress": "0x2ea04b31d68f60c4f87a0147590ada08c1931189",
-          "tokenBalance": "0xcb08e0f86a4bd142c208a455ccc45ae9ce6b0bd4548e6513deffc81511980366"
+          "tokenBalance": "0xc20ef217345bac59642521b7c4a55723eb5cf7f473ddb2478cf97c0cefc3abbc"
         },
         {
           "contractAddress": "0x2ecb42799bbd2cfbbcbc5895a9de7b58bbaff8ca",
@@ -2022,7 +2022,7 @@
         },
         {
           "contractAddress": "0x6adb2e268de2aa1abf6578e4a8119b960e02928f",
-          "tokenBalance": "0x000000000000000000000000000000000000000004bb4541ad86209f21d10a73"
+          "tokenBalance": "0x000000000000000000000000000000000000000004bb459cbdefa5227446ac2c"
         },
         {
           "contractAddress": "0x6addb8d97fc3efe4412c5bc209b6675d35205ae2",
@@ -2106,7 +2106,7 @@
         },
         {
           "contractAddress": "0x6fa0be17e4bea2fcfa22ef89bf8ac9aab0ab0fc9",
-          "tokenBalance": "0x000000000000000000000000000000000000000000000000000000000022fefe"
+          "tokenBalance": "0x000000000000000000000000000000000000000000000000000000000023022f"
         },
         {
           "contractAddress": "0x6fa7760abf096d94f9b330d96c05615991fb9026",
@@ -3874,7 +3874,7 @@
         },
         {
           "contractAddress": "0xc0114f14638a333a4d5c3b04f09b96372348a842",
-          "tokenBalance": "0x0000000000000000000000000000000000000000000000000456dc8b5ec82160"
+          "tokenBalance": "0x0000000000000000000000000000000000000000000000000456dd239df5ad05"
         },
         {
           "contractAddress": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
@@ -4993,7 +4993,7 @@
         },
         {
           "contractAddress": "0xef544f5b5d5efd80a1601559f1f81d412db0c1e4",
-          "tokenBalance": "0xcb08e0f86a4bd142c208a455ccc45ae9ce6b0bd4548e6513deffc81511980366"
+          "tokenBalance": "0xc20ef217345bac59642521b7c4a55723eb5cf7f473ddb2478cf97c0cefc3abbc"
         },
         {
           "contractAddress": "0xef638eaab1181c0908160ba92181766ed6e2ca7b",
@@ -5430,7 +5430,7 @@
         },
         {
           "contractAddress": "0x02c92b531ac2bb22d0b7899adfda2f77d9551a96",
-          "tokenBalance": "0xcb08e0f86a4bd142c208a455ccc45ae9ce6b0bd4548e6513deffc81511980366"
+          "tokenBalance": "0xc20ef217345bac59642521b7c4a55723eb5cf7f473ddb2478cf97c0cefc3abbc"
         },
         {
           "contractAddress": "0x0305f515fa978cf87226cf8a9776d25bcfb2cc0b",
