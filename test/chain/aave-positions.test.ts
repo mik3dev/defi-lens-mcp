@@ -54,8 +54,9 @@ function expected(chain: ChainId): ExpectedPositions {
 /** Independent conversions of the raw cast values. */
 const usd = (raw: string): number => Number(raw) / 1e8;
 const fraction = (bps: string): number => Number(bps) / 1e4;
+/** Truncated (not rounded) to 4 decimal places, in integer arithmetic. */
 const health = (raw: string): number | null =>
-  raw === MAX_UINT256 ? null : Number((Number(raw) / 1e18).toFixed(4));
+  raw === MAX_UINT256 ? null : Number(BigInt(raw) / 10n ** 14n) / 1e4;
 
 function expectSummary(position: AavePosition, wallet: ExpectedWallet): void {
   const a = wallet.accountData;

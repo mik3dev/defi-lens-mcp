@@ -1,10 +1,11 @@
 import type { Address } from 'viem';
 import { describe, expect, it } from 'vitest';
 import type { AaveMarket } from '../../../src/protocols/aave/market.js';
-import type {
-  AavePosition,
-  AaveReservePosition,
-  AaveSummary,
+import {
+  type AavePosition,
+  type AaveReservePosition,
+  type AaveSummary,
+  parseHealthFactor,
 } from '../../../src/protocols/aave/positions.js';
 import { aaveWarnings, toAaveData } from '../../../src/tools/get-aave-positions.js';
 
@@ -116,6 +117,12 @@ describe('aaveWarnings', () => {
 
   it('warns when the health factor is below 1', () => {
     const warnings = aaveWarnings(position([], { ...SUMMARY, healthFactor: 0.97 }));
+    expect(warnings).toEqual(['Health factor is below 1: the position can be liquidated.']);
+  });
+
+  it('warns for a raw health factor just below 1 (truncated, not rounded up to 1)', () => {
+    const healthFactor = parseHealthFactor(999950000000000000n);
+    const warnings = aaveWarnings(position([], { ...SUMMARY, healthFactor }));
     expect(warnings).toEqual(['Health factor is below 1: the position can be liquidated.']);
   });
 

@@ -33,11 +33,17 @@ describe('parseHealthFactor', () => {
     expect(parseHealthFactor(2n ** 256n - 1n)).toBeNull();
   });
 
-  it('divides by 1e18 and rounds to 4 decimal places', () => {
+  it('divides by 1e18 and truncates to 4 decimal places', () => {
     expect(parseHealthFactor(1_500000000000000000n)).toBe(1.5);
-    expect(parseHealthFactor(987654321000000000n)).toBe(0.9877);
+    expect(parseHealthFactor(987654321000000000n)).toBe(0.9876);
     expect(parseHealthFactor(987640000000000000n)).toBe(0.9876);
     expect(parseHealthFactor(0n)).toBe(0);
+  });
+
+  it('never reads a liquidatable position as 1', () => {
+    expect(parseHealthFactor(999950000000000000n)).toBe(0.9999);
+    expect(parseHealthFactor(999999999999999999n)).toBe(0.9999);
+    expect(parseHealthFactor(1_000000000000000000n)).toBe(1);
   });
 });
 

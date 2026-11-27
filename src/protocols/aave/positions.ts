@@ -51,10 +51,13 @@ export function baseToUsd(value: bigint): number {
   return Number(formatUnits(value, BASE_DECIMALS));
 }
 
-/** maxUint256 (no debt) → null; otherwise raw / 1e18 rounded half up to 4 decimal places. */
+/**
+ * maxUint256 (no debt) → null; otherwise raw / 1e18 truncated to 4 decimal places, so a liquidatable
+ * position (below 1) never reads as 1.
+ */
 export function parseHealthFactor(raw: bigint): number | null {
   if (raw === maxUint256) return null;
-  return Number((raw + HEALTH_FACTOR_STEP / 2n) / HEALTH_FACTOR_STEP) / 10_000;
+  return Number(raw / HEALTH_FACTOR_STEP) / 10_000;
 }
 
 export function bpsToFraction(bps: bigint): number {
