@@ -20,7 +20,7 @@
 | Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet. The tool descriptions for `get_token_balances` and the updated `get_pool_state` are written and appear in `tools/list` (`phase-1/stdio-tools-list.txt`, captured before the untrusted-symbol sentence was added in `77e8408`) |
 | CI green on the phase pull request | [PR #3](https://github.com/mik3dev/defi-lens-mcp/pull/3), Actions run 45919014272 | Pass: lint, typecheck, build, coverage and audit green |
 | Code review of the phase diff | Whole-branch review `2333911..c50aa6d` | Pass: no critical findings; both important findings (discovery missing priced tokens on spam-heavy wallets, tool descriptions not marking symbols as untrusted) fixed in `82161a4` and `77e8408` and re-reviewed; the third important finding (hostile token exhausting multicall gas) and the remaining minors are listed under Open findings |
-| Owner sign-off | — | Pending |
+| Owner sign-off | — | Approved (see the end of this document) |
 
 ## Validation
 
@@ -148,4 +148,4 @@ Remaining deferred minors, one line each:
 
 ## Owner sign-off
 
-- [ ] Approved by mik3dev on <date>
+- [x] Approved by mik3dev on 2026-11-27
