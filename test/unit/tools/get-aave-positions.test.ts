@@ -47,10 +47,11 @@ function reserve(
 }
 
 const position = (reserves: AaveReservePosition[], summary = SUMMARY): AavePosition => ({
+  market: MARKET,
   summary,
   reserves,
 });
-const map = (p: AavePosition) => toAaveData(p, MARKET, { chain: 'ethereum', address: USER });
+const map = (p: AavePosition) => toAaveData(p, { chain: 'ethereum', address: USER });
 
 describe('toAaveData', () => {
   it('describes the market and price source', () => {

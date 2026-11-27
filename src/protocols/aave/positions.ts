@@ -35,6 +35,8 @@ export interface AaveSummary {
 }
 
 export interface AavePosition {
+  /** The market the position was read from (pool, data provider and oracle). */
+  market: AaveMarket;
   summary: AaveSummary;
   /** Only reserves with a non-zero supplied, variable debt or stable debt amount, in reserve order. */
   reserves: AaveReservePosition[];
@@ -239,5 +241,5 @@ export async function readAavePosition(
   const { summary, assets } = await readSummary(client, chain, market, user, block);
   const held = await readHeldReserves(client, chain, market, user, assets, block);
   const reserves = await describeReserves(ctx, chain, market, held, block);
-  return { summary, reserves };
+  return { market, summary, reserves };
 }

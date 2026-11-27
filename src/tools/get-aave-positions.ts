@@ -6,7 +6,6 @@ import type { AppContext } from '../context.js';
 import { pinBlock } from '../lib/blocks.js';
 import { type Amount, toAmount, usdValue } from '../lib/format.js';
 import { AAVE_V3_MARKET_NAME } from '../protocols/aave/addresses.js';
-import { type AaveMarket, resolveMarket } from '../protocols/aave/market.js';
 import {
   type AavePosition,
   type AaveReservePosition,
@@ -122,15 +121,11 @@ function toReserveData(r: AaveReservePosition): AaveReserveData {
 const exposure = (r: AaveReserveData): number => (r.suppliedUsd ?? 0) + (r.debtUsd ?? 0);
 
 /** Pure mapping from the protocol read to the tool's data; reserves sorted by total USD exposure. */
-export function toAaveData(
-  position: AavePosition,
-  market: AaveMarket,
-  subject: AaveSubject,
-): AavePositionsData {
+export function toAaveData(position: AavePosition, subject: AaveSubject): AavePositionsData {
   const { summary } = position;
   return {
     address: subject.address,
-    market: { name: AAVE_V3_MARKET_NAME[subject.chain], pool: market.pool },
+    market: { name: AAVE_V3_MARKET_NAME[subject.chain], pool: position.market.pool },
     priceSource: 'aave-oracle',
     summary: {
       ...summary,
@@ -155,11 +150,8 @@ export async function getAavePositions(
 ): Promise<ToolOutput<AavePositionsData>> {
   const { chain, address } = inputSchema.parse(input);
   const block = await pinBlock(ctx, chain);
-  const [market, position] = await Promise.all([
-    resolveMarket(ctx, chain, block),
-    readAavePosition(ctx, chain, address, block),
-  ]);
-  return ok(chain, block, toAaveData(position, market, { chain, address }), aaveWarnings(position));
+  const position = await readAavePosition(ctx, chain, address, block);
+  return ok(chain, block, toAaveData(position, { chain, address }), aaveWarnings(position));
 }
 
 export function register(server: McpServer, ctx: AppContext): void {

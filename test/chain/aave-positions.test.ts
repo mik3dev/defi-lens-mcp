@@ -111,6 +111,11 @@ describe.each(CHAIN_IDS)('aave v3 positions on %s', (chain) => {
     expect(borrower.user).toBe(AAVE_WALLETS.borrower[chain]);
   });
 
+  it('returns the market the position was read from', async () => {
+    const position = await readAavePosition(ctx, chain, borrower.user, block);
+    expect(position.market).toEqual(fixture.market);
+  });
+
   it('borrower: summary equals getUserAccountData at the pinned block', async () => {
     const position = await readAavePosition(ctx, chain, borrower.user, block);
     expectSummary(position, borrower);
@@ -141,6 +146,7 @@ describe.each(CHAIN_IDS)('aave v3 positions on %s', (chain) => {
       expect(unused.user).toBe(AAVE_WALLETS.unusedEthereum);
       const position = await readAavePosition(ctx, chain, unused.user, block);
       expect(position).toEqual({
+        market: fixture.market,
         summary: {
           totalCollateralUsd: 0,
           totalDebtUsd: 0,

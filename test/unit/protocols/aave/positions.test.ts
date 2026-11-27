@@ -184,6 +184,12 @@ describe('readAavePosition (fake chain)', () => {
     return testContext({ ethereum: chain.rpcUrl });
   }
 
+  it('returns the market it read from', async () => {
+    const ctx = await setup(contracts());
+    const { market } = await readAavePosition(ctx, 'ethereum', USER, block);
+    expect(market).toEqual({ pool: POOL, dataProvider: DATA, oracle: ORACLE });
+  });
+
   it('converts the account data into the summary', async () => {
     const ctx = await setup(contracts());
     const { summary } = await readAavePosition(ctx, 'ethereum', USER, block);
