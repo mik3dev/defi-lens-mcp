@@ -52,8 +52,11 @@ describe('indexer token discovery on ethereum', () => {
   });
 
   // alchemy_getTokenBalances is not block-pinned (current state): assert only the stable part.
-  it('discovers every priced token the reference wallet holds', async () => {
-    const { tokens } = await discoverTokens(fresh(), chain, owner);
+  // The wallet was chosen because its token list fits under DISCOVERY_CANDIDATE_CAP; this fails when
+  // its current holdings outgrow the cap, so the wallet no longer exercises untruncated discovery.
+  it('discovers every priced token the reference wallet holds, untruncated', async () => {
+    const { tokens, truncated } = await discoverTokens(fresh(), chain, owner);
+    expect(truncated).toBe(false);
     expect(tokens).toEqual(expect.arrayContaining(priced));
   });
 });
