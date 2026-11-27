@@ -45,7 +45,6 @@ const BASE_DECIMALS = 8;
 /** One step of the health factor's 4 decimal places, in its 18-decimal fixed point. */
 const HEALTH_FACTOR_STEP = 10n ** 14n;
 const BPS = 10_000;
-const RESERVES_TTL_MS = 60 * 60 * 1000;
 
 /** An amount in the oracle base currency (8 decimals) as USD. */
 export function baseToUsd(value: bigint): number {
@@ -100,24 +99,13 @@ function unreadable(chain: ChainId, what: string): AppError {
   return new AppError('UPSTREAM_ERROR', `Aave v3 ${what} on ${chain} could not be read`);
 }
 
-async function readSummary(
-  client: PublicClient,
-  chain: ChainId,
-  market: AaveMarket,
-  user: Address,
-  block: PinnedBlock,
-): Promise<AaveSummary> {
-  const outcomes = (await client.multicall({
-    allowFailure: true,
-    blockNumber: block.number,
-    contracts: [
-      { address: market.pool, abi: aavePoolAbi, functionName: 'getUserAccountData', args: [user] },
-      { address: market.pool, abi: aavePoolAbi, functionName: 'getUserEMode', args: [user] },
-    ],
-  })) as readonly Outcome[];
-  const data = success(outcomes[0], isAccountData);
-  const eMode = success(outcomes[1], isBigint);
-  if (!data || eMode === undefined) throw unreadable(chain, 'account data');
+interface SummaryRead {
+  summary: AaveSummary;
+  /** Underlying asset of every reserve listed in the market at the pinned block. */
+  assets: Address[];
+}
+
+function toSummary(data: AccountData, eMode: bigint): AaveSummary {
   const [collateral, debt, available, liquidationThreshold, ltv, healthFactor] = data;
   return {
     totalCollateralUsd: baseToUsd(collateral),
@@ -130,16 +118,20 @@ async function readSummary(
   };
 }
 
-async function fetchReserveList(
-  ctx: AppContext,
+/** Account data, e-mode and the market's reserve list, in one multicall at the pinned block. */
+async function readSummary(
+  client: PublicClient,
   chain: ChainId,
   market: AaveMarket,
+  user: Address,
   block: PinnedBlock,
-): Promise<Address[]> {
-  const [outcome] = (await getClient(ctx, chain).multicall({
+): Promise<SummaryRead> {
+  const outcomes = (await client.multicall({
     allowFailure: true,
     blockNumber: block.number,
     contracts: [
+      { address: market.pool, abi: aavePoolAbi, functionName: 'getUserAccountData', args: [user] },
+      { address: market.pool, abi: aavePoolAbi, functionName: 'getUserEMode', args: [user] },
       {
         address: market.dataProvider,
         abi: aaveDataProviderAbi,
@@ -147,21 +139,12 @@ async function fetchReserveList(
       },
     ],
   })) as readonly Outcome[];
-  const list = success(outcome, isReserveList);
+  const data = success(outcomes[0], isAccountData);
+  const eMode = success(outcomes[1], isBigint);
+  if (!data || eMode === undefined) throw unreadable(chain, 'account data');
+  const list = success(outcomes[2], isReserveList);
   if (!list) throw unreadable(chain, 'reserve list');
-  return list.map((r) => getAddress(r.tokenAddress));
-}
-
-/** Underlying assets of every reserve; cached per chain for one hour (listings change rarely). */
-function readReserveList(
-  ctx: AppContext,
-  chain: ChainId,
-  market: AaveMarket,
-  block: PinnedBlock,
-): Promise<Address[]> {
-  return ctx.cache.wrap(`aave:reserves:${chain}`, RESERVES_TTL_MS, () =>
-    fetchReserveList(ctx, chain, market, block),
-  );
+  return { summary: toSummary(data, eMode), assets: list.map((r) => getAddress(r.tokenAddress)) };
 }
 
 /** The user's reserves with a non-zero amount; any unreadable reserve fails the whole read. */
@@ -250,10 +233,7 @@ export async function readAavePosition(
 ): Promise<AavePosition> {
   const market = await resolveMarket(ctx, chain, block);
   const client = getClient(ctx, chain);
-  const [summary, assets] = await Promise.all([
-    readSummary(client, chain, market, user, block),
-    readReserveList(ctx, chain, market, block),
-  ]);
+  const { summary, assets } = await readSummary(client, chain, market, user, block);
   const held = await readHeldReserves(client, chain, market, user, assets, block);
   const reserves = await describeReserves(ctx, chain, market, held, block);
   return { summary, reserves };

@@ -7,8 +7,9 @@ import {
   isAddressEqual,
   maxUint256,
   parseAbi,
+  toFunctionSelector,
 } from 'viem';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { AAVE_V3_ADDRESSES_PROVIDER } from '../../../../src/protocols/aave/addresses.js';
 import {
   baseToUsd,
@@ -62,6 +63,8 @@ const dataAbi = parseAbi([
   'function getUserReserveData(address asset, address user) view returns (uint256, uint256, uint256, uint256, uint256, uint256, uint256, uint40, bool)',
 ]);
 const oracleAbi = parseAbi(['function getAssetsPrices(address[]) view returns (uint256[])']);
+const LIST_SELECTOR = toFunctionSelector('function getAllReservesTokens()');
+const ACCOUNT_SELECTOR = toFunctionSelector('function getUserAccountData(address)');
 
 const PROVIDER = AAVE_V3_ADDRESSES_PROVIDER.ethereum;
 const POOL: Address = '0x0000000000000000000000000000000000000a01';
@@ -251,19 +254,45 @@ describe('readAavePosition (fake chain)', () => {
     expect(new Set(chain?.callBlocks)).toEqual(new Set([block.number]));
   });
 
-  it('caches the reserve list per chain for one hour', async () => {
+  it('reads the reserve list at the pinned block on every call, in the summary multicall', async () => {
     const table = contracts();
     const ctx = await setup(table);
-    const wrap = vi.spyOn(ctx.cache, 'wrap');
+    const listReads: { block: bigint | undefined; request: number }[] = [];
+    const accountReads: number[] = [];
+    // eth_call count so far: identifies the multicall each inner call arrived in.
+    const requestCount = (): number => chain?.callBlocks.length ?? 0;
+    const watch = (s: Scenario): Record<Address, FakeContract> => {
+      const t = contracts(s);
+      const data = t[DATA] as FakeContract;
+      const pool = t[POOL] as FakeContract;
+      return {
+        [DATA]: {
+          ...data,
+          respond: (callData) => {
+            if (callData.startsWith(LIST_SELECTOR)) {
+              listReads.push({ block: chain?.callBlocks.at(-1), request: requestCount() });
+            }
+            return data.respond?.(callData);
+          },
+        },
+        [POOL]: {
+          ...pool,
+          respond: (callData) => {
+            if (callData.startsWith(ACCOUNT_SELECTOR)) accountReads.push(requestCount());
+            return undefined;
+          },
+        },
+      };
+    };
+    Object.assign(table, watch({}));
     await readAavePosition(ctx, 'ethereum', USER, block);
-    expect(wrap).toHaveBeenCalledWith('aave:reserves:ethereum', 3_600_000, expect.any(Function));
-    // A listing change is not seen while the cached list is fresh, even at a later block.
-    table[DATA] = { ...contracts({ reserves: [USDC] })[DATA] } as FakeContract;
-    const later = await readAavePosition(ctx, 'ethereum', USER, {
-      ...block,
-      number: block.number + 1n,
-    });
-    expect(later.reserves).toHaveLength(2);
+    // A reserve delisted before the next block is gone from the next call's read.
+    Object.assign(table, watch({ reserves: [USDC] }));
+    const later = { ...block, number: block.number + 1n };
+    const position = await readAavePosition(ctx, 'ethereum', USER, later);
+    expect(position.reserves.map((r) => r.token.address)).toEqual([USDC]);
+    expect(listReads.map((r) => r.block)).toEqual([block.number, later.number]);
+    expect(listReads.map((r) => r.request)).toEqual(accountReads);
   });
 
   it('throws UPSTREAM_ERROR when the account data call fails', async () => {
