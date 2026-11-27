@@ -1,0 +1,55 @@
+{
+  "block": "62611111",
+  "market": {
+    "pool": "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5",
+    "dataProvider": "0x0F43731EB8d45A581f4a36DD74F5f358bc90C73A",
+    "oracle": "0x2Cc0Fc26eD4563A5ce5e8bdcfe1A2878676Ae156"
+  },
+  "wallets": {
+    "borrower": {
+      "user": "0x447E34965cefA772543Df4BEd60A2ad2FA96A6C0",
+      "accountData": {
+        "totalCollateralBase": "5345366265582",
+        "totalDebtBase": "1381270169681",
+        "availableBorrowsBase": "2948476505440",
+        "currentLiquidationThreshold": "8400",
+        "ltv": "8100",
+        "healthFactor": "3250709210730190631"
+      },
+      "eModeCategory": 0,
+      "reserves": [
+        {
+          "asset": "0x4200000000000000000000000000000000000006",
+          "supplied": "3635192137214126022",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "169068380000"
+        },
+        {
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "supplied": "0",
+          "stableDebt": "0",
+          "variableDebt": "13814185064",
+          "usedAsCollateral": false,
+          "price": "99989262"
+        },
+        {
+          "asset": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf",
+          "supplied": "78113052",
+          "stableDebt": "0",
+          "variableDebt": "0",
+          "usedAsCollateral": true,
+          "price": "6056312100000"
+        }
+      ]
+    }
+  },
+  "commands": [
+    "cast call 0x0F43731EB8d45A581f4a36DD74F5f358bc90C73A \"getAllReservesTokens()((string,address)[])\" --block 62611111 --rpc-url \"$RPC_URL_BASE\"",
+    "for each asset of getAllReservesTokens: cast call 0x0F43731EB8d45A581f4a36DD74F5f358bc90C73A \"getUserReserveData(address,address)(uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint40,bool)\" <asset> <user> --block 62611111 --rpc-url \"$RPC_URL_BASE\" (reserves with a zero aToken balance, stable debt and variable debt are omitted)",
+    "cast call 0xA238Dd80C259a72e81d7e4664a9801593F98d1c5 \"getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)\" 0x447E34965cefA772543Df4BEd60A2ad2FA96A6C0 --block 62611111 --rpc-url \"$RPC_URL_BASE\"",
+    "cast call 0xA238Dd80C259a72e81d7e4664a9801593F98d1c5 \"getUserEMode(address)(uint256)\" 0x447E34965cefA772543Df4BEd60A2ad2FA96A6C0 --block 62611111 --rpc-url \"$RPC_URL_BASE\"",
+    "cast call 0x2Cc0Fc26eD4563A5ce5e8bdcfe1A2878676Ae156 \"getAssetsPrices(address[])(uint256[])\" \"[0x4200000000000000000000000000000000000006,0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913,0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf]\" --block 62611111 --rpc-url \"$RPC_URL_BASE\""
+  ]
+}

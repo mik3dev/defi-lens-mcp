@@ -1,0 +1,14 @@
+# cast 1.5.0 against keyless public RPC endpoints (a second provider, independent of the server's), at the
+# response blocks of stdio-aave-*-borrower*.txt. Only the health factor (last return value) is shown.
+# Arbitrum uses the official Arbitrum RPC: PublicNode refuses archive reads on arbitrum without a token.
+
+$ cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 "getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)" 0xa18Ce9B63ac6cb0b30ed3FC97522688e432aFAe5 --block 26508781 --rpc-url https://ethereum-rpc.publicnode.com
+2290670324009190169 [2.29e18]
+$ cast call 0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2 "getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)" 0x187a2F53544271D0B81f4b59449e036E36b80c9D --block 26508781 --rpc-url https://ethereum-rpc.publicnode.com
+1070383582237992956 [1.07e18]
+$ cast call 0xA238Dd80C259a72e81d7e4664a9801593F98d1c5 "getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)" 0x447E34965cefA772543Df4BEd60A2ad2FA96A6C0 --block 63095130 --rpc-url https://base-rpc.publicnode.com
+3211306600112531382 [3.211e18]
+$ cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD "getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)" 0x0f66E3fb1CE72fA42ACc2122B3A232BeeEbd862b --block 528099711 --rpc-url https://arb1.arbitrum.io/rpc
+1531789923025756098 [1.531e18]
+$ cast call 0x794a61358D6845594F94dc1DB02A252b5b4814aD "getUserAccountData(address)(uint256,uint256,uint256,uint256,uint256,uint256)" 0xB5999125353DD94a5Be96B3b23B32D0aBC19f9f7 --block 98069281 --rpc-url https://polygon-bor-rpc.publicnode.com
+1535116048762593670 [1.535e18]
