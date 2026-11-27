@@ -79,6 +79,15 @@ describe('toAppError', () => {
       message: e.shortMessage,
     });
   });
+  it('maps a JSON-RPC error carried by an HTTP 429 or 5xx as retryable', () => {
+    const rpc = (status: number) =>
+      new RpcRequestError({ body, url, status, error: { code: 429, message: 'exceeded' } });
+    expect(toAppError(rpc(429))).toMatchObject({ code: 'UPSTREAM_ERROR', retryable: true });
+    expect(toAppError(rpc(503))).toMatchObject({ code: 'UPSTREAM_ERROR', retryable: true });
+    expect(toAppError(rpc(400))).toMatchObject({ code: 'UPSTREAM_ERROR', retryable: false });
+    const wrapped = new BaseError('wrapper', { cause: rpc(429) });
+    expect(toAppError(wrapped)).toMatchObject({ code: 'UPSTREAM_ERROR', retryable: true });
+  });
   it('sanitizes and bounds upstream messages', () => {
     const e = new BaseError(`bad\u0000\n${'x'.repeat(500)}`);
     const msg = toAppError(e).message;

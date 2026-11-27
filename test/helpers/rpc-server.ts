@@ -63,13 +63,20 @@ async function listen(
   };
 }
 
-/** Local JSON-RPC server answering single (non-batch) requests with `handler`; replies echo the id. */
-export async function startRpcServer(handler: RpcHandler): Promise<Endpoint> {
+/**
+ * Local JSON-RPC server answering single (non-batch) requests with `handler`; replies echo the id.
+ * `status` sets the HTTP status of every reply (default 200).
+ */
+export async function startRpcServer(
+  handler: RpcHandler,
+  opts: { status?: number } = {},
+): Promise<Endpoint> {
+  const status = opts.status ?? 200;
   const { rpcUrl, close } = await listen(async (req, res) => {
     const body = JSON.parse(await readBody(req)) as JsonRpcRequest | JsonRpcRequest[];
-    if (Array.isArray(body)) return sendJson(res, 200, rpcError(null, BATCH_UNSUPPORTED));
+    if (Array.isArray(body)) return sendJson(res, status, rpcError(null, BATCH_UNSUPPORTED));
     const reply = await handler(body);
-    sendJson(res, 200, { jsonrpc: '2.0', id: body.id ?? null, ...reply });
+    sendJson(res, status, { jsonrpc: '2.0', id: body.id ?? null, ...reply });
   });
   return { rpcUrl, stop: close };
 }
@@ -122,20 +129,45 @@ function pairExchanges(requestBody: string, responseBody: string): RecordedEntry
   });
 }
 
+export interface ProxyOptions {
+  /** Every successful exchange is written to this file on `stop()`. */
+  recordTo?: string;
+  /** Upstream URL for a single request's JSON-RPC method; undefined keeps the default upstream. */
+  routeMethod?: (method: string) => string | undefined;
+}
+
+/** The method of a single (non-batch) JSON-RPC request body; undefined for batches or bad JSON. */
+function methodOf(body: string): string | undefined {
+  try {
+    const parsed = JSON.parse(body) as unknown;
+    if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) return undefined;
+    const { method } = parsed as { method?: unknown };
+    return typeof method === 'string' ? method : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+function pickUpstream(body: string, fallback: string, opts: ProxyOptions): string {
+  const method = methodOf(body);
+  return (method === undefined ? undefined : opts.routeMethod?.(method)) ?? fallback;
+}
+
 /**
- * Forwards request bodies verbatim to `upstreamUrl` (client headers are not forwarded). With
- * `recordTo`, every exchange is written to that file on `stop()`; only method, params and reply.
+ * Forwards request bodies verbatim to `upstreamUrl`, or to the URL `routeMethod` picks for the
+ * request's method (client headers are not forwarded). With `recordTo`, every exchange is written to
+ * that file on `stop()`; only method, params and reply.
  */
 export async function startProxyServer(
   upstreamUrl: string,
-  opts: { recordTo?: string } = {},
+  opts: ProxyOptions = {},
 ): Promise<Endpoint> {
   const recorded: RecordedEntry[] = [];
   const { rpcUrl, close } = await listen(async (req, res) => {
     const body = await readBody(req);
     let upstream: Response;
     try {
-      upstream = await fetch(upstreamUrl, {
+      upstream = await fetch(pickUpstream(body, upstreamUrl, opts), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body,

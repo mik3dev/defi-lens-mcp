@@ -1,0 +1,25 @@
+{
+  "block": "98004500",
+  "owner": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+  "rows": [
+    {
+      "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      "symbol": "POL",
+      "decimals": 18,
+      "raw": "150101112787376317127225776"
+    },
+    {
+      "address": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      "symbol": "WPOL",
+      "decimals": 18,
+      "raw": "37429106785091743302211"
+    }
+  ],
+  "note": "Run against a local anvil fork at the pinned block started by the test harness (test/helpers/chain-endpoint.ts, CHAIN_MODE=fork); LOCAL_FORK_URL is that local http://127.0.0.1 endpoint, never the provider URL.",
+  "commands": [
+    "cast balance 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270 --block 98004500 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270 \"balanceOf(address)(uint256)\" 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270 --block 98004500 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270 \"symbol()(string)\" --block 98004500 --rpc-url \"$LOCAL_FORK_URL\"",
+    "cast call 0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270 \"decimals()(uint8)\" --block 98004500 --rpc-url \"$LOCAL_FORK_URL\""
+  ]
+}

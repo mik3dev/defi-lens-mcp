@@ -1,0 +1,7 @@
+# cast 1.5.0; provider URL passed as ETH_RPC_URL in the environment, never in argv. Return data decoded as an ABI string; non-ASCII code points shown as <U+XXXX>
+$ cast call 0x2790AfA96A254142a13C24A7BE2C35afC784b82a "symbol()" --block 527831493  # decoded
+U<U+200C>SDT   (5 code points)
+$ cast call 0x3741C63243A768aD7901bA6976Cd70837EF773E2 "symbol()" --block 527831493  # decoded
+<U+206D>U<U+206F><U+0405><U+206B>D<U+200E><U+0422><U+2064>   (9 code points)
+$ cast call 0x0d26daF11bd0f9e5bf996077586Ec0088dAcB2CF "symbol()" --block 527831493  # decoded
+Airdrop(s) to be claimed at https://t.ly/drops   (46 code points)

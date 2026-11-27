@@ -130,7 +130,7 @@ Simulations sent (4 in total, plus one rejected credential check):
 | 2 | swap, `"quick"`, `block_number: 26499762` | HTTP 200, 587 ms, **65 KB**. Has `status`, `gas_used`, `transaction_info.logs[].raw`, `asset_changes`, `balance_diff` and `call_trace.output`; `contracts` empty. Saved, trimmed, as [`tenderly-simulate-swap.json`](tenderly-simulate-swap.json) |
 | 3 | USDC `transfer` above balance, `"quick"`, `block_number: PINNED` | HTTP 200, `transaction.status: false`, `error_message: "ERC20: transfer amount exceeds balance"`, `gas_used 36085`. Revert bytes in `transaction.transaction_info.call_trace.output` (`0x08c379a0…`) |
 | 4 | base (`network_id: "8453"`) ETH transfer of 1 wei, `"quick"`, `block_number: latest + 1` (`62622974`) | HTTP 200, `status true`, `gas_used 21000`, one `NativeCurrency` asset change. Without `gas_price: "0"`, `balance_diff` also shows the sender paying the fee and the OP fee vaults `0x4200…0019` / `0x4200…001A` receiving it |
-| — | wrong access key | **HTTP 403** after **50 s**: `{"error":{"id":"…","slug":"insufficient_permissions","message":"Insufficient permissions"}}`. Re-probed twice in fix round 1 with an obviously bogus key: 403 after 50 497 ms and 50 365 ms. The slow rejection is reliable (3 of 3) |
+| — | wrong access key | **HTTP 403** after **50 s**: `{"error":{"id":"…","slug":"insufficient_permissions","message":"Insufficient permissions"}}`. Re-probed twice more with an obviously bogus key: 403 after 50 497 ms and 50 365 ms. The slow rejection is reliable (3 of 3) |
 
 **Response shape (fields the backend needs):**
 
@@ -322,14 +322,14 @@ USDC (Ethereum and Base) is a **ZeppelinOS** proxy: its implementation is not in
     - `rawContract.address === null` means native.
     - `uniqueId` is `<hash>:log:<n>` or `<hash>:external`.
     - Decimals come from on-chain `readTokens`, not from `rawContract.decimal`.
-16. **`alchemy_getTokenBalances` notes for phase 1** (applied to `docs/plan/phase-1-balances-prices.md` in fix round 1):
+16. **`alchemy_getTokenBalances` notes for phase 1** (applied to `docs/plan/phase-1-balances-prices.md`):
     - Pages hold up to 100 entries and may be shorter while a `pageKey` follows.
     - Zero balances are returned and must be filtered.
     - On Polygon, `0x…1010` must be excluded so native POL is not counted twice. (Q8)
 
 ### Test harness
 
-17. **Cold fork runs need serial test files.** Four cold anvil forks starting in parallel exceed the free tier's compute units per second (HTTP 429, failed runs); serially a cold run takes 36 s and passes; warm runs take 20 s. Applied in fix round 1: `test:fork` runs with `--no-file-parallelism`. (Q7)
+17. **Cold fork runs need serial test files.** Four cold anvil forks starting in parallel exceed the free tier's compute units per second (HTTP 429, failed runs); serially a cold run takes 36 s and passes; warm runs take 20 s. `test:fork` therefore runs with `--no-file-parallelism`. (Q7)
 18. **No paid tier is needed** for phases 5 and 6. The free tier's only material limit is the 10-block log window, which the request budget and the honest `truncated` report already handle. (Q6, Q7)
 
 ### Plan and config changes applied

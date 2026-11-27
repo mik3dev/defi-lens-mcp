@@ -1,4 +1,4 @@
-import { BaseError, HttpRequestError, TimeoutError } from 'viem';
+import { BaseError, HttpRequestError, RpcRequestError, TimeoutError } from 'viem';
 
 export type ErrorCode =
   | 'INVALID_INPUT'
@@ -55,7 +55,14 @@ function fromViem(e: BaseError): AppError {
       cause: e,
     });
   }
-  return new AppError('UPSTREAM_ERROR', cleanUpstreamMessage(e.shortMessage), { cause: e });
+  // A JSON-RPC error body on a non-2xx response (e.g. a provider's 429) arrives as RpcRequestError
+  // with the HTTP status; without a status it was an HTTP 200 JSON-RPC error, which is not transient.
+  const rpc = e.walk((err) => err instanceof RpcRequestError);
+  const status = rpc instanceof RpcRequestError ? rpc.status : undefined;
+  return new AppError('UPSTREAM_ERROR', cleanUpstreamMessage(e.shortMessage), {
+    retryable: status !== undefined && isRetryableHttp(status),
+    cause: e,
+  });
 }
 
 /** Maps any thrown value to an AppError whose message is safe to return to clients. */

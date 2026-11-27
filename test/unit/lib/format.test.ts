@@ -48,4 +48,13 @@ describe('usdValue', () => {
   it('returns null without price', () => {
     expect(usdValue(1n, 6, null)).toBeNull();
   });
+  it('returns null for a NaN, negative or non-finite price', () => {
+    expect(usdValue(1_000000n, 6, Number.NaN)).toBeNull();
+    expect(usdValue(1_000000n, 6, -1)).toBeNull();
+    expect(usdValue(1_000000n, 6, Number.POSITIVE_INFINITY)).toBeNull();
+    expect(usdValue(1_000000n, 6, Number.NEGATIVE_INFINITY)).toBeNull();
+  });
+  it('accepts a zero price', () => {
+    expect(usdValue(1_000000n, 6, 0)).toBe(0);
+  });
 });

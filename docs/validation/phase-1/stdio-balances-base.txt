@@ -1,0 +1,742 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_token_balances --tool-arg chain=base --tool-arg address=0xe7804c37c13166fF0b37F5aE0BB07A3aEbb6e245
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 2 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"base\",\"blockNumber\":\"62687734\",\"blockTimestamp\":\"2026-11-26T21:18:42.000Z\",\"data\":{\"address\":\"0xe7804c37c13166fF0b37F5aE0BB07A3aEbb6e245\",\"discovery\":\"indexer\",\"balances\":[{\"token\":{\"address\":\"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE\",\"symbol\":\"ETH\",\"decimals\":18},\"balance\":{\"raw\":\"7390000000000\",\"formatted\":\"0.00000739\",\"decimals\":18},\"usd\":0.012579997,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\"symbol\":\"USDC\",\"decimals\":6},\"balance\":{\"raw\":\"25724364\",\"formatted\":\"25.724364\",\"decimals\":6},\"usd\":25.721179066493164,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2\",\"symbol\":\"USDT\",\"decimals\":6},\"balance\":{\"raw\":\"25685020\",\"formatted\":\"25.68502\",\"decimals\":6},\"usd\":25.6549685266,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0x4200000000000000000000000000000000000006\",\"symbol\":\"WETH\",\"decimals\":18},\"balance\":{\"raw\":\"18\",\"formatted\":\"0.000000000000000018\",\"decimals\":18},\"usd\":3.0641399999999997e-14,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xaD03E2e457eBe290F364c9AA8133dCD0cda30c4e\",\"symbol\":\"(t.me/s/US_POOL) *claim until 02\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xb9E5E7296466C7DaEa8133289Fbb29E493E72956\",\"symbol\":\"(t.me/s/US_POOL) *claim until 09\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xB9A0C47AdeA84b1CF17A787C429BdeeEaC01CCd7\",\"symbol\":\"(t.me/s/US_POOL) *claim until 10\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x41A0E0437E2906ABd15C4878f4E7D6371167a4a5\",\"symbol\":\"(t.me/s/US_POOL) *claim until 19\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3F4132119C2D97fc24b2F4dA3a439f1D866B27b0\",\"symbol\":\"(t.me/s/US_POOL) *claim until 28\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x36fa9CF0ccb9C594b74231073790F62044E7F681\",\"symbol\":\"(t.me/s/US_POOL) Visit to claim\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x67A7D8F373e11e2C4a35A1ACa2e47a2F7FD47341\",\"symbol\":\"$ARB - Claim: t.ly/ARB\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x4e967a0FDE56FDB1A0A056b065C5497216055c50\",\"symbol\":\"$NORT\",\"decimals\":18},\"balance\":{\"raw\":\"1000000000000000000\",\"formatted\":\"1\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x926eeD100ca24E95e3A96Eb7548c101105Db7398\",\"symbol\":\"$PAWS BabyDoge: jpeg.ly/PAWS - #\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xdeEe02b9321D3eF6614C62c7A1D3AEF5194a8040\",\"symbol\":\"$PAWS BabyDoge: jpeg.ly/PAWS - #\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x7953f9c43D231257dAF00a2f8DF1436D17382817\",\"symbol\":\"$SHIB - Redeem: t.ly/poolshib\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x42C79650956e6891eEF69a4A5Fed189B3e90b94A\",\"symbol\":\"$TRUMP - Claim: t.ly/TRUMP - #1\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xAd7e2e36130f5EcF2365ec551018ffb4DC325435\",\"symbol\":\"$TRUMP - Claim: t.ly/TRUMP - #1\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xaE56028079Fb8E3fC788b25af7E4e343F7878e4C\",\"symbol\":\"$TRUMP - Claim: t.ly/TRUMP - #1\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xe57a18F603f48e91a9b1a9593E839894cbfAE2cA\",\"symbol\":\"$TRUMP - Claim: t.ly/TRUMP - #1\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xF2999FE53505D7493aEa039f366150E4912acd36\",\"symbol\":\"$TRUMP - Claim: t.ly/TRUMP - #1\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x8e574820E589095568bEf8d8Caa870C5141AF50E\",\"symbol\":\"$UЅDС - Redeem: t.ly/cpool - #15\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3e85716b7715D52441f90F6301747C1EaAaCa198\",\"symbol\":\"$UЅDС - Redeem: t.ly/cpool - #8\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xc19cE1882e567D6D94C31e2DE2Ff05a25c061BE0\",\"symbol\":\"10k ZerOne for 0.0001 ETH 0.0001\",\"decimals\":0},\"balance\":{\"raw\":\"10000000000000000000000\",\"formatted\":\"10000000000000000000000\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xE028C847BD6ca1A690f4f702469f4eb106abC275\",\"symbol\":\"250 $UЅDС - Redeem: t.ly/cpool\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xE2d4D8aD7f45Fb5D4ECcAc2B0D6C99545cAEC16A\",\"symbol\":\"500 $UЅDС - Redeem: t.ly/cpool\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x5d4a8C97E7a9cC7b4cc08bE1D0f5062E44CE0913\",\"symbol\":\"5ETH Reward at web3eth.vip\",\"decimals\":18},\"balance\":{\"raw\":\"5000000000000000000\",\"formatted\":\"5\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xfC9dB6bB6d7c82ee9d4f0AA6f88e8872E1Ee49dE\",\"symbol\":\"5ETH Reward at web3eth.vip\",\"decimals\":18},\"balance\":{\"raw\":\"5000000000000000000\",\"formatted\":\"5\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x16171B069184A1998c8eCDA99f1D941D86cCdC19\",\"symbol\":\"ABTC\",\"decimals\":18},\"balance\":{\"raw\":\"111888000000000000000000\",\"formatted\":\"111888\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x4d22dBbB57466F52D921573550B5103507fEd22e\",\"symbol\":\"ACCESS ( BRETT.DIGITAL ) CLAIM Y\",\"decimals\":0},\"balance\":{\"raw\":\"14700\",\"formatted\":\"14700\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xfAf87e196A29969094bE35DfB0Ab9d0b8518dB84\",\"symbol\":\"ACHIVX\",\"decimals\":6},\"balance\":{\"raw\":\"100\",\"formatted\":\"0.0001\",\"decimals\":6},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x8cFFadFf2daE2cB023a7E569d67E80A9dF0C40f3\",\"symbol\":\"ADA\",\"decimals\":18},\"balance\":{\"raw\":\"10000000000000000000\",\"formatted\":\"10\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x0A507d26A6147630DC5EEbEfB6302572CfA1464F\",\"symbol\":\"AERC\",\"decimals\":18},\"balance\":{\"raw\":\"10000000000000000000\",\"formatted\":\"10\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3F70B4E9Aa95221F1B5C0e83bAe82326D5bBaDb2\",\"symbol\":\"AF\",\"decimals\":18},\"balance\":{\"raw\":\"4000000000000000000000\",\"formatted\":\"4000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x26A5eE02D9285cef7C51C9b04A707B5b4e83Aa65\",\"symbol\":\"Airdrop: degen.gifts/?claim\",\"decimals\":0},\"balance\":{\"raw\":\"3645170\",\"formatted\":\"3645170\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x69160bCb1c1be522185F74f1149A708CaA66E2fB\",\"symbol\":\"ALICE\",\"decimals\":18},\"balance\":{\"raw\":\"100000000000000000000000\",\"formatted\":\"100000\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x976c883B82e22a8fe367434a94fA1eec5F915D0b\",\"symbol\":\"App Store: Install BTC.AI to Cla\",\"decimals\":18},\"balance\":{\"raw\":\"8000000000000000000\",\"formatted\":\"8\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xe9d5d6A32b92Cb519b13D38c64546B0d6F4B8754\",\"symbol\":\"ARB (Visit to swap: t.me/s/arb_p\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xd8163CCA0A1F3704C93c20cF2fe974DB770A7695\",\"symbol\":\"ARB (Visit: t.me/s/arb_pool)\",\"decimals\":0},\"balance\":{\"raw\":\"1\",\"formatted\":\"1\",\"decimals\":0},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xcf19d6003ef50f48C2fbB97D7Ed58daA48e60553\",\"symbol\":\"ARBS\",\"decimals\":18},\"balance\":{\"raw\":\"20000000000000000000\",\"formatted\":\"20\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xD3b0b58eC9516e4b875a075328E2CB059d4d54dB\",\"symbol\":\"archai\",\"decimals\":18},\"balance\":{\"raw\":\"16730795225724700000\",\"formatted\":\"16.7307952257247\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x52E4Cf1fd77719b76f05f695f359FEC53AE36bE7\",\"symbol\":\"ASI\",\"decimals\":18},\"balance\":{\"raw\":\"175000000000000000000\",\"formatted\":\"175\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x0400fF685abbD155A88c41Fb8414664DCD35D2F3\",\"symbol\":\"ASTAR\",\"decimals\":18},\"balance\":{\"raw\":\"5000000000000000000\",\"formatted\":\"5\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x1509706a6c66CA549ff0cB464de88231DDBe213B\",\"symbol\":\"AURA\",\"decimals\":18},\"balance\":{\"raw\":\"5474170000000000000\",\"formatted\":\"5.47417\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x8E7F3d74427b3Af069A2F914869d6F367a98c90c\",\"symbol\":\"BABI\",\"decimals\":18},\"balance\":{\"raw\":\"5000000000000000000\",\"formatted\":\"5\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3fc63CB55dd2f2d14Bb9a581Ebee1a43EA668B76\",\"symbol\":\"BANGKER\",\"decimals\":18},\"balance\":{\"raw\":\"25000000000000000000\",\"formatted\":\"25\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x5F2ac4465192243781a281a1ed023649811687F5\",\"symbol\":\"BASE\",\"decimals\":18},\"balance\":{\"raw\":\"10000000000000000000\",\"formatted\":\"10\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x07d15798a67253D76cea61F0eA6F57AeDC59DffB\",\"symbol\":\"BASED\",\"decimals\":18},\"balance\":{\"raw\":\"9222000000000000000000\",\"formatted\":\"9222\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x49D559a32D404D6A4Faf9EcE9001116071DbE84D\",\"symbol\":\"BaseMoon\",\"decimals\":18},\"balance\":{\"raw\":\"25000000000000000000\",\"formatted\":\"25\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0xB2e7F0bceBdA6474F4a4B757700319059Dd430F7\",\"symbol\":\"BBSV\",\"decimals\":18},\"balance\":{\"raw\":\"50000000000000000000\",\"formatted\":\"50\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x82Ac0473B4117a99159134e2D501792C5180e198\",\"symbol\":\"BBV\",\"decimals\":18},\"balance\":{\"raw\":\"25000000000000000000\",\"formatted\":\"25\",\"decimals\":18},\"usd\":null,\"priceSource\":null},{\"token\":{\"address\":\"0x3Fe1BEaB2c1938BA4DFD6464b04DF826A73E0714\",\"symbol\":\"BENJI\",\"decimals\":18},\"balance\":{\"raw\":\"150000000000000000000\",\"formatted\":\"150\",\"decimals\":18},\"usd\":null,\"priceSource\":null}],\"totalUsd\":51.3887275900932},\"warnings\":[\"Showing 50 of 195 tokens.\"]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "base",
+    "blockNumber": "62687734",
+    "blockTimestamp": "2026-11-26T21:18:42.000Z",
+    "data": {
+      "address": "0xe7804c37c13166fF0b37F5aE0BB07A3aEbb6e245",
+      "discovery": "indexer",
+      "balances": [
+        {
+          "token": {
+            "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "symbol": "ETH",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "7390000000000",
+            "formatted": "0.00000739",
+            "decimals": 18
+          },
+          "usd": 0.012579997,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "symbol": "USDC",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "25724364",
+            "formatted": "25.724364",
+            "decimals": 6
+          },
+          "usd": 25.721179066493164,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+            "symbol": "USDT",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "25685020",
+            "formatted": "25.68502",
+            "decimals": 6
+          },
+          "usd": 25.6549685266,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0x4200000000000000000000000000000000000006",
+            "symbol": "WETH",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "18",
+            "formatted": "0.000000000000000018",
+            "decimals": 18
+          },
+          "usd": 3.0641399999999997e-14,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xaD03E2e457eBe290F364c9AA8133dCD0cda30c4e",
+            "symbol": "(t.me/s/US_POOL) *claim until 02",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xb9E5E7296466C7DaEa8133289Fbb29E493E72956",
+            "symbol": "(t.me/s/US_POOL) *claim until 09",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xB9A0C47AdeA84b1CF17A787C429BdeeEaC01CCd7",
+            "symbol": "(t.me/s/US_POOL) *claim until 10",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x41A0E0437E2906ABd15C4878f4E7D6371167a4a5",
+            "symbol": "(t.me/s/US_POOL) *claim until 19",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3F4132119C2D97fc24b2F4dA3a439f1D866B27b0",
+            "symbol": "(t.me/s/US_POOL) *claim until 28",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x36fa9CF0ccb9C594b74231073790F62044E7F681",
+            "symbol": "(t.me/s/US_POOL) Visit to claim",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x67A7D8F373e11e2C4a35A1ACa2e47a2F7FD47341",
+            "symbol": "$ARB - Claim: t.ly/ARB",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x4e967a0FDE56FDB1A0A056b065C5497216055c50",
+            "symbol": "$NORT",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1000000000000000000",
+            "formatted": "1",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x926eeD100ca24E95e3A96Eb7548c101105Db7398",
+            "symbol": "$PAWS BabyDoge: jpeg.ly/PAWS - #",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xdeEe02b9321D3eF6614C62c7A1D3AEF5194a8040",
+            "symbol": "$PAWS BabyDoge: jpeg.ly/PAWS - #",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x7953f9c43D231257dAF00a2f8DF1436D17382817",
+            "symbol": "$SHIB - Redeem: t.ly/poolshib",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x42C79650956e6891eEF69a4A5Fed189B3e90b94A",
+            "symbol": "$TRUMP - Claim: t.ly/TRUMP - #1",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xAd7e2e36130f5EcF2365ec551018ffb4DC325435",
+            "symbol": "$TRUMP - Claim: t.ly/TRUMP - #1",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xaE56028079Fb8E3fC788b25af7E4e343F7878e4C",
+            "symbol": "$TRUMP - Claim: t.ly/TRUMP - #1",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xe57a18F603f48e91a9b1a9593E839894cbfAE2cA",
+            "symbol": "$TRUMP - Claim: t.ly/TRUMP - #1",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xF2999FE53505D7493aEa039f366150E4912acd36",
+            "symbol": "$TRUMP - Claim: t.ly/TRUMP - #1",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x8e574820E589095568bEf8d8Caa870C5141AF50E",
+            "symbol": "$UЅDС - Redeem: t.ly/cpool - #15",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3e85716b7715D52441f90F6301747C1EaAaCa198",
+            "symbol": "$UЅDС - Redeem: t.ly/cpool - #8",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xc19cE1882e567D6D94C31e2DE2Ff05a25c061BE0",
+            "symbol": "10k ZerOne for 0.0001 ETH 0.0001",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "10000000000000000000000",
+            "formatted": "10000000000000000000000",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xE028C847BD6ca1A690f4f702469f4eb106abC275",
+            "symbol": "250 $UЅDС - Redeem: t.ly/cpool",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xE2d4D8aD7f45Fb5D4ECcAc2B0D6C99545cAEC16A",
+            "symbol": "500 $UЅDС - Redeem: t.ly/cpool",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x5d4a8C97E7a9cC7b4cc08bE1D0f5062E44CE0913",
+            "symbol": "5ETH Reward at web3eth.vip",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5000000000000000000",
+            "formatted": "5",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xfC9dB6bB6d7c82ee9d4f0AA6f88e8872E1Ee49dE",
+            "symbol": "5ETH Reward at web3eth.vip",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5000000000000000000",
+            "formatted": "5",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x16171B069184A1998c8eCDA99f1D941D86cCdC19",
+            "symbol": "ABTC",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "111888000000000000000000",
+            "formatted": "111888",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x4d22dBbB57466F52D921573550B5103507fEd22e",
+            "symbol": "ACCESS ( BRETT.DIGITAL ) CLAIM Y",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "14700",
+            "formatted": "14700",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xfAf87e196A29969094bE35DfB0Ab9d0b8518dB84",
+            "symbol": "ACHIVX",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "100",
+            "formatted": "0.0001",
+            "decimals": 6
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x8cFFadFf2daE2cB023a7E569d67E80A9dF0C40f3",
+            "symbol": "ADA",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "10000000000000000000",
+            "formatted": "10",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x0A507d26A6147630DC5EEbEfB6302572CfA1464F",
+            "symbol": "AERC",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "10000000000000000000",
+            "formatted": "10",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3F70B4E9Aa95221F1B5C0e83bAe82326D5bBaDb2",
+            "symbol": "AF",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "4000000000000000000000",
+            "formatted": "4000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x26A5eE02D9285cef7C51C9b04A707B5b4e83Aa65",
+            "symbol": "Airdrop: degen.gifts/?claim",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "3645170",
+            "formatted": "3645170",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x69160bCb1c1be522185F74f1149A708CaA66E2fB",
+            "symbol": "ALICE",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "100000000000000000000000",
+            "formatted": "100000",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x976c883B82e22a8fe367434a94fA1eec5F915D0b",
+            "symbol": "App Store: Install BTC.AI to Cla",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "8000000000000000000",
+            "formatted": "8",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xe9d5d6A32b92Cb519b13D38c64546B0d6F4B8754",
+            "symbol": "ARB (Visit to swap: t.me/s/arb_p",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xd8163CCA0A1F3704C93c20cF2fe974DB770A7695",
+            "symbol": "ARB (Visit: t.me/s/arb_pool)",
+            "decimals": 0
+          },
+          "balance": {
+            "raw": "1",
+            "formatted": "1",
+            "decimals": 0
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xcf19d6003ef50f48C2fbB97D7Ed58daA48e60553",
+            "symbol": "ARBS",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "20000000000000000000",
+            "formatted": "20",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xD3b0b58eC9516e4b875a075328E2CB059d4d54dB",
+            "symbol": "archai",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "16730795225724700000",
+            "formatted": "16.7307952257247",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x52E4Cf1fd77719b76f05f695f359FEC53AE36bE7",
+            "symbol": "ASI",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "175000000000000000000",
+            "formatted": "175",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x0400fF685abbD155A88c41Fb8414664DCD35D2F3",
+            "symbol": "ASTAR",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5000000000000000000",
+            "formatted": "5",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x1509706a6c66CA549ff0cB464de88231DDBe213B",
+            "symbol": "AURA",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5474170000000000000",
+            "formatted": "5.47417",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x8E7F3d74427b3Af069A2F914869d6F367a98c90c",
+            "symbol": "BABI",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "5000000000000000000",
+            "formatted": "5",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3fc63CB55dd2f2d14Bb9a581Ebee1a43EA668B76",
+            "symbol": "BANGKER",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "25000000000000000000",
+            "formatted": "25",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x5F2ac4465192243781a281a1ed023649811687F5",
+            "symbol": "BASE",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "10000000000000000000",
+            "formatted": "10",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x07d15798a67253D76cea61F0eA6F57AeDC59DffB",
+            "symbol": "BASED",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "9222000000000000000000",
+            "formatted": "9222",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x49D559a32D404D6A4Faf9EcE9001116071DbE84D",
+            "symbol": "BaseMoon",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "25000000000000000000",
+            "formatted": "25",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0xB2e7F0bceBdA6474F4a4B757700319059Dd430F7",
+            "symbol": "BBSV",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "50000000000000000000",
+            "formatted": "50",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x82Ac0473B4117a99159134e2D501792C5180e198",
+            "symbol": "BBV",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "25000000000000000000",
+            "formatted": "25",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        },
+        {
+          "token": {
+            "address": "0x3Fe1BEaB2c1938BA4DFD6464b04DF826A73E0714",
+            "symbol": "BENJI",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "150000000000000000000",
+            "formatted": "150",
+            "decimals": 18
+          },
+          "usd": null,
+          "priceSource": null
+        }
+      ],
+      "totalUsd": 51.3887275900932
+    },
+    "warnings": [
+      "Showing 50 of 195 tokens."
+    ]
+  }
+}
+# exit code 0, wall time 4.6 s (includes npx and server startup)

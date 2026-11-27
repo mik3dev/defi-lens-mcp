@@ -8,13 +8,15 @@ const USDC_WETH_005: Address = '0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640';
 const POOL_FIXTURE = 'e2e-pool-state';
 // Never contacted: the tests below fail before any RPC request is made.
 const UNUSED_RPC_URL = 'http://127.0.0.1:9';
+// Each test talks to (or spawns) a node child process; vitest's 5 s default is too tight under load.
+const SPAWN_TEST_TIMEOUT_MS = 20_000;
 
 function parseToolError(result: { content: unknown }): { code: string; message: string } {
   const [first] = result.content as { type: string; text: string }[];
   return JSON.parse(first?.text ?? '{}') as { code: string; message: string };
 }
 
-describe('stdio protocol (offline)', () => {
+describe('stdio protocol (offline)', { timeout: SPAWN_TEST_TIMEOUT_MS }, () => {
   let session: StdioSession;
 
   beforeAll(async () => {
@@ -28,7 +30,7 @@ describe('stdio protocol (offline)', () => {
   it('lists get_pool_state with schemas and read-only annotation', async () => {
     const { tools } = await session.client.listTools();
     const tool = tools.find((t) => t.name === 'get_pool_state');
-    expect(tools.map((t) => t.name)).toEqual(['get_pool_state']);
+    expect(tools.map((t) => t.name)).toEqual(['get_pool_state', 'get_token_balances']);
     expect(tool?.description?.length).toBeGreaterThan(0);
     expect(tool?.inputSchema.type).toBe('object');
     expect(tool?.outputSchema).toBeDefined();
@@ -64,7 +66,7 @@ describe('stdio protocol (offline)', () => {
   });
 });
 
-describe('stdio startup', () => {
+describe('stdio startup', { timeout: SPAWN_TEST_TIMEOUT_MS }, () => {
   it('exits non-zero with a message naming the variable on bad config', async () => {
     const { code, stderr } = await runToExit({});
     expect(code).not.toBe(0);
@@ -82,7 +84,7 @@ describe('stdio startup', () => {
   });
 });
 
-describe('stdio protocol (recorded chain)', () => {
+describe('stdio protocol (recorded chain)', { timeout: SPAWN_TEST_TIMEOUT_MS }, () => {
   let endpoint: Awaited<ReturnType<typeof chainEndpoint>> | undefined;
   let session: StdioSession;
 

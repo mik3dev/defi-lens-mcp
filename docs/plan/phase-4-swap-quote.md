@@ -180,3 +180,11 @@ Part of the [development plan](../development-plan.md). Spec: [design.md](../des
 
 - [ ] **Step 3: Commit** `docs: add phase 4 validation record`
 - [ ] **Step 4: Owner review and sign-off.**
+
+---
+
+## Carried forward from phase 0
+
+Minor findings from the phase 0 whole-branch review that this phase owns. Fold each into the task that touches the code; record any left open in this phase's validation document.
+
+- Native sentinel: `tokenA = 0xEeee…` in `get_pool_state` returns `NOT_FOUND` without saying to use the wrapped native token. Map it to wrapped native or add a description hint, together with the swap-quote native handling.

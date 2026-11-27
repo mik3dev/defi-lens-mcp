@@ -26,6 +26,8 @@ export interface FakeContract {
 export interface FakeChain extends Endpoint {
   /** Block number of every eth_call received, in order. */
   callBlocks: bigint[];
+  /** Target of every call inside the received multicalls, in order. */
+  callTargets: Address[];
 }
 
 const MULTICALL3: Address = '0xcA11bde05977b3631167028862bE2a173976CA11';
@@ -83,12 +85,18 @@ function decodeInner(
  */
 export async function startFakeChain(opts: {
   blockNumber: bigint;
+  /** Timestamp of the latest block (default 1). */
+  timestamp?: bigint;
   contracts: Record<Address, FakeContract>;
   ethBalances?: Record<Address, bigint>;
+  /** Behaviour of every address absent from `contracts` (default: no code). */
+  fallback?: FakeContract;
 }): Promise<FakeChain> {
   const callBlocks: bigint[] = [];
+  const callTargets: Address[] = [];
   const inner = (target: Address, callData: Hex): CallResult => {
-    const contract = lookup(opts.contracts, target);
+    callTargets.push(target);
+    const contract = lookup(opts.contracts, target) ?? opts.fallback;
     const raw = contract?.raw?.[callData.slice(0, 10).toLowerCase() as Hex];
     if (raw !== undefined) return { success: true, returnData: raw };
     const decoded = decodeInner(callData);
@@ -103,7 +111,8 @@ export async function startFakeChain(opts: {
   const server = await startRpcServer(({ method, params }) => {
     const p = (params ?? []) as unknown[];
     if (method === 'eth_getBlockByNumber') {
-      return { result: { number: `0x${opts.blockNumber.toString(16)}`, timestamp: '0x1' } };
+      const timestamp = `0x${(opts.timestamp ?? 1n).toString(16)}`;
+      return { result: { number: `0x${opts.blockNumber.toString(16)}`, timestamp } };
     }
     if (method !== 'eth_call') return { error: { code: -32601, message: `fake: ${method}` } };
     const { data } = p[0] as { data: Hex };
@@ -119,5 +128,5 @@ export async function startFakeChain(opts: {
       }),
     };
   });
-  return { ...server, callBlocks };
+  return { ...server, callBlocks, callTargets };
 }

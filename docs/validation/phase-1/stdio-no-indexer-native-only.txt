@@ -1,0 +1,42 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_token_balances --tool-arg chain=ethereum --tool-arg address=0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON set (values not shown), ALCHEMY_API_KEY unset
+
+Warning: 2 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26502040\",\"blockTimestamp\":\"2026-11-26T21:23:59.000Z\",\"data\":{\"address\":\"0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489\",\"discovery\":\"none\",\"balances\":[{\"token\":{\"address\":\"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE\",\"symbol\":\"ETH\",\"decimals\":18},\"balance\":{\"raw\":\"1220494875405186557374578\",\"formatted\":\"1220494.875405186557374578\",\"decimals\":18},\"usd\":2076549981.0143845,\"priceSource\":\"chainlink\"}],\"totalUsd\":2076549981.0143845},\"warnings\":[\"Token discovery unavailable: set ALCHEMY_API_KEY or pass \\\"tokens\\\". Returning native balance only.\"]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "ethereum",
+    "blockNumber": "26502040",
+    "blockTimestamp": "2026-11-26T21:23:59.000Z",
+    "data": {
+      "address": "0x40B38765696e3d5d8d9d834D8AaD4bB6e418E489",
+      "discovery": "none",
+      "balances": [
+        {
+          "token": {
+            "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "symbol": "ETH",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "1220494875405186557374578",
+            "formatted": "1220494.875405186557374578",
+            "decimals": 18
+          },
+          "usd": 2076549981.0143845,
+          "priceSource": "chainlink"
+        }
+      ],
+      "totalUsd": 2076549981.0143845
+    },
+    "warnings": [
+      "Token discovery unavailable: set ALCHEMY_API_KEY or pass \"tokens\". Returning native balance only."
+    ]
+  }
+}
+# exit code 0, wall time 3.5 s (includes npx and server startup)

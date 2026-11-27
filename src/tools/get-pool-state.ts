@@ -5,7 +5,8 @@ import type { ChainId } from '../chains.js';
 import type { AppContext } from '../context.js';
 import { pinBlock } from '../lib/blocks.js';
 import { AppError } from '../lib/errors.js';
-import { type Amount, toAmount } from '../lib/format.js';
+import { type Amount, toAmount, usdValue } from '../lib/format.js';
+import { getUsdPrices, type Price, staleWarnings } from '../protocols/chainlink/prices.js';
 import type { TokenInfo } from '../protocols/erc20/tokens.js';
 import { sqrtPriceX96ToPrices } from '../protocols/uniswap/math.js';
 import { type PoolState, readPoolState, resolvePool } from '../protocols/uniswap/pool.js';
@@ -19,6 +20,7 @@ import {
   runTool,
   type ToolOutput,
   tokenSchema,
+  UNTRUSTED_SYMBOLS_NOTE,
 } from './shared.js';
 
 const TOOL_NAME = 'get_pool_state';
@@ -29,7 +31,11 @@ const DESCRIPTION = [
   'tick spacing, sqrtPriceX96, tick, active liquidity, the token balances held by the pool and its',
   'spot price in both directions (price0In1 = token1 per token0).',
   "The price is the pool's own spot price, not a market-wide or USD price.",
+  'reserves.usd0, reserves.usd1 and tvlUsd come from Chainlink USD feeds at the same block;',
+  'a USD field is null when its token has no feed (never estimated), and tvlUsd is null unless',
+  'both sides are priced.',
   'Identify the pool either by `pool`, or by `tokenA` + `tokenB` + `feeTier` (in either token order).',
+  UNTRUSTED_SYMBOLS_NOTE,
 ].join(' ');
 
 // Plain object on purpose: the either/or rule between `pool` and the token triple is checked in
@@ -121,8 +127,15 @@ function parseInput(input: PoolStateInput): ParsedInput {
   return parsed.data;
 }
 
-function toData(state: PoolState): PoolStateData {
+/** Sum of both sides; null unless both are priced (a partial sum would understate the TVL). */
+function tvlOf(usd0: number | null, usd1: number | null): number | null {
+  return usd0 === null || usd1 === null ? null : usd0 + usd1;
+}
+
+function toData(state: PoolState, price0: Price | null, price1: Price | null): PoolStateData {
   const { token0, token1 } = state;
+  const usd0 = usdValue(state.reserve0, token0.decimals, price0?.usd ?? null);
+  const usd1 = usdValue(state.reserve1, token1.decimals, price1?.usd ?? null);
   return {
     pool: state.pool,
     token0,
@@ -136,10 +149,10 @@ function toData(state: PoolState): PoolStateData {
     reserves: {
       amount0: toAmount(state.reserve0, token0.decimals),
       amount1: toAmount(state.reserve1, token1.decimals),
-      usd0: null, // USD pricing arrives in a later phase
-      usd1: null,
+      usd0,
+      usd1,
     },
-    tvlUsd: null,
+    tvlUsd: tvlOf(usd0, usd1),
   };
 }
 
@@ -152,8 +165,22 @@ export async function getPoolState(
   const block = await pinBlock(ctx, chain);
   const pool = await resolvePool(ctx, chain, sel, block);
   const state = await readPoolState(ctx, chain, pool, block);
-  const warnings = state.sqrtPriceX96 === 0n ? [UNINITIALIZED_WARNING] : [];
-  return ok(chain, block, toData(state), warnings);
+  const { token0, token1 } = state;
+  const prices = await getUsdPrices(ctx, chain, [token0.address, token1.address], block);
+  const symbols = new Map([
+    [token0.address, token0.symbol],
+    [token1.address, token1.symbol],
+  ]);
+  const warnings = [
+    ...(state.sqrtPriceX96 === 0n ? [UNINITIALIZED_WARNING] : []),
+    ...staleWarnings(prices, symbols),
+  ];
+  const data = toData(
+    state,
+    prices.get(token0.address) ?? null,
+    prices.get(token1.address) ?? null,
+  );
+  return ok(chain, block, data, warnings);
 }
 
 export function register(server: McpServer, ctx: AppContext): void {

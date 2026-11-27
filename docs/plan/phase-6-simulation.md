@@ -331,3 +331,13 @@ The strongest check in the project: simulate transactions that were really mined
 
 - [ ] **Step 3: Commit** `docs: add phase 6 validation record`
 - [ ] **Step 4: Owner review and sign-off.**
+
+---
+
+## Carried forward from phase 0
+
+Minor findings from the phase 0 whole-branch review that this phase owns. Fold each into the task that touches the code; record any left open in this phase's validation document.
+
+- `block_number N+1` accepted at the head was observed on base only: confirm on the other chains.
+- Spike Q2 (anvil `eth_simulateV1`) ran on ethereum and base only.
+- If outbound hosts are allowlisted by exact name, include `api.4byte.sourcify.dev`.

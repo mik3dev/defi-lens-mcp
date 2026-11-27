@@ -11,6 +11,7 @@ import { type ChainId, getClient } from '../../chains.js';
 import type { AppContext } from '../../context.js';
 import type { PinnedBlock } from '../../lib/blocks.js';
 import { AppError } from '../../lib/errors.js';
+import { isBigint, isNumber, isString, type Outcome, success } from '../../lib/multicall.js';
 import { readBalances, readTokens, type TokenInfo } from '../erc20/tokens.js';
 import { uniswapV3FactoryAbi, uniswapV3PoolAbi } from './abis.js';
 import { UNISWAP_V3 } from './addresses.js';
@@ -48,24 +49,11 @@ interface PoolDynamics {
   liquidity: bigint;
 }
 
-/** One `allowFailure` multicall result; `result` is untrusted until its type is checked. */
-interface Outcome {
-  status: 'success' | 'failure';
-  result?: unknown;
-}
-
 const IMMUTABLE_FUNCTIONS = ['token0', 'token1', 'fee', 'tickSpacing', 'factory'] as const;
 type PoolFunction = 'slot0' | 'liquidity' | (typeof IMMUTABLE_FUNCTIONS)[number];
 
-const isString = (v: unknown): v is string => typeof v === 'string';
-const isNumber = (v: unknown): v is number => typeof v === 'number';
-const isBigint = (v: unknown): v is bigint => typeof v === 'bigint';
 const isSlot0 = (v: unknown): v is readonly [bigint, number, ...unknown[]] =>
   Array.isArray(v) && isBigint(v[0]) && isNumber(v[1]);
-
-function success<T>(outcome: Outcome | undefined, guard: (v: unknown) => v is T): T | undefined {
-  return outcome?.status === 'success' && guard(outcome.result) ? outcome.result : undefined;
-}
 
 const immutablesKey = (chain: ChainId, pool: Address) =>
   `uniswap-v3:pool:${chain}:${pool.toLowerCase()}`;

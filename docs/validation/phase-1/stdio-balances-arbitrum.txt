@@ -1,0 +1,96 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_token_balances --tool-arg chain=arbitrum --tool-arg address=0xB38e8c17e38363aF6EbdCb3dAE12e0243582891D --tool-arg 'tokens=["0xaf88d065e77c8cC2239327C5EDb3A432268e5831","0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9","0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f","0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"]'
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 2 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"arbitrum\",\"blockNumber\":\"527830590\",\"blockTimestamp\":\"2026-11-26T21:18:46.000Z\",\"data\":{\"address\":\"0xB38e8c17e38363aF6EbdCb3dAE12e0243582891D\",\"discovery\":\"explicit\",\"balances\":[{\"token\":{\"address\":\"0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE\",\"symbol\":\"ETH\",\"decimals\":18},\"balance\":{\"raw\":\"3000335004946680345\",\"formatted\":\"3.000335004946680345\",\"decimals\":18},\"usd\":5117.61323037057,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xaf88d065e77c8cC2239327C5EDb3A432268e5831\",\"symbol\":\"USDC\",\"decimals\":6},\"balance\":{\"raw\":\"2534086971\",\"formatted\":\"2534.086971\",\"decimals\":6},\"usd\":2533.7409921058493,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0x82aF49447D8a07e3bd95BD0d56f35241523fBab1\",\"symbol\":\"WETH\",\"decimals\":18},\"balance\":{\"raw\":\"9188120000000000\",\"formatted\":\"0.00918812\",\"decimals\":18},\"usd\":15.671998092449035,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9\",\"symbol\":\"USD₮0\",\"decimals\":6},\"balance\":{\"raw\":\"3000101\",\"formatted\":\"3.000101\",\"decimals\":6},\"usd\":2.99641087577,\"priceSource\":\"chainlink\"},{\"token\":{\"address\":\"0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f\",\"symbol\":\"WBTC\",\"decimals\":8},\"balance\":{\"raw\":\"287\",\"formatted\":\"0.00000287\",\"decimals\":8},\"usd\":0.174433042225771,\"priceSource\":\"chainlink\"}],\"totalUsd\":7670.197064486864},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "arbitrum",
+    "blockNumber": "527830590",
+    "blockTimestamp": "2026-11-26T21:18:46.000Z",
+    "data": {
+      "address": "0xB38e8c17e38363aF6EbdCb3dAE12e0243582891D",
+      "discovery": "explicit",
+      "balances": [
+        {
+          "token": {
+            "address": "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+            "symbol": "ETH",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "3000335004946680345",
+            "formatted": "3.000335004946680345",
+            "decimals": 18
+          },
+          "usd": 5117.61323037057,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            "symbol": "USDC",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "2534086971",
+            "formatted": "2534.086971",
+            "decimals": 6
+          },
+          "usd": 2533.7409921058493,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+            "symbol": "WETH",
+            "decimals": 18
+          },
+          "balance": {
+            "raw": "9188120000000000",
+            "formatted": "0.00918812",
+            "decimals": 18
+          },
+          "usd": 15.671998092449035,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+            "symbol": "USD₮0",
+            "decimals": 6
+          },
+          "balance": {
+            "raw": "3000101",
+            "formatted": "3.000101",
+            "decimals": 6
+          },
+          "usd": 2.99641087577,
+          "priceSource": "chainlink"
+        },
+        {
+          "token": {
+            "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+            "symbol": "WBTC",
+            "decimals": 8
+          },
+          "balance": {
+            "raw": "287",
+            "formatted": "0.00000287",
+            "decimals": 8
+          },
+          "usd": 0.174433042225771,
+          "priceSource": "chainlink"
+        }
+      ],
+      "totalUsd": 7670.197064486864
+    },
+    "warnings": []
+  }
+}
+# exit code 0, wall time 2.9 s (includes npx and server startup)

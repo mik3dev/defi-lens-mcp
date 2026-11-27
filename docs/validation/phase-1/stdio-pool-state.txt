@@ -1,0 +1,54 @@
+$ npx -y @modelcontextprotocol/inspector --cli node dist/index.js --method tools/call --tool-name get_pool_state --tool-arg chain=ethereum --tool-arg pool=0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640
+# env: TRANSPORT=stdio, RPC_URL_ETHEREUM/BASE/ARBITRUM/POLYGON and ALCHEMY_API_KEY set (values not shown)
+
+Warning: 3 regex pattern(s) in this schema were not evaluated
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26502014\",\"blockTimestamp\":\"2026-11-26T21:18:47.000Z\",\"data\":{\"pool\":\"0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640\",\"token0\":{\"address\":\"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\"symbol\":\"USDC\",\"decimals\":6},\"token1\":{\"address\":\"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\"symbol\":\"WETH\",\"decimals\":18},\"feeTier\":500,\"tickSpacing\":10,\"sqrtPriceX96\":\"1918507138556452901079699551815122\",\"tick\":201904,\"liquidity\":\"4134812542209086020\",\"price0In1\":\"0.000586364503213\",\"price1In0\":\"1705.42383537\",\"reserves\":{\"amount0\":{\"raw\":\"12963159216346\",\"formatted\":\"12963159.216346\",\"decimals\":6},\"amount1\":{\"raw\":\"33012514149264384001636\",\"formatted\":\"33012.514149264384001636\",\"decimals\":18},\"usd0\":12961474.524174243,\"usd1\":56167491.57355842},\"tvlUsd\":69128966.09773266},\"warnings\":[]}"
+    }
+  ],
+  "structuredContent": {
+    "chain": "ethereum",
+    "blockNumber": "26502014",
+    "blockTimestamp": "2026-11-26T21:18:47.000Z",
+    "data": {
+      "pool": "0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640",
+      "token0": {
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "symbol": "USDC",
+        "decimals": 6
+      },
+      "token1": {
+        "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+        "symbol": "WETH",
+        "decimals": 18
+      },
+      "feeTier": 500,
+      "tickSpacing": 10,
+      "sqrtPriceX96": "1918507138556452901079699551815122",
+      "tick": 201904,
+      "liquidity": "4134812542209086020",
+      "price0In1": "0.000586364503213",
+      "price1In0": "1705.42383537",
+      "reserves": {
+        "amount0": {
+          "raw": "12963159216346",
+          "formatted": "12963159.216346",
+          "decimals": 6
+        },
+        "amount1": {
+          "raw": "33012514149264384001636",
+          "formatted": "33012.514149264384001636",
+          "decimals": 18
+        },
+        "usd0": 12961474.524174243,
+        "usd1": 56167491.57355842
+      },
+      "tvlUsd": 69128966.09773266
+    },
+    "warnings": []
+  }
+}
+# exit code 0, wall time 3.3 s (includes npx and server startup)

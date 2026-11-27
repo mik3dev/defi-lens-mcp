@@ -33,7 +33,27 @@ interface ExpectedPoolState {
   reserve0: string;
   reserve1: string;
   commands: string[];
+  /** A canonical pool with a token that has no Chainlink USD feed. */
+  unpriced: { pool: Address; feeTier: number; token0: ExpectedToken; token1: ExpectedToken };
 }
+
+interface ExpectedToken {
+  address: Address;
+  symbol: string;
+  decimals: number;
+}
+
+/** Chainlink answers at PINNED.ethereum from `cast call latestRoundData` (see those fixtures). */
+function fixturePrice(file: string, pick: (json: never) => string): number {
+  const url = new URL(`../fixtures/${file}`, import.meta.url);
+  return Number(pick(JSON.parse(readFileSync(url, 'utf8')) as never));
+}
+
+const ETH_USD = (): number => fixturePrice('prices.ethereum.json', (j: { usd: string }) => j.usd);
+const USDC_USD = (): number =>
+  fixturePrice('token-balances.ethereum.json', (j: { rows: { symbol: string; price: string }[] }) =>
+    String(j.rows.find((r) => r.symbol === 'USDC')?.price),
+  );
 
 function expectedPoolState(): ExpectedPoolState {
   const url = new URL('../fixtures/pool-state.ethereum.json', import.meta.url);
@@ -109,6 +129,33 @@ describe.each(CHAIN_IDS)('uniswap v3 pool state on %s', (chain) => {
           expect(out.data.liquidity).toBe(expected.liquidity);
           expect(out.data.reserves.amount0.raw).toBe(expected.reserve0);
           expect(out.data.reserves.amount1.raw).toBe(expected.reserve1);
+        });
+
+        it('values both reserves and the TVL from Chainlink prices', async () => {
+          const out = await getPoolState(ctx, { chain, pool: USDC_WETH_005 });
+          const { amount0, amount1, usd0, usd1 } = out.data.reserves;
+          expect(usd0).toBe(Number(amount0.formatted) * USDC_USD());
+          expect(usd1).toBe(Number(amount1.formatted) * ETH_USD());
+          expect(out.data.tvlUsd).toBe((usd0 ?? Number.NaN) + (usd1 ?? Number.NaN));
+          expect(out.warnings).toEqual([]);
+        });
+
+        it('leaves the unpriced side and the TVL null for a token without a feed', async () => {
+          const { unpriced } = expectedPoolState();
+          const out = await getPoolState(ctx, {
+            chain,
+            tokenA: unpriced.token1.address,
+            tokenB: unpriced.token0.address,
+            feeTier: unpriced.feeTier,
+          });
+          expect(out.data.pool).toBe(unpriced.pool);
+          expect(out.data.token0).toEqual(unpriced.token0);
+          expect(out.data.token1).toEqual(unpriced.token1);
+          expect(out.data.reserves.usd0).toBeNull();
+          expect(out.data.reserves.usd1).toBe(
+            Number(out.data.reserves.amount1.formatted) * ETH_USD(),
+          );
+          expect(out.data.tvlUsd).toBeNull();
         });
 
         it('resolves the same pool from tokens and fee tier in either order', async () => {

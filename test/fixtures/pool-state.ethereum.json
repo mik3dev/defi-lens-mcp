@@ -11,5 +11,24 @@
     "cast call 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 \"liquidity()(uint128)\" --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
     "cast call 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 \"balanceOf(address)(uint256)\" 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\"",
     "cast call 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 \"balanceOf(address)(uint256)\" 0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\""
-  ]
+  ],
+  "unpriced": {
+    "pool": "0xCBCdF9626bC03E24f779434178A73a0B4bad62eD",
+    "feeTier": 3000,
+    "token0": {
+      "address": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+      "symbol": "WBTC",
+      "decimals": 8
+    },
+    "token1": {
+      "address": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      "symbol": "WETH",
+      "decimals": 18
+    },
+    "reason": "WBTC has no Chainlink USD feed on Ethereum in the feed registry (src/protocols/chainlink/feeds.ts), so the WBTC side and the TVL must be null",
+    "source": "Canonical Uniswap v3 WBTC/WETH 0.3% pool; address is the Uniswap v3 factory getPool(WBTC, WETH, 3000) answer at the pinned block (checked by the test through the factory and the CREATE2 derivation, not hardcoded trust)",
+    "commands": [
+      "cast call 0x1F98431c8aD98523631AE4a59f267346ea31F984 \"getPool(address,address,uint24)(address)\" 0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2 3000 --block 26499763 --rpc-url \"$RPC_URL_ETHEREUM\""
+    ]
+  }
 }

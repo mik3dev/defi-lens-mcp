@@ -9,14 +9,25 @@ export class TtlCache {
 
   constructor(private readonly maxEntries: number) {}
 
-  get<T>(key: string): T | undefined {
+  /** Live entry for `key`; expired entries are dropped. */
+  private live(key: string): Entry | undefined {
     const entry = this.entries.get(key);
     if (!entry) return undefined;
     if (entry.expiresAt <= Date.now()) {
       this.entries.delete(key);
       return undefined;
     }
-    return entry.value as T;
+    return entry;
+  }
+
+  /** True when `key` holds an unexpired value, including a stored `undefined`. */
+  has(key: string): boolean {
+    return this.live(key) !== undefined;
+  }
+
+  /** Cached value, or undefined on a miss. A stored `undefined` also reads as undefined: use has(). */
+  get<T>(key: string): T | undefined {
+    return this.live(key)?.value as T | undefined;
   }
 
   set<T>(key: string, value: T, ttlMs: number | 'forever'): void {
@@ -32,8 +43,8 @@ export class TtlCache {
 
   /** Cached fn result; concurrent callers share one in-flight call. Rejections are not cached. */
   wrap<T>(key: string, ttlMs: number | 'forever', fn: () => Promise<T>): Promise<T> {
-    const hit = this.get<T>(key);
-    if (hit !== undefined) return Promise.resolve(hit);
+    const hit = this.live(key);
+    if (hit) return Promise.resolve(hit.value as T);
     const pending = this.inflight.get(key);
     if (pending) return pending as Promise<T>;
     const promise = fn()
