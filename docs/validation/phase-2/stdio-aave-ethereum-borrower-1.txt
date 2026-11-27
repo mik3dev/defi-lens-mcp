@@ -6,13 +6,13 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
   "content": [
     {
       "type": "text",
-      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26508680\",\"blockTimestamp\":\"2026-11-27T19:36:11.000Z\",\"data\":{\"address\":\"0xa18Ce9B63ac6cb0b30ed3FC97522688e432aFAe5\",\"market\":{\"name\":\"Aave v3 Core\",\"pool\":\"0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2\"},\"priceSource\":\"aave-oracle\",\"summary\":{\"totalCollateralUsd\":192518.4844294,\"totalDebtUsd\":67973.7912872,\"availableBorrowsUsd\":81613.07111444,\"ltv\":0.777,\"liquidationThreshold\":0.8138,\"healthFactor\":2.3049,\"eModeCategory\":40,\"healthFactorNote\":null},\"reserves\":[{\"token\":{\"address\":\"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\"symbol\":\"WETH\",\"decimals\":18},\"supplied\":{\"raw\":\"64632790300311121391\",\"formatted\":\"64.632790300311121391\",\"decimals\":18},\"suppliedUsd\":108002.85329288067,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0xdAC17F958D2ee523a2206206994597C13D831ec7\",\"symbol\":\"USDT\",\"decimals\":6},\"supplied\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"suppliedUsd\":0,\"variableDebt\":{\"raw\":\"55532855021\",\"formatted\":\"55532.855021\",\"decimals\":6},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"debtUsd\":55472.38973779604,\"usedAsCollateral\":false},{\"token\":{\"address\":\"0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599\",\"symbol\":\"WBTC\",\"decimals\":8},\"supplied\":{\"raw\":\"69847129\",\"formatted\":\"0.69847129\",\"decimals\":8},\"suppliedUsd\":41901.91133306779,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":8},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":8},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0x514910771AF9Ca656af840dff83E8264EcF986CA\",\"symbol\":\"LINK\",\"decimals\":18},\"supplied\":{\"raw\":\"4382237783677893296662\",\"formatted\":\"4382.237783677893296662\",\"decimals\":18},\"suppliedUsd\":41006.5709488767,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\"symbol\":\"USDC\",\"decimals\":6},\"supplied\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"suppliedUsd\":0,\"variableDebt\":{\"raw\":\"12502069660\",\"formatted\":\"12502.06966\",\"decimals\":6},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"debtUsd\":12501.40154939737,\"usedAsCollateral\":false},{\"token\":{\"address\":\"0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9\",\"symbol\":\"AAVE\",\"decimals\":18},\"supplied\":{\"raw\":\"16988412789781472175\",\"formatted\":\"16.988412789781472175\",\"decimals\":18},\"suppliedUsd\":1607.148854597185,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"debtUsd\":0,\"usedAsCollateral\":true}]},\"warnings\":[]}"
+      "text": "{\"chain\":\"ethereum\",\"blockNumber\":\"26508781\",\"blockTimestamp\":\"2026-11-27T19:56:35.000Z\",\"data\":{\"address\":\"0xa18Ce9B63ac6cb0b30ed3FC97522688e432aFAe5\",\"market\":{\"name\":\"Aave v3 Core\",\"pool\":\"0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2\"},\"priceSource\":\"aave-oracle\",\"summary\":{\"totalCollateralUsd\":192764.61865598,\"totalDebtUsd\":68473.35497583,\"availableBorrowsUsd\":81266.20079613,\"ltv\":0.7768,\"liquidationThreshold\":0.8136,\"healthFactor\":2.2906,\"eModeCategory\":40,\"healthFactorNote\":null},\"reserves\":[{\"token\":{\"address\":\"0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2\",\"symbol\":\"WETH\",\"decimals\":18},\"supplied\":{\"raw\":\"64632822640264522635\",\"formatted\":\"64.632822640264522635\",\"decimals\":18},\"suppliedUsd\":108002.90733367369,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0xdAC17F958D2ee523a2206206994597C13D831ec7\",\"symbol\":\"USDT\",\"decimals\":6},\"supplied\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"suppliedUsd\":0,\"variableDebt\":{\"raw\":\"56032942522\",\"formatted\":\"56032.942522\",\"decimals\":6},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"debtUsd\":55971.932733523194,\"usedAsCollateral\":false},{\"token\":{\"address\":\"0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599\",\"symbol\":\"WBTC\",\"decimals\":8},\"supplied\":{\"raw\":\"69847129\",\"formatted\":\"0.69847129\",\"decimals\":8},\"suppliedUsd\":41901.91133306779,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":8},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":8},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0x514910771AF9Ca656af840dff83E8264EcF986CA\",\"symbol\":\"LINK\",\"decimals\":18},\"supplied\":{\"raw\":\"4382237807515209805632\",\"formatted\":\"4382.237807515209805632\",\"decimals\":18},\"suppliedUsd\":41252.65113466453,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"debtUsd\":0,\"usedAsCollateral\":true},{\"token\":{\"address\":\"0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48\",\"symbol\":\"USDC\",\"decimals\":6},\"supplied\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"suppliedUsd\":0,\"variableDebt\":{\"raw\":\"12502090354\",\"formatted\":\"12502.090354\",\"decimals\":6},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":6},\"debtUsd\":12501.422242291483,\"usedAsCollateral\":false},{\"token\":{\"address\":\"0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9\",\"symbol\":\"AAVE\",\"decimals\":18},\"supplied\":{\"raw\":\"16988412789781472175\",\"formatted\":\"16.988412789781472175\",\"decimals\":18},\"suppliedUsd\":1607.148854597185,\"variableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"stableDebt\":{\"raw\":\"0\",\"formatted\":\"0\",\"decimals\":18},\"debtUsd\":0,\"usedAsCollateral\":true}]},\"warnings\":[]}"
     }
   ],
   "structuredContent": {
     "chain": "ethereum",
-    "blockNumber": "26508680",
-    "blockTimestamp": "2026-11-27T19:36:11.000Z",
+    "blockNumber": "26508781",
+    "blockTimestamp": "2026-11-27T19:56:35.000Z",
     "data": {
       "address": "0xa18Ce9B63ac6cb0b30ed3FC97522688e432aFAe5",
       "market": {
@@ -21,12 +21,12 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
       },
       "priceSource": "aave-oracle",
       "summary": {
-        "totalCollateralUsd": 192518.4844294,
-        "totalDebtUsd": 67973.7912872,
-        "availableBorrowsUsd": 81613.07111444,
-        "ltv": 0.777,
-        "liquidationThreshold": 0.8138,
-        "healthFactor": 2.3049,
+        "totalCollateralUsd": 192764.61865598,
+        "totalDebtUsd": 68473.35497583,
+        "availableBorrowsUsd": 81266.20079613,
+        "ltv": 0.7768,
+        "liquidationThreshold": 0.8136,
+        "healthFactor": 2.2906,
         "eModeCategory": 40,
         "healthFactorNote": null
       },
@@ -38,11 +38,11 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
             "decimals": 18
           },
           "supplied": {
-            "raw": "64632790300311121391",
-            "formatted": "64.632790300311121391",
+            "raw": "64632822640264522635",
+            "formatted": "64.632822640264522635",
             "decimals": 18
           },
-          "suppliedUsd": 108002.85329288067,
+          "suppliedUsd": 108002.90733367369,
           "variableDebt": {
             "raw": "0",
             "formatted": "0",
@@ -69,8 +69,8 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
           },
           "suppliedUsd": 0,
           "variableDebt": {
-            "raw": "55532855021",
-            "formatted": "55532.855021",
+            "raw": "56032942522",
+            "formatted": "56032.942522",
             "decimals": 6
           },
           "stableDebt": {
@@ -78,7 +78,7 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
             "formatted": "0",
             "decimals": 6
           },
-          "debtUsd": 55472.38973779604,
+          "debtUsd": 55971.932733523194,
           "usedAsCollateral": false
         },
         {
@@ -113,11 +113,11 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
             "decimals": 18
           },
           "supplied": {
-            "raw": "4382237783677893296662",
-            "formatted": "4382.237783677893296662",
+            "raw": "4382237807515209805632",
+            "formatted": "4382.237807515209805632",
             "decimals": 18
           },
-          "suppliedUsd": 41006.5709488767,
+          "suppliedUsd": 41252.65113466453,
           "variableDebt": {
             "raw": "0",
             "formatted": "0",
@@ -144,8 +144,8 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
           },
           "suppliedUsd": 0,
           "variableDebt": {
-            "raw": "12502069660",
-            "formatted": "12502.06966",
+            "raw": "12502090354",
+            "formatted": "12502.090354",
             "decimals": 6
           },
           "stableDebt": {
@@ -153,7 +153,7 @@ Warning: 3 regex pattern(s) in this schema were not evaluated
             "formatted": "0",
             "decimals": 6
           },
-          "debtUsd": 12501.40154939737,
+          "debtUsd": 12501.422242291483,
           "usedAsCollateral": false
         },
         {
