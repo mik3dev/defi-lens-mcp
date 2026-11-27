@@ -21,9 +21,9 @@
 | Live provider suite | `pnpm test:live` | Not applicable: phase 2 added no live tests (`test/live/` does not exist) |
 | Secret scan | Script comparing every `.env` value of 8 characters or more against every tracked and untracked, non-ignored file; prints variable names and counts only. Run before each gate and review-fix commit. Plus a check for the local home path | 0 secret hits. The only matches are `HOST` (a localhost value) and `TENDERLY_PROJECT` (the public package name `defi-lens-mcp`). 0 home-path hits |
 | Docs/README gate item (design §10.4): tool reference and README section | `README.md` | Pending (phase 8): `README.md` does not exist yet. The `get_aave_positions` description is written and appears in `tools/list` (`phase-2/stdio-tools-list.txt`) |
-| CI green on the phase pull request | — | Pending: CI runs on the phase pull request |
+| CI green on the phase pull request | [PR #5](https://github.com/mik3dev/defi-lens-mcp/pull/5), Actions run 46069042096 | Pass: lint, typecheck, build, coverage and audit green |
 | Code review of the phase diff | Whole-branch review `437e725..c8fa82c` | No critical findings; both important findings (reserve list cached for an hour could silently miss a new reserve or fail every call after a delisting; half-up rounding could show a liquidatable position as 1.0) fixed in `cba0659` and `6c0aa1d` and re-reviewed; remaining minors listed under Open findings |
-| Owner sign-off | — | Pending |
+| Owner sign-off | — | Approved (see the end of this document) |
 
 ## Validation
 
@@ -43,7 +43,7 @@ Tool calls are live (no fork), through the built server over stdio (`node dist/i
 | 3 | Sum of `suppliedUsd` over reserves with `usedAsCollateral` vs `totalCollateralUsd`; sum of `debtUsd` vs `totalDebtUsd` | Captured outputs of 1a–1e and check 4 | ethereum `0xa18C…`: 192 764.618656 / 68 473.354976; ethereum `0x187a…`: 13 688.754458 / 10 742.460867; base: 52 813.819035 / 13 814.815436; arbitrum: 108 768.225117 / 58 225.963781; polygon: 3 577.981393 / 1 807.615325; supplier: 825 530.466571 / 0 | `totalCollateralUsd` / `totalDebtUsd`: 192 764.61865598 / 68 473.35497583; 13 688.75445846 / 10 742.46086722; 52 813.81903513 / 13 814.81543617; 108 768.22511739 / 58 225.96378125; 3 577.98139249 / 1 807.6153249; 825 530.46657116 / 0 | ±0.5 % (every difference below 0.00001 %) | Pass |
 | 4 | Supply and no debt shows `healthFactor: null`, note `no debt` | Captured output; `getUserAccountData` via `cast --block 26508781` (debt `0`, health factor `2^256 − 1`) | ethereum `0x83d8…0C0B`: collateral 825 530.47 USD, debt 0 | `healthFactor: null`, `healthFactorNote: "no debt"`, `totalDebtUsd: 0`, no warnings; WETH supplied `494027110447918513369` (collateral) and USDT `4680698` (not collateral), both equal to `getUserReserveData` | exact | Pass |
 | 5 | Address that never used Aave returns an empty position, not an error | Captured output; `cast nonce`, `cast code` and `Pool.getUserConfiguration` at block 26508680 | ethereum `0xd012…CAe7`: nonce 0, no code, user configuration bitmap `0`, account data all zero | not `isError`; `reserves: []`, every summary number 0, `eModeCategory: 0`, `healthFactor: null`, `healthFactorNote: "no debt"`, no warnings | exact | Pass |
-| 6 | Agent-readability: a desktop client asked "is this wallet at risk of liquidation?" answers from the tool output correctly | Transcript | — | — | — | Pending (owner) |
+| 6 | Agent-readability: a desktop client asked "is this wallet at risk of liquidation?" answers from the tool output correctly | Transcript `phase-2/check-6-transcript.md` (client: Claude Code, deviation 8) | — | Health factor 1.0652 at block 26509237, answered as "at risk, not yet liquidatable", with the collateral and debt split and a ~6.1 % ETH drop to liquidation, all from the tool output | — | Pass |
 
 Notes on checks 1 and 2:
 
@@ -55,10 +55,11 @@ Notes on check 3:
 
 - The collateral sum takes only reserves with `usedAsCollateral: true`, as the protocol does. Polygon shows why that matters: USDC (3 units) and USDT0 (34 units) are supplied but not collateral, and leaving them out is what makes the sums agree. Arbitrum's 442-unit USDC supply is collateral and is counted. The sums agree to floating-point precision because the tool and `getUserAccountData` use the same oracle prices at the same block.
 
-Notes on check 6 (for the owner):
+Notes on check 6:
 
-- Prompt to use in the desktop client, with the server configured over stdio: **"Is 0x187a2F53544271D0B81f4b59449e036E36b80c9D at risk of liquidation on Aave v3 Ethereum?"**
+- Prompt: **"Is 0x187a2F53544271D0B81f4b59449e036E36b80c9D at risk of liquidation on Aave v3 Ethereum?"**
 - What a correct answer contains: it calls `get_aave_positions` with `chain: "ethereum"` and that address, and answers from the returned `healthFactor` (1.0703 at block 26508781; it will have moved by the time of the run). At that block the position was 8.19 WETH of collateral against 10 743 USDC of variable debt, liquidation threshold 0.84: close to liquidation, which happens at a health factor below 1, about a 6.6 % fall in the WETH oracle price (to about 1 561 USD from 1 671 USD). If the position has changed, the answer should follow the new tool output, not these numbers. Save the transcript or screenshots under `docs/validation/phase-2/`.
+- Result: run at block 26509237, health factor 1.0652 (13 623 USD of WETH collateral against 10 743 USD of USDC debt); the answer followed the new output. Transcript in `phase-2/check-6-transcript.md`.
 
 ## Demonstration
 
@@ -73,7 +74,7 @@ Client: MCP Inspector CLI mode, `@modelcontextprotocol/inspector` 1.0.7 (`npx -y
 | `cast` references at the response blocks (checks 1, 2, 4, 5) | `cast-references.txt` |
 | Health factors from a second provider (check 1) | `public-rpc-references.txt` |
 
-Phase 2 did not change the HTTP transport, so no HTTP demonstration was run; the e2e suite lists the new tool over both transports (`test/e2e/protocol.http.test.ts`, `test/e2e/protocol.stdio.test.ts`). The desktop-client run is check 6, pending with the owner.
+Phase 2 did not change the HTTP transport, so no HTTP demonstration was run; the e2e suite lists the new tool over both transports (`test/e2e/protocol.http.test.ts`, `test/e2e/protocol.stdio.test.ts`). The agent-client run is check 6 (`phase-2/check-6-transcript.md`).
 
 ## Deviations from the design
 
@@ -84,6 +85,7 @@ Phase 2 did not change the HTTP transport, so no HTTP demonstration was run; the
 5. **Per-reserve USD is flat, with one price source for the response.** Each reserve carries plain `suppliedUsd` and `debtUsd` numbers (`null` without an oracle price), and the data has one top-level `priceSource: "aave-oracle"`, unlike the `{ usd, priceSource }` object of spec §5.0 used by the phase 1 tools. Every USD value in this response comes from the same source, the market's Aave oracle, so it is stated once instead of on every value.
 6. **`toAaveData` takes a subject argument.** The plan specifies `toAaveData(position, market)`. The final mapper is `toAaveData(position, subject)`: the market (pool, data provider, oracle) now comes with the position (`readAavePosition` returns it, `fff76b8`), and `subject` (`{ chain, address }`) supplies the market name and the address, which the mapper cannot derive from the position.
 7. **The health factor is truncated to 4 decimals, not rounded.** Half-up rounding turned a raw health factor from 0.99995e18 up to just below 1e18 into 1.0, which hid the below-1 liquidation warning. Truncation (`6c0aa1d`) means a liquidatable position never reads as 1.0. The plan's unit value changed accordingly: `parseHealthFactor(987654321000000000n)` is 0.9876, not 0.9877.
+8. **Check 6 ran in Claude Code, not a desktop client.** The design asks for a desktop client. The question was put to a Claude Code session in this repository, which called the built server over stdio with the MCP Inspector CLI and answered from its output. The owner accepted it as check 6. What it shows is the same: an agent reading the tool output answers the liquidation question correctly.
 
 ## Open issues carried forward
 
@@ -118,4 +120,4 @@ Remaining deferred minors, one line each:
 
 ## Owner sign-off
 
-- [ ] Approved by ______ on ______
+- [x] Approved by mik3dev on 2026-11-27
