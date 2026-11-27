@@ -1,6 +1,6 @@
 import { zeroAddress } from 'viem';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { CHAIN_IDS, getClient } from '../../src/chains.js';
+import { CHAIN_IDS, type ChainId, getClient } from '../../src/chains.js';
 import { type AppContext, requestScope } from '../../src/context.js';
 import { aaveOracleAbi, aavePoolAbi } from '../../src/protocols/aave/abis.js';
 import {
@@ -11,6 +11,13 @@ import { resolveMarket } from '../../src/protocols/aave/market.js';
 import { PINNED } from '../fixtures/blocks.js';
 import { chainEndpoint } from '../helpers/chain-endpoint.js';
 import { testContext } from '../helpers/context.js';
+
+const EXPECTED_NAME: Record<ChainId, string> = {
+  ethereum: 'Aave v3 Core',
+  arbitrum: 'Aave v3 Arbitrum',
+  base: 'Aave v3 Base',
+  polygon: 'Aave v3 Polygon',
+};
 
 describe.each(CHAIN_IDS)('aave v3 market resolution on %s', (chain) => {
   let endpoint: Awaited<ReturnType<typeof chainEndpoint>> | undefined;
@@ -37,7 +44,10 @@ describe.each(CHAIN_IDS)('aave v3 market resolution on %s', (chain) => {
       expect(address).not.toBe(zeroAddress);
       expect(address).toMatch(/^0x[0-9a-fA-F]{40}$/);
     }
-    expect(AAVE_V3_MARKET_NAME[chain]).toMatch(/^Aave v3 /);
+  });
+
+  it('names the market', () => {
+    expect(AAVE_V3_MARKET_NAME[chain]).toBe(EXPECTED_NAME[chain]);
   });
 
   it('the pool points back at the provider', async () => {

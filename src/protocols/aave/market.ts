@@ -1,4 +1,4 @@
-import type { Address } from 'viem';
+import { type Address, isAddress, zeroAddress } from 'viem';
 import { type ChainId, getClient } from '../../chains.js';
 import type { AppContext } from '../../context.js';
 import type { PinnedBlock } from '../../lib/blocks.js';
@@ -14,6 +14,10 @@ export interface AaveMarket {
 }
 
 const FUNCTIONS = ['getPool', 'getPoolDataProvider', 'getPriceOracle'] as const;
+
+function isResolved(value: string | undefined): value is Address {
+  return value !== undefined && isAddress(value) && value !== zeroAddress;
+}
 
 async function readMarket(
   ctx: AppContext,
@@ -31,14 +35,10 @@ async function readMarket(
     })),
   });
   const [pool, dataProvider, oracle] = outcomes.map((o) => success(o, isString));
-  if (!pool || !dataProvider || !oracle) {
+  if (!isResolved(pool) || !isResolved(dataProvider) || !isResolved(oracle)) {
     throw new AppError('UPSTREAM_ERROR', `Aave v3 addresses provider on ${chain} did not resolve`);
   }
-  return {
-    pool: pool as Address,
-    dataProvider: dataProvider as Address,
-    oracle: oracle as Address,
-  };
+  return { pool, dataProvider, oracle };
 }
 
 /** Pool, data provider and oracle of the Aave v3 market on `chain`; cached forever per chain. */
@@ -47,5 +47,6 @@ export function resolveMarket(
   chain: ChainId,
   block: PinnedBlock,
 ): Promise<AaveMarket> {
+  // Market addresses are resolved once per chain at the first caller's pinned block and treated as static.
   return ctx.cache.wrap(`aave:market:${chain}`, 'forever', () => readMarket(ctx, chain, block));
 }
