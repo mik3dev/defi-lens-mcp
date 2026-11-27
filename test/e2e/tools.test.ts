@@ -2,7 +2,7 @@ import { AjvJsonSchemaValidator } from '@modelcontextprotocol/client/validators/
 import type { Address } from 'viem';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { CHAINS } from '../../src/chains.js';
-import { DISCOVERY_WALLET } from '../fixtures/wallets.js';
+import { AAVE_WALLETS, DISCOVERY_WALLET } from '../fixtures/wallets.js';
 import { chainEndpoint } from '../helpers/chain-endpoint.js';
 import { connectStdio, type StdioSession } from '../helpers/mcp-client.js';
 
@@ -20,6 +20,11 @@ interface ToolCase {
 
 /** One successful call per registered tool; extended whenever a tool is added. */
 const CASES: ToolCase[] = [
+  {
+    tool: 'get_aave_positions',
+    validArgs: { chain: 'ethereum', address: AAVE_WALLETS.borrower.ethereum },
+    fixture: 'e2e-aave-positions',
+  },
   {
     tool: 'get_pool_state',
     validArgs: { chain: 'ethereum', pool: USDC_WETH_005 },
